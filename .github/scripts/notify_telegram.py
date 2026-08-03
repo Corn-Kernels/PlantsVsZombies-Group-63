@@ -23,6 +23,34 @@ def get_commit_log(before_sha: str, after_sha: str) -> str:
     return run(f"git log {before_sha}..{after_sha} --pretty=format:'- %h %s (%an)'")
 
 
+def get_available_model(api_key: str) -> str:
+    """
+    Gemini model names get renamed/retired fairly often (gemini-pro,
+    gemini-1.5-flash, and various preview models have all 404'd at different
+    points). Rather than hardcode one and risk another 404 later, ask the API
+    what's actually available for this key right now and pick a Flash-family
+    model (fast, free-tier eligible) that supports generateContent.
+    """
+    url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+    response = requests.get(url, timeout=15)
+    response.raise_for_status()
+    models = response.json().get("models", [])
+
+    candidates = [
+        m["name"] for m in models
+        if "generateContent" in m.get("supportedGenerationMethods", [])
+    ]
+
+    for name in candidates:
+        if "flash" in name.lower():
+            return name  # e.g. "models/gemini-2.5-flash"
+
+    if candidates:
+        return candidates[0]
+
+    raise RuntimeError("No models supporting generateContent are available for this API key.")
+
+
 def summarize_with_gemini(diff_text: str, commit_log: str, api_key: str) -> str:
     truncated = diff_text[:MAX_DIFF_CHARS]
     if len(diff_text) > MAX_DIFF_CHARS:
@@ -36,10 +64,8 @@ def summarize_with_gemini(diff_text: str, commit_log: str, api_key: str) -> str:
         f"Diff:\n{truncated}"
     )
 
-    url = (
-        "https://generativelanguage.googleapis.com/v1beta/models/"
-        f"gemini-2.5-flash:generateContent?key={api_key}"
-    )
+    model = get_available_model(api_key)
+    url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     response = requests.post(
         url,
         headers={"content-type": "application/json"},
