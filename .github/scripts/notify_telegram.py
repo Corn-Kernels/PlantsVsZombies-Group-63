@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import requests
 
@@ -33,13 +34,20 @@ def raise_with_body(response: requests.Response) -> None:
     response.raise_for_status()
 
 
-def get_available_model(api_key: str) -> str:
+def extract_version(name: str) -> float:
+    match = re.search(r"gemini-(\d+(?:\.\d+)?)", name)
+    return float(match.group(1)) if match else 0.0
+
+
+def get_candidate_models(api_key: str) -> list:
     """
-    Gemini model names get renamed/retired fairly often (gemini-pro,
-    gemini-1.5-flash, and various preview models have all 404'd at different
-    points), and models can even show up in ListModels as supporting
-    generateContent yet still 404 on v1beta - a known inconsistency. Using
-    the stable v1 endpoint for both listing and calling avoids that.
+    Returns generateContent-capable models ordered newest-and-cheapest-first.
+    Just because ListModels returns a model doesn't mean this specific API key
+    can actually call it - Google has been retiring specific model versions
+    for newer accounts even while the model still appears in this listing
+    ("model X is no longer available to new users"). So this only produces
+    an ordering to try, not a guaranteed-working single pick - see the
+    try-until-success loop in summarize_with_gemini.
     """
     url = f"{GEMINI_API_BASE}/models?key={api_key}"
     response = requests.get(url, timeout=15)
@@ -51,14 +59,11 @@ def get_available_model(api_key: str) -> str:
         if "generateContent" in m.get("supportedGenerationMethods", [])
     ]
 
-    for name in candidates:
-        if "flash" in name.lower():
-            return name  # e.g. "models/gemini-2.5-flash"
+    def sort_key(name: str):
+        is_flash = "flash" in name.lower()
+        return (not is_flash, -extract_version(name))
 
-    if candidates:
-        return candidates[0]
-
-    raise RuntimeError("No models supporting generateContent are available for this API key.")
+    return sorted(candidates, key=sort_key)
 
 
 def summarize_with_gemini(diff_text: str, commit_log: str, api_key: str) -> str:
@@ -74,17 +79,27 @@ def summarize_with_gemini(diff_text: str, commit_log: str, api_key: str) -> str:
         f"Diff:\n{truncated}"
     )
 
-    model = get_available_model(api_key)
-    url = f"{GEMINI_API_BASE}/{model}:generateContent?key={api_key}"
-    response = requests.post(
-        url,
-        headers={"content-type": "application/json"},
-        json={"contents": [{"parts": [{"text": prompt}]}]},
-        timeout=30,
-    )
-    raise_with_body(response)
-    data = response.json()
-    return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+    candidates = get_candidate_models(api_key)
+    if not candidates:
+        raise RuntimeError("No models supporting generateContent are available for this API key.")
+
+    last_response = None
+    for model in candidates:
+        url = f"{GEMINI_API_BASE}/{model}:generateContent?key={api_key}"
+        response = requests.post(
+            url,
+            headers={"content-type": "application/json"},
+            json={"contents": [{"parts": [{"text": prompt}]}]},
+            timeout=30,
+        )
+        if response.ok:
+            data = response.json()
+            return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+
+        print(f"Model {model} unavailable ({response.status_code}): {response.text}")
+        last_response = response
+
+    raise_with_body(last_response)  # every candidate failed - raise using the last one's details
 
 
 def send_telegram_message(bot_token: str, chat_id: str, text: str) -> None:
