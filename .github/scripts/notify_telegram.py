@@ -23,17 +23,27 @@ def get_commit_log(before_sha: str, after_sha: str) -> str:
     return run(f"git log {before_sha}..{after_sha} --pretty=format:'- %h %s (%an)'")
 
 
+GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1"  # v1beta has shown model listing/serving inconsistencies
+
+
+def raise_with_body(response: requests.Response) -> None:
+    """Surface the actual error body (Google's reason code/message), not just the HTTP status."""
+    if not response.ok:
+        print(f"Gemini API error {response.status_code}: {response.text}")
+    response.raise_for_status()
+
+
 def get_available_model(api_key: str) -> str:
     """
     Gemini model names get renamed/retired fairly often (gemini-pro,
     gemini-1.5-flash, and various preview models have all 404'd at different
-    points). Rather than hardcode one and risk another 404 later, ask the API
-    what's actually available for this key right now and pick a Flash-family
-    model (fast, free-tier eligible) that supports generateContent.
+    points), and models can even show up in ListModels as supporting
+    generateContent yet still 404 on v1beta - a known inconsistency. Using
+    the stable v1 endpoint for both listing and calling avoids that.
     """
-    url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+    url = f"{GEMINI_API_BASE}/models?key={api_key}"
     response = requests.get(url, timeout=15)
-    response.raise_for_status()
+    raise_with_body(response)
     models = response.json().get("models", [])
 
     candidates = [
@@ -65,14 +75,14 @@ def summarize_with_gemini(diff_text: str, commit_log: str, api_key: str) -> str:
     )
 
     model = get_available_model(api_key)
-    url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
+    url = f"{GEMINI_API_BASE}/{model}:generateContent?key={api_key}"
     response = requests.post(
         url,
         headers={"content-type": "application/json"},
         json={"contents": [{"parts": [{"text": prompt}]}]},
         timeout=30,
     )
-    response.raise_for_status()
+    raise_with_body(response)
     data = response.json()
     return data["candidates"][0]["content"]["parts"][0]["text"].strip()
 
