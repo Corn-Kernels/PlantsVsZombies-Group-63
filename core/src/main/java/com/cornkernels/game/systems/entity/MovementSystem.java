@@ -1,20 +1,18 @@
-package com.cornkernels.game.systems;
+package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+public class MovementSystem extends EntitySystem {
 
-public class MovementSystem {
-
-    public void update(@NotNull List<Entity> entities) {
-        for (Entity e : entities) {
+    @Override
+    public void update(float delta) {
+        for (Entity e : field.getEntities()) {
             if (!e.has(PositionComponent.class) || !e.has(VelocityComponent.class)) {
-                continue;//this should be "continue" not "return";
+                continue;
             }
 
             PositionComponent posComp = e.get(PositionComponent.class);
@@ -56,7 +54,7 @@ public class MovementSystem {
                 );
 
                 continue;
-            }//for homing projectiles i wrote them here but you can move this block
+            }
 
             float speed = velComp.velocityPerTick.getX();
             posComp.position.subtractInPlace(new Vec2d(speed, 0));

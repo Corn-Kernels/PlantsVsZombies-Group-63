@@ -1,4 +1,4 @@
-package com.cornkernels.game.systems;
+package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.ArmorComponent;
@@ -10,13 +10,11 @@ import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
-import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CombatSystem {
+public class CombatSystem extends EntitySystem {
 
     private static final double HIT_DISTANCE = 0.5;
 
@@ -43,7 +41,8 @@ public class CombatSystem {
         }
     }
 
-    public void update(@NotNull Field field) {
+    @Override
+    public void update(float delta) {
         for (AbstractProjectile projectile : List.copyOf(field.getActiveProjectiles())) {
             if (projectile.isMarkedForRemoval()) continue;
 
@@ -63,12 +62,11 @@ public class CombatSystem {
                     if (projectile instanceof LobProjectile) {
                         if (zombie != ((LobProjectile) projectile).target)
                             continue;
-                    }//added these here i think this is the only place where they belong
+                    }
                     if (projectile instanceof HomingProjectile) {
                         if (zombie != ((HomingProjectile) projectile).target)
                             continue;
                     }
-                    //spawn lobber AOE here
                     applyDamage(zombie, projectile.get(DamageComponent.class).amount, false);
                     projectile.markForRemoval();
                     break;

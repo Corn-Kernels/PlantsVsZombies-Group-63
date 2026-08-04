@@ -67,4 +67,17 @@ public abstract class Entity {
     public boolean isMarkedForRemoval() {
         return markedForRemoval;
     }
+
+    public boolean hasComponents(Class<?>[] componentTypes) {
+        if (componentTypes == null || componentTypes.length == 0) return false;
+
+        for (Class<?> componentType : componentTypes) {
+
+            if (!components.containsKey(componentType)) return false;
+
+            List<Object> list = components.get(componentType);
+            if (list == null || list.isEmpty()) return false;
+        }
+        return true;
+    }
 }

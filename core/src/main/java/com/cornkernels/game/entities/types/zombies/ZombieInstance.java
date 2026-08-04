@@ -2,10 +2,7 @@ package com.cornkernels.game.entities.types.zombies;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
-import com.cornkernels.game.entities.components.ArmorComponent;
-import com.cornkernels.game.entities.components.HealthComponent;
-import com.cornkernels.game.entities.components.PositionComponent;
-import com.cornkernels.game.entities.components.VelocityComponent;
+import com.cornkernels.game.entities.components.*;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
@@ -20,6 +17,7 @@ public class ZombieInstance extends Entity {
         add(new PositionComponent(position));
         add(new VelocityComponent(new Vec2d(def.baseSpeed, 0f)));
         add(new ZombieStateComponent());
+        add(new PamAnimationComponent());
 
         HealthComponent health = new HealthComponent();
         health.maxHealth = def.baseHp;

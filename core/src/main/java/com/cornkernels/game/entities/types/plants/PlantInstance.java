@@ -3,6 +3,7 @@ package com.cornkernels.game.entities.types.plants;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.HealthComponent;
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
@@ -18,6 +19,7 @@ public class PlantInstance extends Entity {
         add(new PlantDefComponent(plantDef));
         add(new PositionComponent(position));
         add(new PlantStateComponent());
+        add(new PamAnimationComponent());
 
         HealthComponent health = new HealthComponent();
         health.maxHealth = plantDef.getBaseHp();

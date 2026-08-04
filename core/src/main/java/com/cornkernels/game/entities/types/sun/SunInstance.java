@@ -2,6 +2,7 @@ package com.cornkernels.game.entities.types.sun;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.sun_specific.SunComponent;
 
@@ -15,6 +16,7 @@ public class SunInstance extends Entity {
         this.sunType = sunType;
         add(new PositionComponent(new Vec2d(column, lane)));
         add(new SunComponent(sunType, FALL_DURATION_SECONDS));
+        add(new PamAnimationComponent());
     }
 
     public SunInstance(SunType sunType, int lane, int column, float time) {//added this for sunProducing plants
@@ -22,6 +24,7 @@ public class SunInstance extends Entity {
         this.sunType = sunType;
         add(new PositionComponent(new Vec2d(column, lane)));
         add(new SunComponent(sunType, FALL_DURATION_SECONDS));
+        add(new PamAnimationComponent());
         FALL_DURATION_SECONDS = time;
     }
 

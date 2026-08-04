@@ -81,6 +81,17 @@ public class Field {
         }
     }
 
+    public List<Entity> getEntitiesWith(Class<?>... componentTypes) {
+        List<Entity> match = new ArrayList<>();
+
+        for (Entity entity : getEntities()) {
+            if (entity.hasComponents(componentTypes)) {
+                match.add(entity);
+            }
+        }
+        return match;
+    }
+
     public void addPlant(@NotNull PlantInstance plant) {
         GridPosition pos = GridPosition.fromContinuous(plant.get(PositionComponent.class).position);
         if (pos.column() == 0) {

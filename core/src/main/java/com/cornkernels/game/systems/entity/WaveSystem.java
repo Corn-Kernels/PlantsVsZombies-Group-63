@@ -1,4 +1,4 @@
-package com.cornkernels.game.systems;
+package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.HealthComponent;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.random.RandomGenerator;
 
-public class WaveSystem {
+public class WaveSystem extends EntitySystem {
 
     private static final int BASE_WAVE_COST = 2000;
     private static final float BASE_SPAWN_DURATION = 3.0f;
@@ -31,7 +31,7 @@ public class WaveSystem {
         this.rng = rng;
     }
 
-    public void update(Field field, float deltaTick) {
+    public void update(float deltaTick) {
         if (waveNumber == 0 || shouldStartNextWave(field)) {
             startNextWave();
         }

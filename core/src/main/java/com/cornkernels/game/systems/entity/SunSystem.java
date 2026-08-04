@@ -1,4 +1,4 @@
-package com.cornkernels.game.systems;
+package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.GameAttributes;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.random.RandomGenerator;
 
-public class SunSystem {
+public class SunSystem extends EntitySystem {
 
     private static final int RADIOACTIVE_ZOMBIE_DAMAGE = 150;
     private static final int RADIOACTIVE_ZOMBIE_RADIUS = 2;
@@ -34,7 +34,8 @@ public class SunSystem {
         this.spawningEnabled = spawningEnabled;
     }
 
-    public void update(Field field, float deltaTick) {
+    @Override
+    public void update(float deltaTick) {
         timeSinceGameStart += deltaTick;
         if (!spawningEnabled) return;
 
