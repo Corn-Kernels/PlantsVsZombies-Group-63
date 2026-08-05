@@ -64,9 +64,6 @@ public class WaveSystem extends EntitySystem {
         field.addZombie(zombie);
         remainingWaveCost -= chosen.wavePointCost;
 
-        System.out.println("Zombie " + chosen.name() + " spawned at wave " +
-            waveNumber + "in lane " + lane + "which costed " + chosen.wavePointCost);
-
         return zombie;
     }
 
@@ -80,8 +77,6 @@ public class WaveSystem extends EntitySystem {
 
         remainingWaveCost = waveTotalCost;
         spawnTimer = 0f;
-
-        System.out.println(isFlagWave ? "The final wave has come." : "Wave " + waveNumber + " started.");
     }
 
     private boolean shouldStartNextWave(@NotNull Field field) {

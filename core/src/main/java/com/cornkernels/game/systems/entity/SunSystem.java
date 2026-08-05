@@ -63,7 +63,6 @@ public class SunSystem extends EntitySystem {
                     component.type = SunType.NORMAL;
                 }
                 Vec2d position = sun.get(PositionComponent.class).position;
-                System.out.println("Sun reached the ground at position (" + position.getX() + ", " + position.getY() + ")");
             }
         }
     }
@@ -118,7 +117,5 @@ public class SunSystem extends EntitySystem {
         SunType type = SunType.random(randomGenerator);
 
         field.addSun(new SunInstance(type, lane, column));
-
-        System.out.println("New " + type + " sun is dropping at position (" + column + ", " + lane + ")");
     }
 }

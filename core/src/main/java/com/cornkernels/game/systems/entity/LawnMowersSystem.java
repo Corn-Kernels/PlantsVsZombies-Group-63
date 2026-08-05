@@ -20,16 +20,10 @@ public class LawnMowersSystem extends EntitySystem {
                 if (lawnMower != null) {
                     lawnMower.markForRemoval();
                     field.removeZombiesInLane(pos.lane());
-                    System.out.println("The lawn mower in row " +
-                        pos.lane() + " is triggered and killed these zombies:");
                 } else {
                     markGameFinished = true;
                 }
             }
         }
-    }
-
-    public boolean isGameFinished() {
-        return markGameFinished;
     }
 }

@@ -2,6 +2,7 @@ package com.cornkernels.game;
 
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.*;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class GameSimulation {
     private final RandomGenerator random;
     private List<EntitySystem> systems = new ArrayList<>();
 
-    public GameSimulation(Field field, GameAttributes gameAttributes) {
+    public GameSimulation(Field field, @NonNull GameAttributes gameAttributes) {
         this.field = field;
         this.random = new Random();
 
@@ -32,7 +33,7 @@ public class GameSimulation {
         }
     }
 
-    private void addSystem(EntitySystem system) {
+    private void addSystem(@NonNull EntitySystem system) {
         system.registerSystem(field);
         systems.add(system);
     }

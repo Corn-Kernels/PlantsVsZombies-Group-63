@@ -19,7 +19,7 @@ public class SunInstance extends Entity {
         add(new PamAnimationComponent());
     }
 
-    public SunInstance(SunType sunType, int lane, int column, float time) {//added this for sunProducing plants
+    public SunInstance(SunType sunType, int lane, int column, float time) {
         super();
         this.sunType = sunType;
         add(new PositionComponent(new Vec2d(column, lane)));
