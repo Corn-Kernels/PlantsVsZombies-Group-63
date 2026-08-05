@@ -2,7 +2,7 @@ package com.cornkernels.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.cornkernels.game.map.Field;
-import com.cornkernels.game.systems.render.PamRenderSystem;
+import com.cornkernels.game.map.MapData;
 import org.jetbrains.annotations.NotNull;
 import pvz.libpvz.pam.PamPlayer;
 
@@ -18,14 +18,11 @@ public final class GameSession {
         Field field,
         @NotNull GameAttributes gameAttributes,
         SpriteBatch batch,
-        PamPlayer pamPlayer
-    ) {
+        PamPlayer pamPlayer,
+        MapData mapData) {
         this.gameAttributes = gameAttributes;
         this.simulation = new GameSimulation(field, gameAttributes);
-        this.renderer = new GameRenderer(field);
-        this.renderer.addSystem(
-            new PamRenderSystem(pamPlayer, batch)
-        );
+        this.renderer = new GameRenderer(batch, pamPlayer, mapData, field);
     }
 
     public void update(float deltaTick) {

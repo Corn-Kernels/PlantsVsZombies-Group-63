@@ -9,7 +9,13 @@ import com.cornkernels.engine.settings.GameSettings;
 import com.cornkernels.engine.settings.InputSettings;
 import com.cornkernels.engine.settings.VideoSettings;
 import com.cornkernels.engine.video.VideoManager;
-import com.cornkernels.game.screens.MenuScreen;
+import com.cornkernels.game.GameAttributes;
+import com.cornkernels.game.entities.attributes.SeedSlot;
+import com.cornkernels.game.entities.types.plants.PlantDef;
+import com.cornkernels.game.entities.types.zombies.ZombieDef;
+import com.cornkernels.game.screens.GameplayScreen;
+
+import java.util.List;
 
 public class GameManager extends Game {
 
@@ -40,11 +46,13 @@ public class GameManager extends Game {
         inputManager = InputManager.getInstance();
         inputManager.init(inputSettings);
 
-        setScreen(new MenuScreen(this));
+        setScreen(new GameplayScreen(this, new GameAttributes(
+            List.of(new SeedSlot(PlantDef.APPEASE_MINT)), List.of(ZombieDef.ARCADE)))); // Temporary
     }
 
     @Override
     public void render() {
+        super.render();
         inputManager.update();
     }
 

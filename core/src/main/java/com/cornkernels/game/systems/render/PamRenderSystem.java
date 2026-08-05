@@ -14,6 +14,7 @@ public class PamRenderSystem extends RenderSystem {
     private final SpriteBatch batch;
 
     public PamRenderSystem(PamPlayer pamPlayer, SpriteBatch batch) {
+        super(batch);
         this.pamPlayer = pamPlayer;
         this.batch = batch;
     }
