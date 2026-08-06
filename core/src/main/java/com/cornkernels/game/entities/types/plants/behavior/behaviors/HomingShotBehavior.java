@@ -5,10 +5,11 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
+import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +17,12 @@ import java.util.List;
 public class HomingShotBehavior implements PlantAttackBehavior {
 
     private final int shotCount;
-    private final int damagePerShot;
     private final double shotSpacing = 0.3f;
+    private final AbstractProjectile projectile;
 
-    public HomingShotBehavior(int shotCount, int damagePerShot) {
+    public HomingShotBehavior(int shotCount, AbstractProjectile projectile) {
         this.shotCount = shotCount;
-        this.damagePerShot = damagePerShot;
+        this.projectile = projectile;
     }
 
     @Override
@@ -31,9 +32,7 @@ public class HomingShotBehavior implements PlantAttackBehavior {
 
         for (Entity e : field.getEntities()) {
             if (e instanceof ZombieInstance || e instanceof Grave) {
-                Vec2d targetPos = e.get(PositionComponent.class).position;
-
-                laneTargets.add(e);//removed condition for lane and horizontal position
+                laneTargets.add(e);
             }
         }
 
@@ -54,7 +53,14 @@ public class HomingShotBehavior implements PlantAttackBehavior {
 
         for (int i = 0; i < shotCount; i++) {
             Vec2d spawnPos = new Vec2d((float) (origin.getX() + 0.5 + i * shotSpacing), origin.getY());
-            field.addProjectile(new LobProjectile(damagePerShot, spawnPos, closestTarget));
+            AbstractProjectile spawned = projectile.clone(spawnPos);
+            if (spawned instanceof LobProjectile) {
+                ((LobProjectile) spawned).target = closestTarget;
+            }
+            if (spawned instanceof HomingProjectile) {
+                ((HomingProjectile) spawned).target = closestTarget;
+            }
+            field.addProjectile(spawned);
         }
     }
 

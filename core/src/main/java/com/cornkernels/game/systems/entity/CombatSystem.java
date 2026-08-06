@@ -59,15 +59,8 @@ public class CombatSystem extends EntitySystem {
 
                 double distance = Math.abs(zombie.get(PositionComponent.class).position.getX() - pos.getX());
                 if (distance < HIT_DISTANCE) {
-                    if (projectile instanceof LobProjectile) {
-                        if (zombie != ((LobProjectile) projectile).target)
-                            continue;
-                    }
-                    if (projectile instanceof HomingProjectile) {
-                        if (zombie != ((HomingProjectile) projectile).target)
-                            continue;
-                    }
-                    applyDamage(zombie, projectile.get(DamageComponent.class).amount, false);
+                    if(!projectile.hit(zombie))
+                        continue;
                     projectile.markForRemoval();
                     break;
                 }
