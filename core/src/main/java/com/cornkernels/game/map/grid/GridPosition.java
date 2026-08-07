@@ -4,6 +4,8 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public record GridPosition(int lane, int column) {
 
     @Contract("_ -> new")
@@ -16,5 +18,17 @@ public record GridPosition(int lane, int column) {
     @Contract(value = "_ -> new", pure = true)
     public static @NotNull Vec2d toVec2d(@NotNull GridPosition gridPosition) {
         return new Vec2d(gridPosition.lane, gridPosition.column);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GridPosition(int laneOther, int columnOther))) return false;
+        return lane == laneOther && column == columnOther;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lane, column);
     }
 }

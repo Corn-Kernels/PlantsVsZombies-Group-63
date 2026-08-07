@@ -2,9 +2,8 @@ package com.cornkernels.game.map;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
+import com.cornkernels.game.entities.components.GridPositionComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
-import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
-import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.types.lawnmower.LawnMower;
 import com.cornkernels.game.entities.types.obstacles.AbstractObstacle;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
@@ -16,7 +15,6 @@ import com.cornkernels.game.map.grid.GridPosition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Field {
@@ -54,8 +52,8 @@ public class Field {
     }
 
     public void update(float deltaTick) {
-        removeAndLog(activePlants);
-        removeAndLog(activeZombies);
+        activePlants.removeIf(PlantInstance::isMarkedForRemoval);
+        activeZombies.removeIf(ZombieInstance::isMarkedForRemoval);
         activeSuns.removeIf(SunInstance::isMarkedForRemoval);
         activeProjectiles.removeIf(AbstractProjectile::isMarkedForRemoval);
         activeLawnMowers.removeIf(LawnMower::isMarkedForRemoval);
@@ -100,6 +98,12 @@ public class Field {
         }
         activePlants.add(plant);
         grids[pos.lane()][pos.column()].providePlant(plant);
+    }
+
+    public void removePlantAt(GridPosition pos) {
+        activePlants.stream()
+            .filter(p -> p.get(GridPositionComponent.class).position.equals(pos))
+            .findFirst().ifPresent(Entity::markForRemoval);
     }
 
     public void addZombie(ZombieInstance zombie) {
@@ -212,26 +216,6 @@ public class Field {
             LawnMower lawnMower = new LawnMower(new Vec2d(0, i));
             activeLawnMowers.add(lawnMower);
             grids[i][0].provideLawnMower(lawnMower);
-        }
-    }
-
-    private void removeAndLog(@NotNull List<? extends Entity> entities) {
-        Iterator<? extends Entity> iterator = entities.iterator();
-        while (iterator.hasNext()) {
-            Entity entity = iterator.next();
-            if (entity.isMarkedForRemoval()) {
-                GridPosition pos = GridPosition.fromContinuous(entity.get(PositionComponent.class).position);
-                if (entity instanceof PlantInstance plant) {
-                    System.out.println("Plant " + plant.get(PlantDefComponent.class).def().getPlantName()
-                        + " at (" + pos.column() + ", " + pos.lane() + ") is destroyed.");
-                } else if (entity instanceof ZombieInstance zombie) {
-                    System.out.println("Zombie of type " + zombie.get(ZombieDefComponent.class).def().name()
-                        + " is dead at (" + pos.column() + ", " + pos.lane() + ")");
-                } else {
-                    System.out.println("Entity is dead at (" + pos.column() + ", " + pos.lane() + ")");
-                }
-                iterator.remove();
-            }
         }
     }
 }

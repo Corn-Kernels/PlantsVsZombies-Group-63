@@ -3,6 +3,7 @@ package com.cornkernels.game.map;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.cornkernels.game.map.grid.GridObject;
+import com.cornkernels.game.map.grid.GridPosition;
 
 import java.util.Collection;
 import java.util.List;
@@ -58,6 +59,18 @@ public class MapData {
                 "MapData has no backgroundRegions or cellBounds to compute world bounds from");
         }
         return bounds;
+    }
+
+    public GridPosition getGridPositionAt(float worldX, float worldY) {
+        for (int lane = 0; lane < cellBounds.length; lane++) {
+            for (int column = 0; column < cellBounds[lane].length; column++) {
+                Rectangle rect = cellBounds[lane][column];
+                if (rect != null && rect.contains(worldX, worldY)) {
+                    return new GridPosition(column, lane);
+                }
+            }
+        }
+        return null;
     }
 
     public Rectangle getWorldBounds() {

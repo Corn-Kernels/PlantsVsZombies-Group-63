@@ -1,11 +1,11 @@
 package com.cornkernels.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.cornkernels.game.hud.cursor.CursorToolState;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.MapData;
-import com.cornkernels.game.systems.render.BackgroundRenderSystem;
-import com.cornkernels.game.systems.render.PamRenderSystem;
-import com.cornkernels.game.systems.render.RenderSystem;
+import com.cornkernels.game.systems.render.*;
+import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
 
 import java.util.ArrayList;
@@ -17,15 +17,22 @@ public class GameRenderer {
     private final SpriteBatch batch;
     private final List<RenderSystem> systems = new ArrayList<>();
 
-    public GameRenderer(SpriteBatch batch, PamPlayer pamPlayer, MapData mapData, Field field) {
+    public GameRenderer(
+        SpriteBatch batch,
+        PamPlayer pamPlayer,
+        MapData mapData,
+        Field field,
+        CursorToolState toolState) {
         this.field = field;
         this.batch = batch;
 
-        addSystem(new PamRenderSystem(pamPlayer, batch));
+        addSystem(new PamRenderSystem(batch, pamPlayer));
         addSystem(new BackgroundRenderSystem(batch, mapData));
+        addSystem(new HighlightRenderSystem(batch, pamPlayer, mapData, toolState));
+        addSystem(new CursorAttachmentRenderSystem(batch, mapData, toolState));
     }
 
-    private void addSystem(RenderSystem system) {
+    private void addSystem(@NonNull RenderSystem system) {
         system.registerSystem(field);
         systems.add(system);
     }
