@@ -1,0 +1,9 @@
+delay_load_background_frontlawn_bigbrainz.png
+size:2048,1024
+repeat:none
+left
+bounds:1703,2,278,768
+main
+bounds:2,2,1024,768
+right
+bounds:1028,2,673,768
