@@ -13,7 +13,7 @@ public class GameSimulation {
 
     private final Field field;
     private final RandomGenerator random;
-    private List<EntitySystem> systems = new ArrayList<>();
+    private final List<EntitySystem> systems = new ArrayList<>();
 
     public GameSimulation(Field field, @NonNull GameAttributes gameAttributes) {
         this.field = field;

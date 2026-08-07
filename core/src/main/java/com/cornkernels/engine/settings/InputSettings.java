@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class InputSettings {
 
+    private final GameSettings settings;
     public Map<String, Integer> keyBindings = new LinkedHashMap<>();
-    private GameSettings settings;
 
     public InputSettings(GameSettings settings) {
         this.settings = settings;

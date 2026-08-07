@@ -4,13 +4,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.cornkernels.GameManager;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 
 public class MenuScreen implements Screen {
 
     private final GameManager gameManager;
     private final SpriteBatch batch;
 
-    public MenuScreen(GameManager gameManager) {
+    @Contract(pure = true)
+    public MenuScreen(@NonNull GameManager gameManager) {
         this.gameManager = gameManager;
         batch = gameManager.batch;
     }

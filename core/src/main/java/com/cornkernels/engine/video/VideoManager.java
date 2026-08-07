@@ -26,7 +26,6 @@ public class VideoManager {
         applyVSync();
     }
 
-
     public float getBrightness() {
         return settings.getBrightness();
     }
