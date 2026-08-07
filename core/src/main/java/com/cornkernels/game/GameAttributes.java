@@ -1,10 +1,10 @@
 package com.cornkernels.game;
 
-import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.attributes.SeedSlot;
 import com.cornkernels.game.entities.types.plants.PlantDef;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
+import com.cornkernels.game.map.grid.GridPosition;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class GameAttributes {
         }
     }
 
-    public PlantInstance getPlantInstance(SeedSlot seedSlot, Vec2d position) {
+    public PlantInstance getPlantInstance(SeedSlot seedSlot, GridPosition position) {
         if (!seedSlots.contains(seedSlot)) return null;
         if (!seedSlot.isReady()) return null;
         if (sunAmount < seedSlot.getPlantDef().getCost()) return null;

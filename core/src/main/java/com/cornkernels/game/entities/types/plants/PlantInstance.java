@@ -1,23 +1,23 @@
 package com.cornkernels.game.entities.types.plants;
 
-import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
+import com.cornkernels.game.entities.components.GridPositionComponent;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
-import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantStateComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehaviors;
+import com.cornkernels.game.map.grid.GridPosition;
 
 public class PlantInstance extends Entity {
 
-    public PlantInstance(PlantDef plantDef, Vec2d position) {
+    public PlantInstance(PlantDef plantDef, GridPosition position) {
         super();
 
         add(new PlantDefComponent(plantDef));
-        add(new PositionComponent(position));
+        add(new GridPositionComponent(position));
         add(new PlantStateComponent());
         add(new PamAnimationComponent());
 
