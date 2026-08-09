@@ -135,5 +135,8 @@ public class Camera implements GameplayCamera {
         return orthographicCamera.combined;
     }
 
+    public void applyViewport() {
+        viewport.apply();
+    }
 
 }

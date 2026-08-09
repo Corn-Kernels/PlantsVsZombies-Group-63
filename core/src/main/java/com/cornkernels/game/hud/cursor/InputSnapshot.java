@@ -12,7 +12,12 @@ public record InputSnapshot(float cursorScreenX, float cursorScreenY, boolean co
         return new InputSnapshot(
             Gdx.input.getX(),
             Gdx.input.getY(),
-            Gdx.input.isKeyJustPressed(Input.Buttons.LEFT)
+            Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)
         );
+    }
+
+    @Contract(" -> new")
+    public @NonNull InputSnapshot withoutConfirm() {
+        return new InputSnapshot(cursorScreenX, cursorScreenY, false);
     }
 }

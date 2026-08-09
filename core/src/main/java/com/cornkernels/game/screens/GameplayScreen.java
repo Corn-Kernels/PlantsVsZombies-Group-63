@@ -5,9 +5,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.cornkernels.GameManager;
 import com.cornkernels.engine.renderer.camera.Camera;
+import com.cornkernels.engine.renderer.hud.HudAnchor;
+import com.cornkernels.engine.renderer.hud.HudButton;
+import com.cornkernels.engine.renderer.hud.HudCamera;
+import com.cornkernels.engine.renderer.hud.HudSystem;
 import com.cornkernels.game.GameAttributes;
 import com.cornkernels.game.GameSession;
 import com.cornkernels.game.hud.cursor.InputSnapshot;
@@ -26,10 +32,14 @@ public class GameplayScreen implements Screen {
     private final GameManager gameManager;
     private final SpriteBatch batch;
     private final GameAttributes gameAttributes;
-    private Camera camera;
     private GameSession gameSession;
     private TextureBank textures;
     private PamPlayer pamPlayer;
+
+    private Camera camera;
+
+    private HudCamera hudCamera;
+    private HudSystem hudSystem;
 
     private MapLoader mapLoader;
 
@@ -57,6 +67,9 @@ public class GameplayScreen implements Screen {
         camera.resizeViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setWorldBounds(worldBounds);
 
+        hudCamera = new HudCamera(Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
+
+        hudSystem = new HudSystem(hudCamera);
         gameSession = new GameSession(new Field(5, 10), gameAttributes, batch, pamPlayer, mapData, camera);
 
         camera.panToRightEdge(INTRO_PAN_DURATION, () -> gameSession.changeLevelPhase(GameSession.LevelPhase.INTRO_PAN_LEFT));
@@ -66,20 +79,30 @@ public class GameplayScreen implements Screen {
                 camera.panToLeftEdge(RETURN_PAN_DURATION, () -> gameSession.changeLevelPhase(GameSession.LevelPhase.PLAYING));
             }
         });
+
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("ui/atlases/UI_AlwaysLoaded.atlas"));
+        TextureRegion region = new TextureRegion(atlas.findRegion("pause_button"));
+        hudSystem.addElement(HudButton.builder(new HudAnchor(HudAnchor.Corner.TOP_RIGHT, 20, 20), 70, 70)
+            .icon(region).onClick(() -> {
+                System.out.println("helli");
+            }).hoverEnterAction(() -> System.out.println("hello")).build());
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        InputSnapshot inputSnapshot = InputSnapshot.capture();
+
+        InputSnapshot rawInput = InputSnapshot.capture();
+        boolean hudConsumedClick = hudSystem.update(delta, rawInput);
+        InputSnapshot worldInput = hudConsumedClick ? rawInput.withoutConfirm() : rawInput;
 
         camera.update(delta);
 
         // Logic Tick Based Update
         accumulator += delta;
         while (accumulator >= TICK_RATE) {
-            gameSession.update(TICK_RATE, inputSnapshot);
+            gameSession.update(TICK_RATE, worldInput);
             accumulator -= TICK_RATE;
         }
 
@@ -90,15 +113,25 @@ public class GameplayScreen implements Screen {
     private void renderGame(float delta) {
         textures.update();
 
+        camera.applyViewport();
         batch.setProjectionMatrix(camera.getCombined());
         batch.begin();
         gameSession.render(delta);
         batch.end();
+
+        hudCamera.applyViewport();
+        batch.setProjectionMatrix(hudCamera.getCombined());
+        batch.begin();
+        hudSystem.render(batch, delta);
+        batch.end();
+
     }
 
     @Override
     public void resize(int width, int height) {
         camera.resizeViewport(width, height);
+        hudCamera.resize(width, height);
+
     }
 
     @Override
