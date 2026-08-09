@@ -39,7 +39,7 @@ public class HighlightRenderSystem extends RenderSystem {
                     && state.snappedPosition.lane() == lane
                     && state.snappedPosition.column() == column;
 
-                ClipRef clip = isHovered ? state.highlightSet.hoveredClip : state.highlightSet.idleClip;
+                ClipRef clip = isHovered ? state.highlightSet.hoveredClip() : state.highlightSet.idleClip();
                 Rectangle bounds = mapData.cellBounds[lane][column];
 
                 pamPlayer.draw(batch, clip, stateTime, bounds.x + bounds.width / 2f,
