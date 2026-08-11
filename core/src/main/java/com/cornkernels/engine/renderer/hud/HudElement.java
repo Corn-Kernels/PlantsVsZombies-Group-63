@@ -12,7 +12,7 @@ public interface HudElement {
 
     void update(float delta);
 
-    void render(SpriteBatch batch, Rectangle bounds, boolean hovered, float delta);
+    void render(SpriteBatch batch, Rectangle bounds, boolean hovered, boolean pressed, float delta);
 
     boolean handleClick(float hudX, float hudY, Rectangle bounds);
 

@@ -2,15 +2,11 @@ package com.cornkernels.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.cornkernels.engine.renderer.camera.GameplayCamera;
-import com.cornkernels.game.entities.types.plants.PlantDef;
-import com.cornkernels.game.entities.types.plants.PlantInstance;
-import com.cornkernels.game.hud.HighlightAnimationSet;
-import com.cornkernels.game.hud.cursor.CursorAttachment;
-import com.cornkernels.game.hud.cursor.CursorToolController;
-import com.cornkernels.game.hud.cursor.CursorToolState;
 import com.cornkernels.game.hud.cursor.InputSnapshot;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.MapData;
+import com.cornkernels.game.systems.controller.PauseController;
+import com.cornkernels.game.systems.controller.PlantingController;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
@@ -21,16 +17,12 @@ import java.util.List;
 public final class GameSession {
 
     private final List<OnGamePhaseChangedListener> phaseChangedListeners = new ArrayList<>();
-
     private final GameSimulation simulation;
     private final GameRenderer renderer;
     private final GameAttributes gameAttributes;
-
+    private final PauseController pauseController;
+    private final PlantingController plantingController;
     private final Field field;
-
-    private final CursorToolState toolState = new CursorToolState();
-    private final CursorToolController toolController;
-
     private LevelPhase phase;
 
     public GameSession(
@@ -42,39 +34,22 @@ public final class GameSession {
         GameplayCamera camera) {
         this.field = field;
         this.gameAttributes = gameAttributes;
+        this.pauseController = new PauseController();
+        this.plantingController = new PlantingController(field, mapData, camera, 50);
         this.simulation = new GameSimulation(field, gameAttributes);
-        this.toolController = new CursorToolController(mapData, camera, toolState);
-        this.renderer = new GameRenderer(batch, pamPlayer, mapData, field, toolState);
+        this.renderer = new GameRenderer(batch, pamPlayer, mapData, field, plantingController.getToolState());
 
         phase = GameSession.LevelPhase.INTRO_PAN_RIGHT;
     }
-
-    public void beginPlantPlacement(String plantTypeId, CursorAttachment thumbnail, HighlightAnimationSet highlightSet) {
-        toolState.active = true;
-        toolState.attachment = thumbnail;
-        toolState.highlightSet = highlightSet;
-        toolState.eligibility =
-            cell -> cell.getPlant() == null && cell.getObstacle() == null;
-        toolState.onConfirm = gridPosition -> {
-            field.addPlant(new PlantInstance(PlantDef.getPlantTypeOfName(plantTypeId), gridPosition));
-            toolState.active = false;
-        };
-    } // TODO: MOVE THIS METHOD TO HUD RELATED CLASSES WHEN SYSTEM IS WRITTEN
-
-    public void beginShovel(CursorAttachment shovelIcon) {
-        toolState.active = true;
-        toolState.attachment = shovelIcon;
-        toolState.highlightSet = null;
-        toolState.eligibility = cell -> cell.getPlant() != null;
-        toolState.onConfirm = field::removePlantAt;
-    } // TODO: MOVE THIS METHOD TO HUD RELATED CLASSES WHEN SYSTEM IS WRITTEN
 
     public void update(float deltaTick, InputSnapshot inputSnapshot) {
         if (phase != GameSession.LevelPhase.PLAYING) {
             return;
         }
-        toolController.update(inputSnapshot);
-        simulation.update(deltaTick);
+        if (!pauseController.isPaused()) {
+            plantingController.update(deltaTick, inputSnapshot);
+            simulation.update(deltaTick);
+        }
     }
 
     public void render(float delta) {
@@ -87,10 +62,6 @@ public final class GameSession {
         }
         phase = LevelPhase.ENDED;
         notifyPhaseChangeListeners();
-    }
-
-    public boolean isPlaying() {
-        return phase == GameSession.LevelPhase.PLAYING;
     }
 
     public GameAttributes getGameAttributes() {
@@ -120,6 +91,14 @@ public final class GameSession {
         for (OnGamePhaseChangedListener listener : phaseChangedListeners) {
             listener.onGamePhaseChanged(phase);
         }
+    }
+
+    public PauseController getPauseController() {
+        return pauseController;
+    }
+
+    public PlantingController getPlantingController() {
+        return plantingController;
     }
 
     public enum LevelPhase {INTRO_PAN_RIGHT, SEED_SELECTION, INTRO_PAN_LEFT, PLAYING, ENDED}

@@ -5,17 +5,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.cornkernels.GameManager;
 import com.cornkernels.engine.renderer.camera.Camera;
-import com.cornkernels.engine.renderer.hud.HudAnchor;
-import com.cornkernels.engine.renderer.hud.HudButton;
 import com.cornkernels.engine.renderer.hud.HudCamera;
 import com.cornkernels.engine.renderer.hud.HudSystem;
 import com.cornkernels.game.GameAttributes;
 import com.cornkernels.game.GameSession;
+import com.cornkernels.game.hud.HudFactory;
 import com.cornkernels.game.hud.cursor.InputSnapshot;
 import com.cornkernels.game.map.*;
 import org.jetbrains.annotations.Contract;
@@ -40,6 +37,7 @@ public class GameplayScreen implements Screen {
 
     private HudCamera hudCamera;
     private HudSystem hudSystem;
+    private HudFactory hudFactory;
 
     private MapLoader mapLoader;
 
@@ -67,25 +65,24 @@ public class GameplayScreen implements Screen {
         camera.resizeViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setWorldBounds(worldBounds);
 
-        hudCamera = new HudCamera(Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
+        hudCamera = new HudCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         hudSystem = new HudSystem(hudCamera);
         gameSession = new GameSession(new Field(5, 10), gameAttributes, batch, pamPlayer, mapData, camera);
 
-        camera.panToRightEdge(INTRO_PAN_DURATION, () -> gameSession.changeLevelPhase(GameSession.LevelPhase.INTRO_PAN_LEFT));
+        hudFactory = new HudFactory(pamPlayer, gameSession.getPlantingController(), gameSession.getPauseController());
+        hudSystem.addElement(hudFactory.createPauseButton());
+        hudSystem.addElement(hudFactory.createShovelButton(), () -> gameSession.getPhase() == GameSession.LevelPhase.PLAYING);
+
+        camera.panToRightEdge(INTRO_PAN_DURATION, () -> {
+            gameSession.changeLevelPhase(GameSession.LevelPhase.INTRO_PAN_LEFT);
+        });
 
         gameSession.addPhaseChangeListener(phase -> {
             if (phase == GameSession.LevelPhase.INTRO_PAN_LEFT) {
                 camera.panToLeftEdge(RETURN_PAN_DURATION, () -> gameSession.changeLevelPhase(GameSession.LevelPhase.PLAYING));
             }
         });
-
-        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("ui/atlases/UI_AlwaysLoaded.atlas"));
-        TextureRegion region = new TextureRegion(atlas.findRegion("pause_button"));
-        hudSystem.addElement(HudButton.builder(new HudAnchor(HudAnchor.Corner.TOP_RIGHT, 20, 20), 70, 70)
-            .icon(region).onClick(() -> {
-                System.out.println("helli");
-            }).hoverEnterAction(() -> System.out.println("hello")).build());
     }
 
     @Override
@@ -97,17 +94,23 @@ public class GameplayScreen implements Screen {
         boolean hudConsumedClick = hudSystem.update(delta, rawInput);
         InputSnapshot worldInput = hudConsumedClick ? rawInput.withoutConfirm() : rawInput;
 
-        camera.update(delta);
+        if (!gameSession.getPauseController().isPaused()) {
+            camera.update(delta);
 
-        // Logic Tick Based Update
-        accumulator += delta;
-        while (accumulator >= TICK_RATE) {
-            gameSession.update(TICK_RATE, worldInput);
-            accumulator -= TICK_RATE;
+            // Logic Tick Based Update
+            accumulator += delta;
+            while (accumulator >= TICK_RATE) {
+                gameSession.update(TICK_RATE, worldInput);
+                accumulator -= TICK_RATE;
+            }
+
+            // Render deltaTime Based Update
+            renderGame(delta);
+        } else {
+            renderGame(0f);
         }
 
-        // Render deltaTime Based Update
-        renderGame(delta);
+
     }
 
     private void renderGame(float delta) {

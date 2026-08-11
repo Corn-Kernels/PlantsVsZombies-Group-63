@@ -1,9 +1,11 @@
-package com.cornkernels.engine.renderer.hud;
+package com.cornkernels.engine.renderer.hud.elements;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.cornkernels.engine.renderer.hud.HudAnchor;
+import com.cornkernels.engine.renderer.hud.HudElement;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
@@ -15,6 +17,7 @@ public class HudButton implements HudElement {
     private final HudAnchor anchor;
     private final Supplier<TextureRegion> iconSupplier;
     private final Supplier<TextureRegion> hovredIconSupplier;
+    private final Supplier<TextureRegion> pressedIconSupplier;
     private final Runnable onClick;
     private final Runnable hoverEnterAction;
     private final Runnable hoverExitAction;
@@ -37,6 +40,7 @@ public class HudButton implements HudElement {
         this.hoverEnterAction = builder.hoverEnterAction;
         this.hoverExitAction = builder.hoverExitAction;
         this.hovredIconSupplier = builder.hovredIconSupplier;
+        this.pressedIconSupplier = builder.pressedIconSupplier;
         this.hoverTint = builder.hoverTint;
     }
 
@@ -65,7 +69,7 @@ public class HudButton implements HudElement {
     }
 
     @Override
-    public void render(SpriteBatch batch, Rectangle bounds, boolean hovered, float delta) {
+    public void render(SpriteBatch batch, Rectangle bounds, boolean hovered, boolean pressed, float delta) {
         if (!visible.getAsBoolean()) return;
 
         TextureRegion icon = iconSupplier.get();
@@ -73,9 +77,13 @@ public class HudButton implements HudElement {
             if (!enabled.getAsBoolean()) {
                 batch.setColor(0.5f, 0.5f, 0.5f, 1f);
             }
-            TextureRegion hoveredIcon = hovredIconSupplier.get();
 
-            if (hovered && hoveredIcon != null) {
+            TextureRegion hoveredIcon = hovredIconSupplier.get();
+            TextureRegion pressedIcon = pressedIconSupplier.get();
+
+            if (pressed && pressedIcon != null) {
+                batch.draw(pressedIcon, bounds.x, bounds.y, bounds.width, bounds.height);
+            } else if (hovered && hoveredIcon != null) {
                 batch.draw(hoveredIcon, bounds.x, bounds.y, bounds.width, bounds.height);
             } else if (hovered && hoverTint != null) {
                 batch.setColor(hoverTint);
@@ -121,6 +129,7 @@ public class HudButton implements HudElement {
         private final float height;
         private Supplier<TextureRegion> iconSupplier = () -> null;
         private Supplier<TextureRegion> hovredIconSupplier = () -> null;
+        private Supplier<TextureRegion> pressedIconSupplier = () -> null;
         private Runnable onClick = () -> {
         };
         private Runnable hoverEnterAction = () -> {
@@ -159,6 +168,16 @@ public class HudButton implements HudElement {
 
         public Builder hoverIcon(Supplier<TextureRegion> hoveredIcon) {
             this.hovredIconSupplier = hoveredIcon;
+            return this;
+        }
+
+        public Builder pressedIcon(TextureRegion pressedIcon) {
+            this.pressedIconSupplier = () -> pressedIcon;
+            return this;
+        }
+
+        public Builder pressedIcon(Supplier<TextureRegion> pressedIcon) {
+            this.pressedIconSupplier = pressedIcon;
             return this;
         }
 

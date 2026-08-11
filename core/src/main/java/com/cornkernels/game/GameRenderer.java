@@ -26,8 +26,9 @@ public class GameRenderer {
         this.field = field;
         this.batch = batch;
 
-        addSystem(new PamRenderSystem(batch, pamPlayer));
+
         addSystem(new BackgroundRenderSystem(batch, mapData));
+        addSystem(new PamRenderSystem(batch, pamPlayer));
         addSystem(new HighlightRenderSystem(batch, pamPlayer, mapData, toolState));
         addSystem(new CursorAttachmentRenderSystem(batch, mapData, toolState));
     }

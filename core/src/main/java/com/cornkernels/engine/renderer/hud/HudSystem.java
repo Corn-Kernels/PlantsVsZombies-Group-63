@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.cornkernels.engine.renderer.hud.elements.ConditionalHudElement;
 import com.cornkernels.game.hud.cursor.InputSnapshot;
 import com.cornkernels.game.utility.DebugTextures;
 import org.jspecify.annotations.NonNull;
@@ -12,6 +13,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 public class HudSystem {
 
@@ -21,6 +23,7 @@ public class HudSystem {
     private final List<HudElement> elements = new ArrayList<>();
     private final HudCamera hudCamera;
     private HudElement hoveredElement;
+    private HudElement pressedElement;
 
     public HudSystem(HudCamera hudCamera) {
         this.hudCamera = hudCamera;
@@ -31,6 +34,10 @@ public class HudSystem {
         elements.add(element);
     }
 
+    public void addElement(HudElement element, BooleanSupplier visibleWhen) {
+        elements.add(new ConditionalHudElement(element, visibleWhen));
+    }
+
     public boolean update(float delta, @NonNull InputSnapshot inputSnapshot) {
         Vector2 hudPoint = hudCamera.screenToHud(inputSnapshot.cursorScreenX(), inputSnapshot.cursorScreenY());
         HudElement topmost = resolveTopmostAt(hudPoint.x, hudPoint.y);
@@ -39,6 +46,14 @@ public class HudSystem {
             if (hoveredElement != null) hoveredElement.onHoverExit();
             if (topmost != null) topmost.onHoverEnter();
             hoveredElement = topmost;
+        }
+
+        if (inputSnapshot.pointerDown()) {
+            if (pressedElement == null && topmost != null) {
+                pressedElement = topmost;
+            }
+        } else {
+            pressedElement = null;
         }
 
         for (HudElement element : elements) element.update(delta);
@@ -62,7 +77,8 @@ public class HudSystem {
         Rectangle virtualBounds = hudCamera.getVirtualBounds();
         for (HudElement element : elements) {
             Rectangle bounds = resolveBounds(element, virtualBounds);
-            element.render(batch, bounds, element == hoveredElement, delta);
+            boolean isPressed = element == pressedElement && element == hoveredElement;
+            element.render(batch, bounds, element == hoveredElement, isPressed, delta);
         }
 
         if (DEBUG_HUD_BOUNDS) {
