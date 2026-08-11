@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="123" height="48" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="75">
- <objectgroup id="5" name="BackgroundObjects">
+ <objectgroup id="5" name="BackgroundObjects" offsetx="184.727" offsety="-24.5046">
   <object id="14" name="Main" x="277.991" y="0.00112153" width="1024" height="768.004">
    <properties>
     <property name="part" value="main"/>

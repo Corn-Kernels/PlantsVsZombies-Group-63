@@ -5,6 +5,7 @@ import com.cornkernels.engine.renderer.camera.GameplayCamera;
 import com.cornkernels.game.map.MapData;
 import com.cornkernels.game.map.grid.GridObject;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 public class CursorToolController {
 
@@ -36,8 +37,8 @@ public class CursorToolController {
         }
     }
 
-    private boolean isEligible(GridPosition position) {
-        GridObject cell = mapData.grid[position.lane()][position.lane()];
+    private boolean isEligible(@NonNull GridPosition position) {
+        GridObject cell = mapData.grid[position.lane()][position.column()];
         return cell != null && state.eligibility.test(cell);
     }
 }

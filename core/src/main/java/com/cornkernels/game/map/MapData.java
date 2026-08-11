@@ -66,7 +66,7 @@ public class MapData {
             for (int column = 0; column < cellBounds[lane].length; column++) {
                 Rectangle rect = cellBounds[lane][column];
                 if (rect != null && rect.contains(worldX, worldY)) {
-                    return new GridPosition(column, lane);
+                    return new GridPosition(lane, column);
                 }
             }
         }
