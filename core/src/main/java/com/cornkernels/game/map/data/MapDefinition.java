@@ -1,4 +1,4 @@
-package com.cornkernels.game.map;
+package com.cornkernels.game.map.data;
 
 public class MapDefinition {
     private final int levelId;

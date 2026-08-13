@@ -3,7 +3,7 @@ package com.cornkernels.game.systems.render;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.cornkernels.game.map.MapData;
+import com.cornkernels.game.map.data.MapData;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.cornkernels.game.map;
+package com.cornkernels.game.map.data;
 
 public enum MapSkin {
     DELAY_LOAD_BACKGROUND_FRONTLAWN_BIGBRAINZ(

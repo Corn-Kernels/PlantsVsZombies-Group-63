@@ -2,11 +2,11 @@ package com.cornkernels.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.cornkernels.engine.renderer.camera.GameplayCamera;
-import com.cornkernels.game.hud.cursor.InputSnapshot;
 import com.cornkernels.game.map.Field;
-import com.cornkernels.game.map.MapData;
+import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.systems.controller.PauseController;
-import com.cornkernels.game.systems.controller.PlantingController;
+import com.cornkernels.game.systems.controller.plants.PlantingController;
+import com.cornkernels.engine.utility.InputSnapshot;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;

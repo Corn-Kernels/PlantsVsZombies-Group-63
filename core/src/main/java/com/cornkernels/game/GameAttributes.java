@@ -1,10 +1,10 @@
 package com.cornkernels.game;
 
-import com.cornkernels.game.entities.attributes.SeedSlot;
 import com.cornkernels.game.entities.types.plants.PlantDef;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.map.grid.GridPosition;
+import com.cornkernels.game.systems.controller.plants.SeedSlot;
 
 import java.util.List;
 

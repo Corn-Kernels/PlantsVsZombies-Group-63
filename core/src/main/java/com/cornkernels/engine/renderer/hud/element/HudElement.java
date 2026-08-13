@@ -1,7 +1,8 @@
-package com.cornkernels.engine.renderer.hud;
+package com.cornkernels.engine.renderer.hud.element;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.cornkernels.engine.renderer.hud.HudAnchor;
 
 public interface HudElement {
     HudAnchor getAnchor();

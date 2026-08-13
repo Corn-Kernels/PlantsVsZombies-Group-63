@@ -1,4 +1,4 @@
-package com.cornkernels.game.hud.cursor;
+package com.cornkernels.engine.utility;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

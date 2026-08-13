@@ -1,4 +1,4 @@
-package com.cornkernels.game.map;
+package com.cornkernels.game.map.data;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.cornkernels.game.entities.types.lawnmower.LawnMower;

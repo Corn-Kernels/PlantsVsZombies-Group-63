@@ -1,4 +1,4 @@
-package com.cornkernels.game.map;
+package com.cornkernels.game.map.data;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;

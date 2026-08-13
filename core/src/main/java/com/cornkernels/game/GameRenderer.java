@@ -3,7 +3,7 @@ package com.cornkernels.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.cornkernels.game.hud.cursor.CursorToolState;
 import com.cornkernels.game.map.Field;
-import com.cornkernels.game.map.MapData;
+import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.systems.render.*;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;

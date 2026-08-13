@@ -10,10 +10,10 @@ import com.cornkernels.engine.settings.InputSettings;
 import com.cornkernels.engine.settings.VideoSettings;
 import com.cornkernels.engine.video.VideoManager;
 import com.cornkernels.game.GameAttributes;
-import com.cornkernels.game.entities.attributes.SeedSlot;
 import com.cornkernels.game.entities.types.plants.PlantDef;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.screens.GameplayScreen;
+import com.cornkernels.game.systems.controller.plants.SeedSlot;
 
 import java.util.List;
 

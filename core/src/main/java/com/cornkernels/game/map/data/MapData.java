@@ -1,9 +1,10 @@
-package com.cornkernels.game.map;
+package com.cornkernels.game.map.data;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.cornkernels.game.map.grid.GridObject;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +23,7 @@ public class MapData {
         GridObject[][] grid,
         Rectangle[][] cellBounds,
         List<LawnMowerSlot> lawnMowerSlots,
-        Map<String, Rectangle> backgroundRegions,
+        @NonNull Map<String, Rectangle> backgroundRegions,
         Map<String, TextureRegion> backgroundTextures) {
         this.grid = grid;
         this.cellBounds = cellBounds;
@@ -33,7 +34,7 @@ public class MapData {
         this.worldBounds = computeWorldBounds(backgroundRegions.values());
     }
 
-    private Rectangle computeWorldBounds(Collection<Rectangle> rectangles) {
+    private @NonNull Rectangle computeWorldBounds(@NonNull Collection<Rectangle> rectangles) {
         Rectangle bounds = null;
         for (Rectangle rectangle : rectangles) {
             if (bounds == null) {
