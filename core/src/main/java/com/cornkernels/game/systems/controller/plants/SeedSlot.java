@@ -1,4 +1,4 @@
-package com.cornkernels.game.entities.attributes;
+package com.cornkernels.game.systems.controller.plants;
 
 
 import com.cornkernels.game.entities.types.plants.PlantDef;
@@ -32,7 +32,7 @@ public class SeedSlot {
     }
 
     public void update(float deltaTick) {
-        if (rechargeRemaining <= 0f) {
+        if (rechargeRemaining > 0f) {
             rechargeRemaining = Math.max(0f, rechargeRemaining - deltaTick);
         }
     }
