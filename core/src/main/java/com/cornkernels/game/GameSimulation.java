@@ -13,10 +13,12 @@ public class GameSimulation {
 
     private final Field field;
     private final RandomGenerator random;
+    private final GameAttributes attributes;
     private final List<EntitySystem> systems = new ArrayList<>();
 
     public GameSimulation(Field field, @NonNull GameAttributes gameAttributes) {
         this.field = field;
+        this.attributes = gameAttributes;
         this.random = new Random();
 
         addSystem(new MovementSystem());
@@ -30,6 +32,7 @@ public class GameSimulation {
     public void update(float deltaTick) {
         for (EntitySystem entitySystem : systems) {
             entitySystem.update(deltaTick);
+            attributes.update(deltaTick);
         }
     }
 

@@ -3,6 +3,7 @@ package com.cornkernels.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -10,11 +11,17 @@ import com.cornkernels.GameManager;
 import com.cornkernels.engine.renderer.camera.Camera;
 import com.cornkernels.engine.renderer.hud.HudCamera;
 import com.cornkernels.engine.renderer.hud.HudSystem;
+import com.cornkernels.engine.utility.FontLoader;
+import com.cornkernels.engine.utility.renderer.TextRenderer;
 import com.cornkernels.game.GameAttributes;
 import com.cornkernels.game.GameSession;
 import com.cornkernels.game.hud.HudFactory;
-import com.cornkernels.game.hud.cursor.InputSnapshot;
-import com.cornkernels.game.map.*;
+import com.cornkernels.game.map.Field;
+import com.cornkernels.game.map.data.MapData;
+import com.cornkernels.game.map.data.MapDefinition;
+import com.cornkernels.game.map.data.MapLoader;
+import com.cornkernels.game.map.data.MapSkin;
+import com.cornkernels.engine.utility.InputSnapshot;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
@@ -32,6 +39,7 @@ public class GameplayScreen implements Screen {
     private GameSession gameSession;
     private TextureBank textures;
     private PamPlayer pamPlayer;
+    private TextRenderer textRenderer;
 
     private Camera camera;
 
@@ -55,6 +63,8 @@ public class GameplayScreen implements Screen {
         FileHandle assetsFolder = Gdx.files.internal("");
         textures = new TextureBank("768", assetsFolder);
         pamPlayer = new PamPlayer(textures, assetsFolder);
+        textRenderer = new TextRenderer(
+            FontLoader.generate(Gdx.files.internal("ui/FBUSV8C5EI.TTF"), 45, Color.WHITE));
 
         mapLoader = new MapLoader();
         MapData mapData = mapLoader.load(new MapDefinition(1,
@@ -71,8 +81,10 @@ public class GameplayScreen implements Screen {
         gameSession = new GameSession(new Field(5, 10), gameAttributes, batch, pamPlayer, mapData, camera);
 
         hudFactory = new HudFactory(pamPlayer, gameSession.getPlantingController(), gameSession.getPauseController());
+
         hudSystem.addElement(hudFactory.createPauseButton());
         hudSystem.addElement(hudFactory.createShovelButton(), () -> gameSession.getPhase() == GameSession.LevelPhase.PLAYING);
+        hudSystem.addView(hudFactory.createSunCounter(gameSession.getPlantingController(), textRenderer));
 
         camera.panToRightEdge(INTRO_PAN_DURATION, () -> {
             gameSession.changeLevelPhase(GameSession.LevelPhase.INTRO_PAN_LEFT);
@@ -109,8 +121,6 @@ public class GameplayScreen implements Screen {
         } else {
             renderGame(0f);
         }
-
-
     }
 
     private void renderGame(float delta) {
@@ -127,7 +137,6 @@ public class GameplayScreen implements Screen {
         batch.begin();
         hudSystem.render(batch, delta);
         batch.end();
-
     }
 
     @Override
