@@ -1,6 +1,5 @@
 package io.github.some_example_name;
-// Phase 2 - Menu System
-// Phase 2 - Menu System (this is my feature branch)
+
 import com.badlogic.gdx.Game;
 import io.github.some_example_name.screens.LoginScreen;
 import io.github.some_example_name.model.User;
