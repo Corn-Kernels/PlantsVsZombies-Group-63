@@ -24,16 +24,36 @@ public class MapLoader {
 
     private final TmxMapLoader tmxMapLoader = new TmxMapLoader();
 
+    private static float laneRowHeight(@NonNull Map<GridPosition, Rectangle> cellRects) {
+        float height = 0f;
+        for (Rectangle rect : cellRects.values()) {
+            height = Math.max(height, rect.height);
+        }
+        return height;
+    }
+
+    private static void shiftDownOneLane(@NonNull Collection<Rectangle> rects, float laneShift) {
+        for (Rectangle rect : rects) {
+            rect.y -= laneShift;
+        }
+    }
+
     public MapData load(@NonNull MapDefinition mapDef) {
         TiledMap tiledMap = tmxMapLoader.load(mapDef.getLayoutTmxPath());
         float mapHeightPx = tiledMap.getProperties().get("height", Integer.class)
             * tiledMap.getProperties().get("tileheight", Integer.class);
 
         Map<GridPosition, Rectangle> cellRects = parsRectLayer(tiledMap, GRID_LAYER, mapHeightPx);
+        float laneShift = laneRowHeight(cellRects);
+        shiftDownOneLane(cellRects.values(), laneShift);
+
         GridObject[][] grid = buildGrid(cellRects);
         Rectangle[][] cellBounds = buildBoundsArray(cellRects, grid.length, grid[0].length);
 
         List<LawnMowerSlot> lawnMowerSlots = parseLawnMowerSlots(tiledMap, mapHeightPx);
+        for (LawnMowerSlot slot : lawnMowerSlots) {
+            slot.getBounds().y -= laneShift;
+        }
         Map<String, Rectangle> backgroundRegions = parseBackgroundRegions(tiledMap, mapHeightPx);
         Map<String, TextureRegion> backgroundTextures = resolveSkin(mapDef.getSkin(), backgroundRegions.keySet());
         tiledMap.dispose();
@@ -122,7 +142,7 @@ public class MapLoader {
         return regions;
     }
 
-    private Map<String, TextureRegion> resolveSkin(@NonNull MapSkin skin, Set<String> partNames) {
+    private @NonNull Map<String, TextureRegion> resolveSkin(@NonNull MapSkin skin, @NonNull Set<String> partNames) {
         TextureAtlas atlas = new TextureAtlas(skin.getAtlasPath());
 
         Map<String, TextureRegion> textures = new HashMap<>();
