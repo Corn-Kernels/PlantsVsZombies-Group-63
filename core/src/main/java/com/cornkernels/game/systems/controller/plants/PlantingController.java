@@ -1,6 +1,7 @@
 package com.cornkernels.game.systems.controller.plants;
 
 import com.cornkernels.engine.renderer.camera.GameplayCamera;
+import com.cornkernels.engine.utility.InputSnapshot;
 import com.cornkernels.game.entities.types.plants.PlantDef;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.hud.HighlightAnimationSet;
@@ -9,7 +10,6 @@ import com.cornkernels.game.hud.cursor.CursorToolController;
 import com.cornkernels.game.hud.cursor.CursorToolState;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.data.MapData;
-import com.cornkernels.engine.utility.InputSnapshot;
 
 public class PlantingController {
 
@@ -50,7 +50,7 @@ public class PlantingController {
         toolState.eligibility =
             cell -> cell.getPlant() == null && cell.getObstacle() == null;
         toolState.onConfirm = gridPosition -> {
-            field.addPlant(new PlantInstance(PlantDef.getPlantTypeOfName(String.valueOf(plantTypeId)), gridPosition));
+            field.addPlant(new PlantInstance(PlantDef.getPlantTypeOfId(String.valueOf(plantTypeId)), gridPosition));
             currentSun -= sunCost;
             toolState.active = false;
             if (onPlanted != null) onPlanted.run();

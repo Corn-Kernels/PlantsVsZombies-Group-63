@@ -2,10 +2,10 @@ package com.cornkernels.game.hud.cursor;
 
 import com.badlogic.gdx.math.Vector2;
 import com.cornkernels.engine.renderer.camera.GameplayCamera;
+import com.cornkernels.engine.utility.InputSnapshot;
 import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.map.grid.GridObject;
 import com.cornkernels.game.map.grid.GridPosition;
-import com.cornkernels.engine.utility.InputSnapshot;
 import org.jspecify.annotations.NonNull;
 
 public class CursorToolController {

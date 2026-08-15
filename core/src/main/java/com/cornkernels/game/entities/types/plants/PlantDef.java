@@ -15,7 +15,6 @@ public enum PlantDef {
     GOLD_BLOOM(5, "Gold Bloom", PlantCategory.SUN_PRODUCER, tags(), 0, 0, "0", 0.0f, 75f),
 
     PEASHOOTER(6, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "20", 1.5f, 5f),
-    //plant upgrades will be done as shown for the PeaShooter they will each have their own definition
 
     REPEATER(7, "Repeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 200, 300, "20x2", 1.5f, 5f),
     THREEPEATER(8, "Threepeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 300, 300, "20", 1.5f, 5f),
@@ -94,7 +93,7 @@ public enum PlantDef {
     private final int cost;
     private final int baseHp;
     private final String damage;
-    private final Float actionInterval; // null when the plant has no repeating action interval
+    private final Float actionInterval;
     private final float recharge;
 
     PlantDef(int id, String plantName, PlantCategory category, PlantTag[] tags,
@@ -117,6 +116,15 @@ public enum PlantDef {
     public static @Nullable PlantDef getPlantTypeOfName(String plantName) {
         for (PlantDef plantDef : PlantDef.values()) {
             if (plantDef.getPlantName().equals(plantName)) {
+                return plantDef;
+            }
+        }
+        return null;
+    }
+
+    public static @Nullable PlantDef getPlantTypeOfId(String plantId) {
+        for (PlantDef plantDef : PlantDef.values()) {
+            if (String.valueOf(plantDef.getId()).equals(plantId)) {
                 return plantDef;
             }
         }
@@ -151,9 +159,6 @@ public enum PlantDef {
         return damage;
     }
 
-    /**
-     * @return the action interval in seconds, or empty if this plant has none.
-     */
     @Contract(pure = true)
     public @NotNull Optional<Float> getActionInterval() {
         return Optional.ofNullable(actionInterval);
