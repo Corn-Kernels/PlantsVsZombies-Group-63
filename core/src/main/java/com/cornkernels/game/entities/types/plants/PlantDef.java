@@ -7,31 +7,94 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public enum PlantDef {
+    //region sun stuff
+    SUNFLOWER1(1001, "Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 50, 300, "0", 24.0f, 5f),
+    SUNFLOWER2(2001, "Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 50, 300, "0", 22.0f, 5f), // Lvl 2: Prod. Time -2s
+    SUNFLOWER3(3001, "Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 50, 450, "0", 22.0f, 5f), // Lvl 3: HP +150
+    SUNFLOWER4(4001, "Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 50, 450, "0", 22.0f, 5f), // Lvl 4: Double Sun Chance (Handled in Behavior)
 
-    SUNFLOWER(1, "Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 50, 300, "0", 24.0f, 5f),
-    TWIN_SUNFLOWER(2, "Twin Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 125, 300, "0", 24.0f, 15f),
-    SUN_SHROOM(3, "Sun-shroom", PlantCategory.SUN_PRODUCER, tags(PlantTag.SHROOM, PlantTag.WRAMP_UP, PlantTag.NIGHT), 25, 300, "0", 24.0f, 5f),
-    PRIMAL_SUNFLOWER(4, "Primal Sunflower", PlantCategory.SUN_PRODUCER, tags(), 75, 300, "0", 24.0f, 5f),
-    GOLD_BLOOM(5, "Gold Bloom", PlantCategory.SUN_PRODUCER, tags(), 0, 0, "0", 0.0f, 75f),
+    // --- Twin Sunflower (Base ID: 2) ---
+    TWIN_SUNFLOWER1(1002, "Twin Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 125, 300, "0", 24.0f, 15f),
+    TWIN_SUNFLOWER2(2002, "Twin Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 125, 300, "0", 22.0f, 15f), // Lvl 2: Prod. Time -2s
+    TWIN_SUNFLOWER3(3002, "Twin Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 125, 450, "0", 22.0f, 15f), // Lvl 3: HP +150
+    TWIN_SUNFLOWER4(4002, "Twin Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 100, 450, "0", 22.0f, 15f), // Lvl 4: Cost -25
 
-    PEASHOOTER(6, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "20", 1.5f, 5f),
-    //plant upgrades will be done as shown for the PeaShooter they will each have their own definition
+    // --- Primal Sunflower (Base ID: 4) ---
+    PRIMAL_SUNFLOWER1(1004, "Primal Sunflower", PlantCategory.SUN_PRODUCER, tags(), 75, 300, "0", 24.0f, 5f),
+    PRIMAL_SUNFLOWER2(2004, "Primal Sunflower", PlantCategory.SUN_PRODUCER, tags(), 75, 300, "0", 22.0f, 5f), // Lvl 2: Prod. Time -2s
+    PRIMAL_SUNFLOWER3(3004, "Primal Sunflower", PlantCategory.SUN_PRODUCER, tags(), 75, 450, "0", 22.0f, 5f), // Lvl 3: HP +150
+    PRIMAL_SUNFLOWER4(4004, "Primal Sunflower", PlantCategory.SUN_PRODUCER, tags(), 50, 450, "0", 22.0f, 5f), // Lvl 4: Cost -25
 
-    REPEATER(7, "Repeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 200, 300, "20x2", 1.5f, 5f),
-    THREEPEATER(8, "Threepeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 300, 300, "20", 1.5f, 5f),
-    SNOW_PEA(9, "Snow Pea", PlantCategory.SHOOTER, tags(PlantTag.ICE, PlantTag.PEA), 150, 300, "20", 1.5f, 5f),
+    // --- Sun-shroom (Base ID: 3) ---
+    SUN_SHROOM1(1003, "Sun-shroom", PlantCategory.SUN_PRODUCER, tags(PlantTag.SHROOM, PlantTag.WRAMP_UP, PlantTag.NIGHT), 25, 300, "0", 0.0f, 5f),
+    SUN_SHROOM2(2003, "Sun-shroom", PlantCategory.SUN_PRODUCER, tags(PlantTag.SHROOM, PlantTag.WRAMP_UP, PlantTag.NIGHT), 25, 300, "0", 0.0f, 5f), // Lvl 2: Grow Time -5s
+    SUN_SHROOM3(3003, "Sun-shroom", PlantCategory.SUN_PRODUCER, tags(PlantTag.SHROOM, PlantTag.WRAMP_UP, PlantTag.NIGHT), 25, 450, "0", 0.0f, 5f), // Lvl 3: HP +150
+    SUN_SHROOM4(4003, "Sun-shroom", PlantCategory.SUN_PRODUCER, tags(PlantTag.SHROOM, PlantTag.WRAMP_UP, PlantTag.NIGHT), 25, 450, "0", 0.0f, 5f), // Lvl 4: Double Sun Chance
+
+    //endregion
+
+
+    //region simplePea
+    // --- Peashooter (Base ID: 6) ---
+    PEASHOOTER1(1006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "20", 1.5f, 5f),
+    PEASHOOTER2(2006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "30", 1.5f, 5f),
+    PEASHOOTER3(3006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 450, "30", 1.5f, 5f),
+    PEASHOOTER4(4006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 75, 450, "30", 1.5f, 5f),
+
+    // --- Repeater (Base ID: 7) ---
+    REPEATER1(1007, "Repeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 200, 300, "20x2", 1.5f, 5f),
+    REPEATER2(2007, "Repeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 200, 300, "30x2", 1.5f, 5f),
+    REPEATER3(3007, "Repeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 200, 500, "30x2", 1.5f, 5f),
+    REPEATER4(4007, "Repeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 200, 500, "30x2", 1.5f, 5f),
+
+    // --- Snow Pea (Base ID: 9) ---
+    SNOW_PEA1(1009, "Snow Pea", PlantCategory.SHOOTER, tags(PlantTag.ICE, PlantTag.PEA), 150, 300, "20", 1.5f, 5f),
+    SNOW_PEA2(2009, "Snow Pea", PlantCategory.SHOOTER, tags(PlantTag.ICE, PlantTag.PEA), 150, 300, "30", 1.5f, 5f),
+    SNOW_PEA3(3009, "Snow Pea", PlantCategory.SHOOTER, tags(PlantTag.ICE, PlantTag.PEA), 150, 450, "30", 1.5f, 5f),
+    SNOW_PEA4(4009, "Snow Pea", PlantCategory.SHOOTER, tags(PlantTag.ICE, PlantTag.PEA), 125, 450, "30", 1.5f, 5f),
+
+    // --- Fire Peashooter (Base ID: 18) ---
+    FIRE_PEASHOOTER1(1018, "Fire Peashooter", PlantCategory.SHOOTER, tags(PlantTag.FIRE, PlantTag.PEA), 175, 300, "20", 1.5f, 5f),
+    FIRE_PEASHOOTER2(2018, "Fire Peashooter", PlantCategory.SHOOTER, tags(PlantTag.FIRE, PlantTag.PEA), 175, 300, "30", 1.5f, 5f),
+    FIRE_PEASHOOTER3(3018, "Fire Peashooter", PlantCategory.SHOOTER, tags(PlantTag.FIRE, PlantTag.PEA), 175, 500, "30", 1.5f, 5f),
+    FIRE_PEASHOOTER4(4018, "Fire Peashooter", PlantCategory.SHOOTER, tags(PlantTag.FIRE, PlantTag.PEA), 150, 500, "30", 1.5f, 5f),
+
+    // --- Mega Gatling Pea (Base ID: 21) ---
+    MEGA_GATLING_PEA1(1021, "Mega Gatling Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 400, 300, "20x4", 1.5f, 5f),
+    MEGA_GATLING_PEA2(2021, "Mega Gatling Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 400, 300, "30x4", 1.5f, 5f),
+    MEGA_GATLING_PEA3(3021, "Mega Gatling Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 400, 300, "30x4", 1.5f, 5f),
+    MEGA_GATLING_PEA4(4021, "Mega Gatling Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 350, 300, "30x4", 1.5f, 5f),
+    //endregion
+    //region specialPea
+    // --- Threepeater (Base ID: 8) ---
+    THREEPEATER1(1008, "Threepeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 300, 300, "20", 1.5f, 5f),
+    THREEPEATER2(2008, "Threepeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 275, 300, "20", 1.5f, 5f), // Lvl 2: Dmg +10
+    THREEPEATER3(3008, "Threepeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 275, 300, "30", 1.5f, 5f), // Lvl 3: HP +150
+    THREEPEATER4(4008, "Threepeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 275, 500, "30", 1.5f, 5f), // Lvl 4: Cost -25
+
+    // --- Pea Pod (Base ID: 11) ---
+    PEA_POD1(1011, "Pea Pod", PlantCategory.SHOOTER, tags(PlantTag.PEA, PlantTag.STACK), 125, 300, "20/40/60/80/100", 1.5f, 5f),
+    PEA_POD2(2011, "Pea Pod", PlantCategory.SHOOTER, tags(PlantTag.PEA, PlantTag.STACK), 125, 300, "30/60/90/120/150", 1.5f, 5f), // Lvl 2: Dmg +10 per stack
+    PEA_POD3(3011, "Pea Pod", PlantCategory.SHOOTER, tags(PlantTag.PEA, PlantTag.STACK), 125, 500, "30/60/90/120/150", 1.5f, 5f), // Lvl 3: HP +150
+    PEA_POD4(4011, "Pea Pod", PlantCategory.SHOOTER, tags(PlantTag.PEA, PlantTag.STACK), 100, 500, "30/60/90/120/150", 1.5f, 5f), // Lvl 4: Cost -25
+
+    // --- Split Pea (Base ID: 12) ---
+    SPLIT_PEA1(1012, "Split Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 125, 300, "20", 1.5f, 5f),
+    SPLIT_PEA2(2012, "Split Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 125, 300, "30", 1.5f, 5f), // Lvl 2: Dmg +10
+    SPLIT_PEA3(3012, "Split Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 125, 500, "30", 1.5f, 5f), // Lvl 3: HP +150
+    SPLIT_PEA4(4012, "Split Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 500, "30", 1.5f, 5f), // Lvl 4: Cost -25
+    //endregion
+
+
     ROTOBAGA(10, "Rotobaga", PlantCategory.SHOOTER, tags(), 150, 300, "10x3", 1.5f, 5f),
-    PEA_POD(11, "Pea Pod", PlantCategory.SHOOTER, tags(PlantTag.PEA, PlantTag.STACK), 125, 300, "20/40/60/80/100", 1.5f, 5f),
-    SPLIT_PEA(12, "Split Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 125, 300, "20", 1.5f, 5f),
+
     CITRON(13, "Citron", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 350, 300, "800", 9.0f, 5f),
     CAULIPOWER(14, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 300, "Insta-kill", 12.0f, 15f),
     ELECTRIC_BLUEBERRY(15, "Electric Blueberry", PlantCategory.HOMING, tags(PlantTag.CHARGE), 150, 300, "5000", 12.0f, 15f),
     BOWLING_BULB(16, "Bowling Bulb", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 200, 300, "40/120/180", 2.0f, 5f),
     CACTUS(17, "Cactus", PlantCategory.STRIKE_THROUGH, tags(), 175, 300, "30", 1.5f, 5f),
-    FIRE_PEASHOOTER(18, "Fire Peashooter", PlantCategory.SHOOTER, tags(PlantTag.FIRE, PlantTag.PEA), 175, 300, "40", 1.5f, 5f),
     STARFRUIT(19, "Starfruit", PlantCategory.SHOOTER, tags(), 150, 300, "20", 1.5f, 5f),
     GOO_PEASHOOTER(20, "Goo Peashooter", PlantCategory.SHOOTER, tags(PlantTag.POISON), 125, 300, "20", 1.5f, 5f),
-    MEGA_GATLING_PEA(21, "Mega Gatling Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 400, 300, "20x4", 1.5f, 5f),
     SEA_SHROOM(22, "Sea-shroom", PlantCategory.SHOOTER, tags(PlantTag.SHROOM, PlantTag.WATER), 0, 300, "20", 1.5f, 15f),
     PUFF_SHROOM(23, "Puff-shroom", PlantCategory.SHOOTER, tags(PlantTag.SHROOM), 0, 300, "20", 1.5f, 5f),
     FUME_SHROOM(24, "Fume-shroom", PlantCategory.STRIKE_THROUGH, tags(PlantTag.SHROOM), 125, 300, "20", 1.5f, 5f),
