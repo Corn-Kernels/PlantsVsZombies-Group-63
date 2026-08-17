@@ -1,10 +1,16 @@
 import os
-import re
+import random
 import subprocess
 import requests
 
 ZERO_SHA = "0" * 40
 MAX_DIFF_CHARS = 12000
+
+# Failures worth retrying on a second pass: rate-limited or overloaded, or a
+# network-level hiccup. NOT worth retrying: 404 (model unavailable to this
+# key), 400 (bad request), 403 (forbidden) - those will just fail identically
+# every time, so retrying them only wastes time.
+TRANSIENT_STATUS_CODES = {429, 500, 502, 503, 504}
 
 
 def run(cmd: str) -> str:
@@ -25,6 +31,7 @@ def get_commit_log(before_sha: str, after_sha: str) -> str:
 
 
 GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1"  # v1beta has shown model listing/serving inconsistencies
+REQUEST_TIMEOUT = 20  # seconds per attempt - kept modest since we may try many candidate models
 
 
 def raise_with_body(response: requests.Response) -> None:
@@ -34,36 +41,59 @@ def raise_with_body(response: requests.Response) -> None:
     response.raise_for_status()
 
 
-def extract_version(name: str) -> float:
-    match = re.search(r"gemini-(\d+(?:\.\d+)?)", name)
-    return float(match.group(1)) if match else 0.0
-
-
 def get_candidate_models(api_key: str) -> list:
     """
-    Returns generateContent-capable models ordered newest-and-cheapest-first.
-    Just because ListModels returns a model doesn't mean this specific API key
-    can actually call it - Google has been retiring specific model versions
-    for newer accounts even while the model still appears in this listing
-    ("model X is no longer available to new users"). So this only produces
-    an ordering to try, not a guaranteed-working single pick - see the
-    try-until-success loop in summarize_with_gemini.
+    Returns every model this API key can call generateContent on - no
+    preference ordering. This used to sort "flash" and newer-version models
+    first, but that was likely counterproductive: the newest, most popular
+    model is exactly the one most likely to be under heavy load (this is
+    what happened in practice - the newest flash model returned a 503 for
+    "high demand" while it was being tried first). summarize_with_gemini
+    shuffles this list and tries broadly across all of it instead of always
+    reaching for the same "best" one first.
     """
     url = f"{GEMINI_API_BASE}/models?key={api_key}"
-    response = requests.get(url, timeout=15)
+    try:
+        response = requests.get(url, timeout=REQUEST_TIMEOUT)
+    except requests.exceptions.RequestException as exc:
+        raise RuntimeError(f"Could not reach Gemini's ListModels endpoint: {exc}") from exc
+
     raise_with_body(response)
     models = response.json().get("models", [])
 
-    candidates = [
+    return [
         m["name"] for m in models
         if "generateContent" in m.get("supportedGenerationMethods", [])
     ]
 
-    def sort_key(name: str):
-        is_flash = "flash" in name.lower()
-        return (not is_flash, -extract_version(name))
 
-    return sorted(candidates, key=sort_key)
+def _try_model(model: str, prompt: str, api_key: str):
+    """
+    Attempts one model. Returns (text, None) on success, or
+    (None, (status_code_or_None, message, is_transient)) on failure.
+    """
+    url = f"{GEMINI_API_BASE}/{model}:generateContent?key={api_key}"
+    try:
+        response = requests.post(
+            url,
+            headers={"content-type": "application/json"},
+            json={"contents": [{"parts": [{"text": prompt}]}]},
+            timeout=REQUEST_TIMEOUT,
+        )
+    except requests.exceptions.RequestException as exc:
+        # Network-level failure (timeout, connection reset, etc.) rather than
+        # an HTTP error response - always worth retrying, since it says
+        # nothing about whether the model itself would actually refuse.
+        print(f"Model {model} unavailable (network error): {exc}")
+        return None, (None, str(exc), True)
+
+    if response.ok:
+        data = response.json()
+        return data["candidates"][0]["content"]["parts"][0]["text"].strip(), None
+
+    print(f"Model {model} unavailable ({response.status_code}): {response.text}")
+    is_transient = response.status_code in TRANSIENT_STATUS_CODES
+    return None, (response.status_code, response.text, is_transient)
 
 
 def summarize_with_gemini(diff_text: str, commit_log: str, api_key: str) -> str:
@@ -83,23 +113,40 @@ def summarize_with_gemini(diff_text: str, commit_log: str, api_key: str) -> str:
     if not candidates:
         raise RuntimeError("No models supporting generateContent are available for this API key.")
 
-    last_response = None
+    # Shuffle rather than always trying the same "best" model first - if every
+    # run of this script reaches for the same model first, that model becomes
+    # a hotspot, which is plausibly part of why the newest/most popular one
+    # tends to be the one returning 503s.
+    random.shuffle(candidates)
+
+    last_failure = None
+    retry_worthy = []
+
     for model in candidates:
-        url = f"{GEMINI_API_BASE}/{model}:generateContent?key={api_key}"
-        response = requests.post(
-            url,
-            headers={"content-type": "application/json"},
-            json={"contents": [{"parts": [{"text": prompt}]}]},
-            timeout=30,
-        )
-        if response.ok:
-            data = response.json()
-            return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+        text, failure = _try_model(model, prompt, api_key)
+        if text is not None:
+            return text
+        last_failure = failure
+        if failure[2]:  # is_transient
+            retry_worthy.append(model)
 
-        print(f"Model {model} unavailable ({response.status_code}): {response.text}")
-        last_response = response
+    # Every candidate failed on the first pass. Before giving up, retry the
+    # ones that failed for reasons likely to be temporary - by now some time
+    # has passed while trying the others, and an overloaded model may have
+    # freed up. Skip the ones that failed for a permanent reason (404/400) -
+    # retrying those would just fail identically again.
+    if retry_worthy:
+        print(f"First pass failed for all {len(candidates)} models. Retrying {len(retry_worthy)} that failed transiently...")
+        for model in retry_worthy:
+            text, failure = _try_model(model, prompt, api_key)
+            if text is not None:
+                return text
+            last_failure = failure
 
-    raise_with_body(last_response)  # every candidate failed - raise using the last one's details
+    status_code, message, _ = last_failure
+    if status_code is not None:
+        raise RuntimeError(f"All {len(candidates)} candidate models failed. Last: HTTP {status_code}: {message}")
+    raise RuntimeError(f"All {len(candidates)} candidate models failed. Last error: {message}")
 
 
 def send_telegram_message(bot_token: str, chat_id: str, text: str) -> None:
