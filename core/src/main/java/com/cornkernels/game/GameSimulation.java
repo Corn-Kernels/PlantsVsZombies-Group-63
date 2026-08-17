@@ -30,6 +30,7 @@ public class GameSimulation {
     }
 
     public void update(float deltaTick) {
+        field.update(deltaTick);
         for (EntitySystem entitySystem : systems) {
             entitySystem.update(deltaTick);
             attributes.update(deltaTick);

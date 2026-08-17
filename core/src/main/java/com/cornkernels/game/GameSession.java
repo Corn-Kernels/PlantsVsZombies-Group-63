@@ -6,6 +6,7 @@ import com.cornkernels.engine.utility.InputSnapshot;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.systems.controller.PauseController;
+import com.cornkernels.game.systems.controller.SunHarvestController;
 import com.cornkernels.game.systems.controller.plants.PlantingController;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
@@ -22,6 +23,7 @@ public final class GameSession {
     private final GameAttributes gameAttributes;
     private final PauseController pauseController;
     private final PlantingController plantingController;
+    private final SunHarvestController sunHarvestController;
     private final Field field;
     private LevelPhase phase;
 
@@ -35,20 +37,30 @@ public final class GameSession {
         this.field = field;
         this.gameAttributes = gameAttributes;
         this.pauseController = new PauseController();
-        this.plantingController = new PlantingController(field, mapData, camera, 50);
+        this.plantingController = new PlantingController(field, mapData, camera, 1000, pamPlayer);
+        this.sunHarvestController = new SunHarvestController(field, mapData, camera, plantingController);
         this.simulation = new GameSimulation(field, gameAttributes);
         this.renderer = new GameRenderer(batch, pamPlayer, mapData, field, plantingController.getToolState());
 
         phase = GameSession.LevelPhase.INTRO_PAN_RIGHT;
     }
 
-    public void update(float deltaTick, InputSnapshot inputSnapshot) {
+    public void update(float deltaTick) {
         if (phase != GameSession.LevelPhase.PLAYING) {
             return;
         }
         if (!pauseController.isPaused()) {
-            plantingController.update(deltaTick, inputSnapshot);
             simulation.update(deltaTick);
+        }
+    }
+
+    public void updateInput(float delta, InputSnapshot inputSnapshot) {
+        if (phase != GameSession.LevelPhase.PLAYING) {
+            return;
+        }
+        if (!pauseController.isPaused()) {
+            boolean harvested = sunHarvestController.update(inputSnapshot);
+            plantingController.update(delta, harvested ? inputSnapshot.withoutConfirm() : inputSnapshot);
         }
     }
 

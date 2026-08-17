@@ -92,10 +92,6 @@ public class Field {
 
     public void addPlant(@NotNull PlantInstance plant) {
         GridPosition pos = GridPosition.fromContinuous(plant.get(PositionComponent.class).position);
-        if (pos.column() == 0) {
-            System.out.println("Plant cannot be planted where lawn mowers are located.");
-            return;
-        }
         activePlants.add(plant);
         grids[pos.lane()][pos.column()].providePlant(plant);
     }

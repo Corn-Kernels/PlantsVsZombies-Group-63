@@ -14,6 +14,11 @@ public class PlantAttackBehaviors {
         REGISTRY.put(PlantDef.PEASHOOTER, new DirectShotBehavior(1, 20)); // TODO: LATER, WE HAVE TO READ DAMAGE FROM PLANTDEF ITSELF
         REGISTRY.put(PlantDef.REPEATER, new DirectShotBehavior(2, 20));
         REGISTRY.put(PlantDef.MEGA_GATLING_PEA, new DirectShotBehavior(4, 20));
+        REGISTRY.put(PlantDef.ENFORCE_MINT, new DirectShotBehavior(4, 20));
+        REGISTRY.put(PlantDef.SQUASH, new DirectShotBehavior(4, 20));
+        REGISTRY.put(PlantDef.CABBAGE_PULT, new DirectShotBehavior(4, 20));
+        REGISTRY.put(PlantDef.BOWLING_BULB, new DirectShotBehavior(4, 20));
+        REGISTRY.put(PlantDef.CACTUS, new DirectShotBehavior(4, 20));
     }
 
     private PlantAttackBehaviors() {

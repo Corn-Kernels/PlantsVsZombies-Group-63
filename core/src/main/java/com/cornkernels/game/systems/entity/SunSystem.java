@@ -1,7 +1,6 @@
 package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.engine.utility.math.Vec2d;
-import com.cornkernels.game.GameAttributes;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.sun_specific.SunComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
@@ -10,6 +9,7 @@ import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import com.cornkernels.game.systems.controller.plants.PlantingController;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.random.RandomGenerator;
@@ -28,6 +28,47 @@ public class SunSystem extends EntitySystem {
     public SunSystem(RandomGenerator randomGenerator) {
         this.randomGenerator = randomGenerator;
         this.timeUntilNextSpawn = computeNextInterval();
+    }
+
+    public static boolean tryHarvest(@NotNull SunInstance sun, @NotNull Field field,
+                                     @NotNull PlantingController plantingController) {
+        if (sun.isMarkedForRemoval()) return false;
+
+        SunComponent comp = sun.get(SunComponent.class);
+
+        if (comp.type == SunType.RADIOACTIVE && comp.state == SunComponent.State.FALLING) {
+            explode(sun, field);
+            sun.markForRemoval();
+            return true;
+        }
+
+        plantingController.addSun(comp.type.value);
+        sun.markForRemoval();
+        return true;
+    }
+
+    private static void explode(@NotNull SunInstance sun, Field field) {
+        GridPosition center = GridPosition.fromContinuous(sun.get(PositionComponent.class).position);
+        int lane = center.lane();
+        int column = center.column();
+
+        for (int dl = -RADIOACTIVE_ZOMBIE_RADIUS; dl <= RADIOACTIVE_ZOMBIE_RADIUS; dl++) {
+            for (ZombieInstance zombie : field.getZombiesInLane(lane + dl)) {
+                int zombieColumn = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position).column();
+                if (Math.abs(zombieColumn - column) <= RADIOACTIVE_ZOMBIE_RADIUS) {
+                    CombatSystem.applyDamage(zombie, RADIOACTIVE_ZOMBIE_DAMAGE, false);
+                }
+            }
+        }
+
+        for (int dl = -RADIOACTIVE_PLANT_RADIUS; dl <= RADIOACTIVE_PLANT_RADIUS; dl++) {
+            for (int dc = -RADIOACTIVE_PLANT_RADIUS; dc <= RADIOACTIVE_PLANT_RADIUS; dc++) {
+                PlantInstance plant = field.getPlantAt(lane + dl, column + dc);
+                if (plant != null) {
+                    CombatSystem.applyDamage(plant, RADIOACTIVE_PLANT_DAMAGE, true);
+                }
+            }
+        }
     }
 
     public void setSpawningEnabled(boolean spawningEnabled) {
@@ -63,46 +104,6 @@ public class SunSystem extends EntitySystem {
                     component.type = SunType.NORMAL;
                 }
                 Vec2d position = sun.get(PositionComponent.class).position;
-            }
-        }
-    }
-
-    public boolean tryHarvest(@NotNull SunInstance sun, Field field, GameAttributes attributes) {
-        if (sun.isMarkedForRemoval()) return false;
-
-        SunComponent comp = sun.get(SunComponent.class);
-
-        if (comp.type == SunType.RADIOACTIVE && comp.state == SunComponent.State.FALLING) {
-            explode(sun, field);
-            sun.markForRemoval();
-            return true;
-        }
-
-        attributes.adjustSunAmount(comp.type.value);
-        sun.markForRemoval();
-        return true;
-    }
-
-    private void explode(@NotNull SunInstance sun, Field field) {
-        GridPosition center = GridPosition.fromContinuous(sun.get(PositionComponent.class).position);
-        int lane = center.lane();
-        int column = center.column();
-
-        for (int dl = -RADIOACTIVE_ZOMBIE_RADIUS; dl <= RADIOACTIVE_ZOMBIE_RADIUS; dl++) {
-            for (ZombieInstance zombie : field.getZombiesInLane(lane + dl)) {
-                int zombieColumn = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position).column();
-                if (Math.abs(zombieColumn - column) <= RADIOACTIVE_ZOMBIE_RADIUS) {
-                    CombatSystem.applyDamage(zombie, RADIOACTIVE_ZOMBIE_DAMAGE, false);
-                }
-            }
-        }
-
-        for (int dl = -RADIOACTIVE_PLANT_RADIUS; dl <= RADIOACTIVE_PLANT_RADIUS; dl++) {
-            for (int dc = -RADIOACTIVE_PLANT_RADIUS; dc <= RADIOACTIVE_PLANT_RADIUS; dc++) {
-                PlantInstance plant = field.getPlantAt(lane + dl, column + dc);
-                if (plant != null) {
-                    CombatSystem.applyDamage(plant, RADIOACTIVE_PLANT_DAMAGE, true);
-                }
             }
         }
     }

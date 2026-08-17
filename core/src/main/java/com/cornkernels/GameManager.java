@@ -48,7 +48,7 @@ public class GameManager extends Game {
 
         setScreen(new GameplayScreen(this, new GameAttributes(
             List.of(new SeedSlot(PlantDef.CACTUS),
-                new SeedSlot(PlantDef.ARMA_MINT),
+                new SeedSlot(PlantDef.PEASHOOTER),
                 new SeedSlot(PlantDef.CABBAGE_PULT),
                 new SeedSlot(PlantDef.BOWLING_BULB),
                 new SeedSlot(PlantDef.SQUASH),

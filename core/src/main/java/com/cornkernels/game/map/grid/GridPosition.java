@@ -17,7 +17,7 @@ public record GridPosition(int lane, int column) {
 
     @Contract(value = "_ -> new", pure = true)
     public static @NotNull Vec2d toVec2d(@NotNull GridPosition gridPosition) {
-        return new Vec2d(gridPosition.lane, gridPosition.column);
+        return new Vec2d(gridPosition.column, gridPosition.lane);
     }
 
     @Override

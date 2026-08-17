@@ -4,6 +4,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.GridPositionComponent;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
+import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantStateComponent;
@@ -17,6 +18,7 @@ public class PlantInstance extends Entity {
         super();
 
         add(new PlantDefComponent(plantDef));
+        add(new PositionComponent(GridPosition.toVec2d(position)));
         add(new GridPositionComponent(position));
         add(new PlantStateComponent());
         add(new PamAnimationComponent());

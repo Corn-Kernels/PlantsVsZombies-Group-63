@@ -28,7 +28,7 @@ public class GameRenderer {
 
 
         addSystem(new BackgroundRenderSystem(batch, mapData));
-        addSystem(new PamRenderSystem(batch, pamPlayer));
+        addSystem(new PamRenderSystem(batch, pamPlayer, mapData));
         addSystem(new HighlightRenderSystem(batch, pamPlayer, mapData, toolState));
         addSystem(new CursorAttachmentRenderSystem(batch, mapData, toolState));
     }

@@ -147,11 +147,12 @@ public class GameplayScreen implements Screen {
 
         if (!gameSession.getPauseController().isPaused()) {
             camera.update(delta);
+            gameSession.updateInput(delta, worldInput);
 
             // Logic Tick Based Update
             accumulator += delta;
             while (accumulator >= TICK_RATE) {
-                gameSession.update(TICK_RATE, worldInput);
+                gameSession.update(TICK_RATE);
                 accumulator -= TICK_RATE;
             }
 
