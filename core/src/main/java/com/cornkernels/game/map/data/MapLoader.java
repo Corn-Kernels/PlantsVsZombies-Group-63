@@ -60,7 +60,8 @@ public class MapLoader {
         return new MapData(grid, cellBounds, lawnMowerSlots, backgroundRegions, backgroundTextures);
     }
 
-    private @NonNull Map<GridPosition, Rectangle> parsRectLayer(@NonNull TiledMap map, String layerName, float mapHeightPx) {
+    private @NonNull Map<GridPosition, Rectangle> parsRectLayer(@NonNull TiledMap map,
+                                                                String layerName, float mapHeightPx) {
         MapLayer layer = map.getLayers().get(layerName);
         if (layer == null) {
             throw new IllegalStateException("Missing object layer '" + layerName + "' in tmx.");
@@ -104,7 +105,8 @@ public class MapLoader {
         return grid;
     }
 
-    private Rectangle @NonNull [][] buildBoundsArray(@NonNull Map<GridPosition, Rectangle> cellRects, int lanes, int columns) {
+    private Rectangle @NonNull [][] buildBoundsArray(@NonNull Map<GridPosition, Rectangle> cellRects,
+                                                     int lanes, int columns) {
         Rectangle[][] bounds = new Rectangle[lanes][columns];
         for (Map.Entry<GridPosition, Rectangle> entry : cellRects.entrySet()) {
             bounds[entry.getKey().lane()][entry.getKey().column()] = entry.getValue();

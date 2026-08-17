@@ -2,6 +2,7 @@ package com.cornkernels.engine.settings;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import org.jspecify.annotations.NonNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -21,7 +22,7 @@ public final class GameSettings {
     public int screenWidth = Gdx.graphics.getWidth();
     public int screenHeight = Gdx.graphics.getHeight();
 
-    public static GameSettings load(FileHandle file) {
+    public static @NonNull GameSettings load(@NonNull FileHandle file) {
         GameSettings settings = new GameSettings();
         if (!file.exists()) return settings;
         try (DataInputStream in = new DataInputStream(file.read())) {
@@ -42,7 +43,7 @@ public final class GameSettings {
         return settings;
     }
 
-    public void save(FileHandle file) {
+    public void save(@NonNull FileHandle file) {
         try (DataOutputStream out = new DataOutputStream(file.write(false))) {
             out.writeFloat(masterVolume);
             out.writeFloat(soundVolume);
