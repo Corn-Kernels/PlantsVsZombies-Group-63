@@ -2236,16 +2236,9 @@ IMAGES/768/INITIAL/ZOMBIE/ZOMBIE_TUTORIAL_FLAG/ZOMBIE_TUTORIAL_FLAG.PAM
 IMAGES/768/INITIAL/ZOMBIE/ZOMBIE_TUTORIAL_IMP/ZOMBIE_TUTORIAL_IMP.PAM
 IMAGES/768/INITIAL/ZOMBIE/ZOYBEANPOD_GARGANTUAR/ZOYBEANPOD_GARGANTUAR.PAM
 IMAGES/768/INITIAL/ZOMBIE/ZOYBEANPOD_ZOMBIE/ZOYBEANPOD_ZOMBIE.PAM
+IMAGES/background.jpg
 RESOURCES.json
 animations.json
-libgdx.png
 skin/pvz2_skin.atlas
 skin/pvz2_skin.json
 skin/pvz2_skin.png
-ui/font-list.fnt
-ui/font-subtitle.fnt
-ui/font-window.fnt
-ui/font.fnt
-ui/uiskin.atlas
-ui/uiskin.json
-ui/uiskin.png
