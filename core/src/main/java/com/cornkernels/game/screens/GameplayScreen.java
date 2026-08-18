@@ -17,6 +17,7 @@ import com.cornkernels.engine.utility.InputSnapshot;
 import com.cornkernels.game.GameAttributes;
 import com.cornkernels.game.GameSession;
 import com.cornkernels.game.hud.HudFactory;
+import com.cornkernels.game.hud.PauseMenu;
 import com.cornkernels.game.hud.seeds.PlantSelectionMenu;
 import com.cornkernels.game.hud.seeds.SeedChooser;
 import com.cornkernels.game.hud.seeds.SeedSelectionBar;
@@ -26,6 +27,7 @@ import com.cornkernels.game.map.data.MapDefinition;
 import com.cornkernels.game.map.data.MapLoader;
 import com.cornkernels.game.map.data.MapSkin;
 import com.cornkernels.game.systems.controller.plants.SeedBank;
+import com.cornkernels.game.systems.controller.plants.SeedSlot;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
@@ -81,7 +83,7 @@ public class GameplayScreen implements Screen {
         hudStage = new Stage(new FitViewport(hudWidth, hudHeight), batch);
         Gdx.input.setInputProcessor(hudStage);
 
-        gameSession = new GameSession(new Field(5, 10), gameAttributes, batch, pamPlayer, mapData, camera);
+        gameSession = new GameSession(new Field(5, 10, mapData.lawnMowerSlots), gameAttributes, batch, pamPlayer, mapData, camera);
 
         hudFactory = new HudFactory(pamPlayer, gameSession.getPlantingController(),
             gameSession.getPauseController(), hudWidth, hudHeight);
@@ -101,6 +103,10 @@ public class GameplayScreen implements Screen {
         hudStage.addActor(hudFactory.createShovelButton(
             () -> gameSession.getPhase() == GameSession.LevelPhase.PLAYING));
         hudStage.addActor(hudFactory.createPauseButton());
+
+        PauseMenu pauseMenu = hudFactory.createPauseMenu(this::restartLevel);
+        pauseMenu.setPosition((hudWidth - pauseMenu.getWidth()) / 2f, (hudHeight - pauseMenu.getHeight()) / 2f);
+        hudStage.addActor(pauseMenu);
 
         PlantSelectionMenu plantMenu = seedChooser.getMenu();
         plantMenu.setPosition((hudWidth - plantMenu.getWidth()) / 2f,
@@ -161,6 +167,13 @@ public class GameplayScreen implements Screen {
         } else {
             renderGame(0f);
         }
+    }
+
+    private void restartLevel() {
+        for (SeedSlot slot : gameAttributes.seedSlots) {
+            slot.setCooldown(0f);
+        }
+        gameManager.setScreen(new GameplayScreen(gameManager, gameAttributes));
     }
 
     private boolean isPointerOverHud(@NonNull InputSnapshot input) {

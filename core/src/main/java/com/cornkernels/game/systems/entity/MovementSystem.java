@@ -4,7 +4,9 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
+import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 
 public class MovementSystem extends EntitySystem {
 
@@ -12,6 +14,11 @@ public class MovementSystem extends EntitySystem {
     public void update(float delta) {
         for (Entity e : field.getEntities()) {
             if (!e.has(PositionComponent.class) || !e.has(VelocityComponent.class)) {
+                continue;
+            }
+
+            if (e instanceof ZombieInstance zombie
+                && zombie.get(ZombieStateComponent.class).state == ZombieStateComponent.State.EATING) {
                 continue;
             }
 
@@ -57,6 +64,9 @@ public class MovementSystem extends EntitySystem {
             }
 
             float speed = velComp.velocityPerTick.getX();
+            if (e instanceof ZombieInstance) {
+                speed *= delta;
+            }
             posComp.position.subtractInPlace(new Vec2d(speed, 0));
         }
     }

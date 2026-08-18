@@ -3,6 +3,7 @@ package com.cornkernels.game;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.*;
 import org.jspecify.annotations.NonNull;
+import pvz.libpvz.pam.PamPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class GameSimulation {
     private final GameAttributes attributes;
     private final List<EntitySystem> systems = new ArrayList<>();
 
-    public GameSimulation(Field field, @NonNull GameAttributes gameAttributes) {
+    public GameSimulation(Field field, @NonNull GameAttributes gameAttributes, PamPlayer pamPlayer) {
         this.field = field;
         this.attributes = gameAttributes;
         this.random = new Random();
@@ -25,8 +26,9 @@ public class GameSimulation {
         addSystem(new CombatSystem());
         addSystem(new PlantAttackSystem());
         addSystem(new SunSystem(random));
+        addSystem(new ZombieSystem(pamPlayer));
         addSystem(new LawnMowersSystem());
-        addSystem(new WaveSystem(1, random, gameAttributes.eligibleZombies));
+        addSystem(new WaveSystem(1, random, gameAttributes.eligibleZombies, pamPlayer));
     }
 
     public void update(float deltaTick) {

@@ -53,9 +53,11 @@ public class HudFactory implements Disposable {
     private static final float MENU_PADDING = 12f;
     private static final float MENU_MARGIN = 28f;
     private static final int REWARD_BG_INSET = 20;
+    private static final int PAUSE_BG_INSET = 14;
 
     private final TextureAtlas alwaysLoadedAtlas;
     private final TextureAtlas seedPacketsAtlas;
+    private final TextureAtlas pauseMenuAtlas;
     private final UIEntityTextureFinder plantTextureFinder;
     private final BitmapFont counterFont;
     private final BitmapFont priceFont;
@@ -77,6 +79,7 @@ public class HudFactory implements Disposable {
         float hudHeight) {
         this.alwaysLoadedAtlas = new TextureAtlas(Gdx.files.internal("ui/atlases/UI_AlwaysLoaded.atlas"));
         this.seedPacketsAtlas = new TextureAtlas(Gdx.files.internal("ui/atlases/ui_seedpackets.atlas"));
+        this.pauseMenuAtlas = new TextureAtlas(Gdx.files.internal("ui/atlases/pause_menu.atlas"));
         this.plantTextureFinder = new UIEntityTextureFinder(seedPacketsAtlas);
         this.counterFont = FontLoader.generate(Gdx.files.internal("ui/FBUSV8C5EI.TTF"), 45, Color.WHITE);
         this.priceFont = FontLoader.generate(Gdx.files.internal("ui/FBUSV8C5EI.TTF"), 45, Color.WHITE);
@@ -228,15 +231,38 @@ public class HudFactory implements Disposable {
     }
 
     public @NonNull TextButton createConfirmButton(@NonNull Runnable onConfirm) {
+        return createTextButton("Let's Go!", "GreenButton", "GreenButton_Down", onConfirm);
+    }
+
+    public @NonNull PauseMenu createPauseMenu(@NonNull Runnable onRestart) {
+        NinePatch patch = new NinePatch(alwaysLoadedAtlas.findRegion("reward1_bg"),
+            PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET);
+        Image background = new Image(new NinePatchDrawable(patch));
+
+        Image windowTopper = new Image(drawable(pauseMenuAtlas, "windowtopper"));
+
+        Label title = new Label("Game Paused", new Label.LabelStyle(counterFont, Color.WHITE));
+        title.setAlignment(Align.center);
+
+        TextButton resumeButton = createTextButton("Resume", "GreenButton", "GreenButton_Down", pauseController::resume);
+        TextButton restartButton = createTextButton("Restart", "BlueButton", "BlueButton_Down", onRestart);
+        TextButton exitButton = createTextButton("Exit Level", "BrownButton", "BrownButton_Down", () -> {
+        });
+
+        return new PauseMenu(background, windowTopper, title,
+            List.of(resumeButton, restartButton, exitButton), pauseController);
+    }
+
+    private @NonNull TextButton createTextButton(String text, String upRegion, String downRegion, Runnable onClick) {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-        style.up = drawable(alwaysLoadedAtlas, "GreenButton");
-        style.down = drawable(alwaysLoadedAtlas, "GreenButton_Down");
+        style.up = drawable(alwaysLoadedAtlas, upRegion);
+        style.down = drawable(alwaysLoadedAtlas, downRegion);
         style.font = confirmButtonFont;
-        TextButton button = new TextButton("Let's Go!", style);
+        TextButton button = new TextButton(text, style);
         button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                onConfirm.run();
+                onClick.run();
             }
         });
         return button;

@@ -2,11 +2,14 @@ package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.HealthComponent;
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
+import com.cornkernels.game.utility.ZombieAnimationLocator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pvz.libpvz.pam.PamPlayer;
 
 import java.util.List;
 import java.util.random.RandomGenerator;
@@ -19,16 +22,18 @@ public class WaveSystem extends EntitySystem {
     private final List<ZombieDef> eligibleZombies;
     private final int totalWaves;
     private final RandomGenerator rng;
+    private final PamPlayer pamPlayer;
 
     private float spawnTimer = 0f;
     private int waveNumber = 0;
     private int waveTotalCost = BASE_WAVE_COST;
     private int remainingWaveCost = 0;
 
-    public WaveSystem(int totalWaves, RandomGenerator rng, List<ZombieDef> eligibleZombies) {
+    public WaveSystem(int totalWaves, RandomGenerator rng, List<ZombieDef> eligibleZombies, PamPlayer pamPlayer) {
         this.totalWaves = totalWaves;
         this.eligibleZombies = eligibleZombies;
         this.rng = rng;
+        this.pamPlayer = pamPlayer;
     }
 
     public void update(float deltaTick) {
@@ -61,6 +66,7 @@ public class WaveSystem extends EntitySystem {
         Vec2d spawnPosition = new Vec2d(field.getTotalColumns(), lane);
 
         ZombieInstance zombie = new ZombieInstance(chosen, spawnPosition);
+        ZombieAnimationLocator.applyClip(pamPlayer, zombie.get(PamAnimationComponent.class), chosen, "walk");
         field.addZombie(zombie);
         remainingWaveCost -= chosen.wavePointCost;
 

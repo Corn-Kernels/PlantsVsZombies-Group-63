@@ -39,7 +39,7 @@ public final class GameSession {
         this.pauseController = new PauseController();
         this.plantingController = new PlantingController(field, mapData, camera, 1000, pamPlayer);
         this.sunHarvestController = new SunHarvestController(field, mapData, camera, plantingController);
-        this.simulation = new GameSimulation(field, gameAttributes);
+        this.simulation = new GameSimulation(field, gameAttributes, pamPlayer);
         this.renderer = new GameRenderer(batch, pamPlayer, mapData, field, plantingController.getToolState());
 
         phase = GameSession.LevelPhase.INTRO_PAN_RIGHT;

@@ -9,8 +9,10 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.sun_specific.SunComponent;
+import com.cornkernels.game.entities.types.lawnmower.LawnMower;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.map.data.MapData;
+import com.cornkernels.game.utility.LawnMowerAnimationLocator;
 import com.cornkernels.game.utility.SunAnimationLocator;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.ClipRef;
@@ -40,11 +42,16 @@ public class PamRenderSystem extends RenderSystem {
             if (anim.currentClip == null && entity instanceof SunInstance) {
                 assignSunClip(anim);
             }
+            if (anim.currentClip == null && entity instanceof LawnMower) {
+                assignLawnMowerClip(anim);
+            }
 
             anim.stateTime += delta;
             advanceSequence(anim);
 
-            Rectangle bounds = worldCellOf(positionComponent.position);
+            Rectangle bounds = entity instanceof LawnMower mower
+                ? mower.getWorldBounds()
+                : worldCellOf(positionComponent.position);
             float x = bounds.x + bounds.width / 2f;
             float y = bounds.y + bounds.height / 2f;
 
@@ -85,6 +92,13 @@ public class PamRenderSystem extends RenderSystem {
         anim.isLooping = true;
     }
 
+    private void assignLawnMowerClip(@NonNull PamAnimationComponent anim) {
+        ClipRef clip = LawnMowerAnimationLocator.loadClip(pamPlayer);
+        if (clip == null) return;
+        anim.currentClip = clip;
+        anim.isLooping = true;
+    }
+
     private void advanceSequence(@NonNull PamAnimationComponent anim) {
         if (anim.isLooping || anim.currentClip == null || anim.upcomingClips.isEmpty()) return;
         if (anim.stateTime < anim.currentClip.duration) return;
@@ -94,10 +108,22 @@ public class PamRenderSystem extends RenderSystem {
         anim.isLooping = anim.upcomingClips.isEmpty();
     }
 
-    private Rectangle worldCellOf(@NonNull Vec2d gridPosition) {
+    private @NonNull Rectangle worldCellOf(@NonNull Vec2d gridPosition) {
         int lane = Math.clamp(Math.round(gridPosition.getY()), 0, mapData.cellBounds.length - 1);
-        int column = Math.clamp(Math.round(gridPosition.getX()), 0, mapData.cellBounds[lane].length - 1);
-        return mapData.cellBounds[lane][column];
+        Rectangle[] row = mapData.cellBounds[lane];
+        int maxColumn = row.length - 1;
+
+        float column = Math.clamp(gridPosition.getX(), 0f, (float) maxColumn);
+        int floorColumn = (int) Math.floor(column);
+        int ceilColumn = Math.min(floorColumn + 1, maxColumn);
+        float t = column - floorColumn;
+
+        Rectangle from = row[floorColumn];
+        Rectangle to = row[ceilColumn];
+        float centerX = MathUtils.lerp(from.x + from.width / 2f, to.x + to.width / 2f, t);
+        float width = MathUtils.lerp(from.width, to.width, t);
+
+        return new Rectangle(centerX - width / 2f, from.y, width, from.height);
     }
 
     public float getScale() {

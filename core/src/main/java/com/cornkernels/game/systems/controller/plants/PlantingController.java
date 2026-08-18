@@ -58,16 +58,18 @@ public class PlantingController {
         toolState.eligibility =
             cell -> cell.getPlant() == null && cell.getObstacle() == null;
         toolState.onConfirm = gridPosition -> {
-            PlantDef plantDef = PlantDef.getPlantTypeOfId(String.valueOf(plantTypeId));
-            if (plantDef != null) {
-                PlantInstance plant = new PlantInstance(plantDef, gridPosition);
-                applyIdleAnimation(plant, plantDef);
-                field.addPlant(plant);
-                currentSun -= sunCost;
-                toolState.active = false;
-                if (onPlanted != null) onPlanted.run();
-            } else {
-                throw new NullPointerException("plantDef is null.");
+            if (field.getPlantAt(gridPosition.lane(), gridPosition.column()) == null) {
+                PlantDef plantDef = PlantDef.getPlantTypeOfId(String.valueOf(plantTypeId));
+                if (plantDef != null) {
+                    PlantInstance plant = new PlantInstance(plantDef, gridPosition);
+                    applyIdleAnimation(plant, plantDef);
+                    field.addPlant(plant);
+                    currentSun -= sunCost;
+                    toolState.active = false;
+                    if (onPlanted != null) onPlanted.run();
+                } else {
+                    throw new NullPointerException("plantDef is null.");
+                }
             }
         };
     }

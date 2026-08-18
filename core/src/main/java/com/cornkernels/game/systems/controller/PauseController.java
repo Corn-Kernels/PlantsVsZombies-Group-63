@@ -11,4 +11,8 @@ public class PauseController {
     public void togglePause() {
         paused = !paused;
     }
+
+    public void resume() {
+        paused = false;
+    }
 }

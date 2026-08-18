@@ -10,6 +10,7 @@ import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+import com.cornkernels.game.map.data.LawnMowerSlot;
 import com.cornkernels.game.map.grid.GridObject;
 import com.cornkernels.game.map.grid.GridPosition;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +31,7 @@ public class Field {
     protected int totalLanes;
     protected int totalColumns;
 
-    public Field(int lanes, int columns) { // one column reserved for lawn mowers
+    public Field(int lanes, int columns, List<LawnMowerSlot> lawnMowerSlots) {
         this.totalLanes = lanes;
         this.totalColumns = columns;
 
@@ -48,7 +49,7 @@ public class Field {
         this.activeProjectiles = new ArrayList<>();
         this.activeLawnMowers = new ArrayList<>(5);
 
-        initializeLawnMowers();
+        initializeLawnMowers(lawnMowerSlots);
     }
 
     public void update(float deltaTick) {
@@ -172,6 +173,7 @@ public class Field {
         entities.addAll(activeZombies);
         entities.addAll(activeProjectiles);
         entities.addAll(activeSuns);
+        entities.addAll(activeLawnMowers);
         return entities;
     }
 
@@ -207,11 +209,15 @@ public class Field {
         return totalColumns;
     }
 
-    private void initializeLawnMowers() {
-        for (int i = 0; i < totalLanes; i++) {
-            LawnMower lawnMower = new LawnMower(new Vec2d(0, i));
+    private void initializeLawnMowers(@NotNull List<LawnMowerSlot> lawnMowerSlots) {
+        for (LawnMowerSlot slot : lawnMowerSlots) {
+            int lane = slot.getLane();
+            if (lane < 0 || lane >= totalLanes) continue;
+
+            LawnMower lawnMower = new LawnMower(new Vec2d(0, lane), slot.getBounds());
             activeLawnMowers.add(lawnMower);
-            grids[i][0].provideLawnMower(lawnMower);
+            grids[lane][0].provideLawnMower(lawnMower);
+            slot.provideLawnMower(lawnMower);
         }
     }
 }
