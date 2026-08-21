@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
+import com.cornkernels.game.entities.types.projectile.projectiles.specific.GrapeshotProjectile;
 
 public class MovementSystem extends EntitySystem {
 
@@ -55,7 +56,9 @@ public class MovementSystem extends EntitySystem {
 
                 continue;
             }
-
+            if (e instanceof GrapeshotProjectile grapeshotProjectile){
+                grapeshotProjectile.handleBounceAndLifetime(1f/20f,0.5f,9.5f,0.5f,5.5f);
+            }
             float speed = velComp.velocityPerTick.getX();
             posComp.position.subtractInPlace(new Vec2d(speed, 0));
         }
