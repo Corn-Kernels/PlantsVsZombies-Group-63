@@ -2,11 +2,8 @@ package com.cornkernels.game.entities.types.plants.behavior;
 
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.types.plants.PlantDef;
-import com.cornkernels.game.entities.types.plants.behavior.behaviors.DirectShotBehavior;
-import com.cornkernels.game.entities.types.plants.behavior.behaviors.HomingShotBehavior;
-import com.cornkernels.game.entities.types.plants.behavior.behaviors.LobShotBehavior;
-import com.cornkernels.game.entities.types.plants.behavior.behaviors.SunBehavior;
-import com.cornkernels.game.entities.types.plants.behavior.behaviors.specific.SunShroomBehavior;
+import com.cornkernels.game.entities.types.plants.behavior.behaviors.*;
+import com.cornkernels.game.entities.types.plants.behavior.behaviors.specific.*;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.PeaProjectile;
@@ -46,7 +43,7 @@ public class PlantAttackBehaviors {
         register(PlantDef.SUNFLOWER1, new SunBehavior(1, SunType.BIG));
         register(PlantDef.SUNFLOWER2, new SunBehavior(1, SunType.BIG));
         register(PlantDef.SUNFLOWER3, new SunBehavior(1, SunType.BIG));
-        // Lvl 4: Double Sun Chance (set to 50% here, adjust as needed)
+        // Lvl 4: Double Sun Chance (set to 20% here, adjust as needed)
         register(PlantDef.SUNFLOWER4, new SunBehavior(1, SunType.BIG, 0.2));
 
         // --- Twin Sunflower (Base: 100 Sun -> 2x BIG) ---
@@ -75,7 +72,7 @@ public class PlantAttackBehaviors {
         // 2. DIRECT SHOOTERS
         // ==========================================
 
-        //region NormalPeaShooters
+        //region TruePeaShooters
 
         // --- LEVELED PEAS (Using TruePeaProjectile & Heat) ---
 
@@ -109,31 +106,81 @@ public class PlantAttackBehaviors {
         registerTruePeaShooter(PlantDef.MEGA_GATLING_PEA3, 30, 1, 0);
         registerTruePeaShooter(PlantDef.MEGA_GATLING_PEA4, 30, 1, 0);
 
+        // --- Threepeater ---
+        registerThreepeater(PlantDef.THREEPEATER1, 20, 0);
+        registerThreepeater(PlantDef.THREEPEATER2, 30, 0); // Using 30 as default fallback to match Lvl 2+ power
+        registerThreepeater(PlantDef.THREEPEATER3, 30, 0);
+        registerThreepeater(PlantDef.THREEPEATER4, 30, 0);
+
+        // --- Pea Pod ---
+        registerPeaPod(PlantDef.PEA_POD1, 20, 0);
+        registerPeaPod(PlantDef.PEA_POD2, 30, 0);
+        registerPeaPod(PlantDef.PEA_POD3, 30, 0);
+        registerPeaPod(PlantDef.PEA_POD4, 30, 0);
+
+        // --- Split Pea ---
+        registerSplitPea(PlantDef.SPLIT_PEA1, 20, 0);
+        registerSplitPea(PlantDef.SPLIT_PEA2, 30, 0);
+        registerSplitPea(PlantDef.SPLIT_PEA3, 30, 0);
+        registerSplitPea(PlantDef.SPLIT_PEA4, 30, 0);
+
         //endregion
 
         //region rest
 
+        // ==========================================
+        // ROTOBAGA & SHORT RANGE ATTACKERS
+        // ==========================================
+
+        // --- Rotobaga ---
+        registerRotobaga(PlantDef.ROTOBAGA1, 10);
+        registerRotobaga(PlantDef.ROTOBAGA2, 20);
+        registerRotobaga(PlantDef.ROTOBAGA3, 20);
+        registerRotobaga(PlantDef.ROTOBAGA4, 20);
+
+        // --- Sea-shroom ---
+        // Base Range: 3.0f tiles | Lvl 2+ Range: 4.0f tiles
+        // Base Lifespan: 60s | Lvl 4 Lifespan: 70s
+        register(PlantDef.SEA_SHROOM1, new PuffShotBehavior(1, new PeaProjectile(parseDamage(PlantDef.SEA_SHROOM1, 20), null), 3.0f, 1.5f, 60.0f));
+        register(PlantDef.SEA_SHROOM2, new PuffShotBehavior(1, new PeaProjectile(parseDamage(PlantDef.SEA_SHROOM2, 20), null), 4.0f, 1.5f, 60.0f));
+        register(PlantDef.SEA_SHROOM3, new PuffShotBehavior(1, new PeaProjectile(parseDamage(PlantDef.SEA_SHROOM3, 25), null), 4.0f, 1.5f, 60.0f));
+        register(PlantDef.SEA_SHROOM4, new PuffShotBehavior(1, new PeaProjectile(parseDamage(PlantDef.SEA_SHROOM4, 25), null), 4.0f, 1.5f, 70.0f));
+
+        // --- Puff-shroom ---
+        // Base Lifespan: 60s | Lvl 2+ Lifespan: 70s
+        // Base Range: 3.0f tiles | Lvl 4 Range: 4.0f tiles
+        register(PlantDef.PUFF_SHROOM1, new PuffShotBehavior(1, new PeaProjectile(parseDamage(PlantDef.PUFF_SHROOM1, 20), null), 3.0f, 1.5f, 60.0f));
+        register(PlantDef.PUFF_SHROOM2, new PuffShotBehavior(1, new PeaProjectile(parseDamage(PlantDef.PUFF_SHROOM2, 20), null), 3.0f, 1.5f, 70.0f));
+        register(PlantDef.PUFF_SHROOM3, new PuffShotBehavior(1, new PeaProjectile(parseDamage(PlantDef.PUFF_SHROOM3, 30), null), 3.0f, 1.5f, 70.0f));
+        register(PlantDef.PUFF_SHROOM4, new PuffShotBehavior(1, new PeaProjectile(parseDamage(PlantDef.PUFF_SHROOM4, 30), null), 4.0f, 1.5f, 70.0f));
+
+        // ==========================================
+        // CACTUS & STARFRUIT
+        // ==========================================
+
+        // --- Cactus ---
+        registerCactus(PlantDef.CACTUS1, 30, 3);
+        registerCactus(PlantDef.CACTUS2, 30, 4); // Lvl 2: Pierce +1
+        registerCactus(PlantDef.CACTUS3, 40, 4); // Lvl 3: Dmg +10
+        registerCactus(PlantDef.CACTUS4, 40, 4); // Lvl 4: Cost -25
+
+        // --- Starfruit ---
+        registerStarfruit(PlantDef.STARFRUIT1, 20);
+        registerStarfruit(PlantDef.STARFRUIT2, 20);
+        registerStarfruit(PlantDef.STARFRUIT3, 30); // Lvl 3: Dmg +10
+        registerStarfruit(PlantDef.STARFRUIT4, 30); // Lvl 4: Cost -25
+
         // --- NON-LEVELED SHOOTERS (Fallbacks for plants you haven't given 4-digit IDs yet) ---
-        //registerDirectShooter(PlantDef.THREEPEATER, 20, 1);
-        registerDirectShooter(PlantDef.ROTOBAGA, 10, 3);
-        //registerDirectShooter(PlantDef.PEA_POD, 20, 1);
-        //registerDirectShooter(PlantDef.SPLIT_PEA, 20, 2);
         registerDirectShooter(PlantDef.CITRON, 800, 1);
         registerDirectShooter(PlantDef.BOWLING_BULB, 40, 1);
-        registerDirectShooter(PlantDef.STARFRUIT, 20, 5);
         registerDirectShooter(PlantDef.GOO_PEASHOOTER, 20, 1);
-        registerDirectShooter(PlantDef.SEA_SHROOM, 20, 1);
-        registerDirectShooter(PlantDef.PUFF_SHROOM, 20, 1);
+
         //endregion
 
         // ==========================================
         // 3. STRIKE-THROUGH SHOOTERS (PIERCE)
         // ==========================================
         //region pierce
-        register(PlantDef.CACTUS, new DirectShotBehavior(
-            parseShotCount(PlantDef.CACTUS, 1),
-            new StrikeThroughProjectile(parseDamage(PlantDef.CACTUS, 30), null, 3)
-        ));
         register(PlantDef.FUME_SHROOM, new DirectShotBehavior(
             parseShotCount(PlantDef.FUME_SHROOM, 1),
             new StrikeThroughProjectile(parseDamage(PlantDef.FUME_SHROOM, 20), null, 100)
@@ -143,11 +190,39 @@ public class PlantAttackBehaviors {
         // ==========================================
         // 4. LOBBERS
         // ==========================================
-        registerLobber(PlantDef.CABBAGE_PULT, 40);
-        registerLobber(PlantDef.KERNEL_PULT, 20);
-        registerLobber(PlantDef.MELON_PULT, 80);
-        registerLobber(PlantDef.WINTER_MELON, 80);
-        registerLobber(PlantDef.PEPPER_PULT, 50);
+        //region lobbers
+        registerLobber(PlantDef.CABBAGE_PULT1, 40);
+        registerLobber(PlantDef.CABBAGE_PULT2, 50);
+        registerLobber(PlantDef.CABBAGE_PULT3, 50);
+        registerLobber(PlantDef.CABBAGE_PULT4, 50);
+
+        // --- Kernel-pult ---
+        // (Lvl 1 base: 25% butter chance. Lvl 2+: +5% butter chance -> 30%)
+        registerKernelPult(PlantDef.KERNEL_PULT1, 20, 40, 0.25);
+        registerKernelPult(PlantDef.KERNEL_PULT2, 20, 40, 0.30); // Lvl 2: Butter +5%
+        registerKernelPult(PlantDef.KERNEL_PULT3, 30, 50, 0.30); // Lvl 3: Dmg +10
+        registerKernelPult(PlantDef.KERNEL_PULT4, 30, 50, 0.30); // Lvl 4: HP +150
+
+        // --- Melon-pult (Base AoE: ~40 Dmg, 1.5 tile radius for 3x3) ---
+        registerLobberAoE(PlantDef.MELON_PULT1, 80, 1.5f, 40);
+        registerLobberAoE(PlantDef.MELON_PULT2, 80, 1.5f, 40);
+        registerLobberAoE(PlantDef.MELON_PULT3, 80, 1.5f, 55); // Lvl 3: AoE Dmg +15
+        registerLobberAoE(PlantDef.MELON_PULT4, 110, 1.5f, 55);
+
+        // --- Winter Melon ---
+        registerLobberAoE(PlantDef.WINTER_MELON1, 80, 1.5f, 40);
+        registerLobberAoE(PlantDef.WINTER_MELON2, 80, 1.5f, 40);
+        registerLobberAoE(PlantDef.WINTER_MELON3, 80, 1.5f, 55); // Lvl 3: AoE Dmg +15
+        registerLobberAoE(PlantDef.WINTER_MELON4, 80, 1.5f, 55);
+
+        // --- Pepper-pult ---
+        registerLobberAoE(PlantDef.PEPPER_PULT1, 50, 1.5f, 25);
+        registerLobberAoE(PlantDef.PEPPER_PULT2, 65, 1.5f, 32);
+        registerLobberAoE(PlantDef.PEPPER_PULT3, 65, 1.5f, 32);
+        registerLobberAoE(PlantDef.PEPPER_PULT4, 65, 1.5f, 32);
+        //endregion
+
+
 
         // ==========================================
         // 5. HOMING PLANTS
@@ -190,11 +265,43 @@ public class PlantAttackBehaviors {
      * Helper to automatically parse damage from PlantDef for lobbers.
      */
     private static void registerLobber(PlantDef def, int defaultDamage) {
+        registerLobberAoE(def, defaultDamage, 0f, 0);
+    }
+    private static void registerLobberAoE(PlantDef def, int defaultDamage, float radius, int aoeDamage) {
         int damage = parseDamage(def, defaultDamage);
         int shots = parseShotCount(def, 1);
-        register(def, new LobShotBehavior(shots, new LobProjectile(damage, null, null, 0)));
+        register(def, new LobShotBehavior(shots, new LobProjectile(damage, null, null, radius, aoeDamage)));
     }
 
+    /**
+     * Helper to parse and register Kernel-pult levels, supporting split normal/butter damage
+     * and a percentage chance for the special butter projectile.
+     */
+    private static void registerKernelPult(PlantDef def, int defaultNormal, int defaultButter, double butterChance) {
+        int normalDmg = defaultNormal;
+        int butterDmg = defaultButter;
+
+        // Parse "20/40" damage format
+        String dmgStr = def.getDamage();
+        if (dmgStr != null && dmgStr.contains("/")) {
+            String[] parts = dmgStr.split("/");
+            try {
+                normalDmg = Integer.parseInt(parts[0].trim());
+                butterDmg = Integer.parseInt(parts[1].trim());
+            } catch (NumberFormatException ignored) {}
+        }
+
+        int shots = parseShotCount(def, 1);
+
+        // Currently uses LobProjectile for both since they both lob.
+        // Once you build a stun component, you can easily swap the second one out for a custom ButterProjectile!
+        register(def, new KernelPultBehavior(
+            shots,
+            new LobProjectile(normalDmg, null, null, 0f, 0),
+            new LobProjectile(butterDmg, null, null, 0f, 0),
+            butterChance
+        ));
+    }
     /**
      * Helper to automatically parse damage from PlantDef for homing plants.
      */
@@ -260,5 +367,64 @@ public class PlantAttackBehaviors {
         int damage = parseDamage(def, defaultDamage);
         int shots = parseShotCount(def, defaultShots);
         register(def, new DirectShotBehavior(shots, new TruePeaProjectile(damage, null, heat)));
+    }
+    /**
+     * Helper to register Threepeater levels with its unique behavior.
+     */
+    private static void registerThreepeater(PlantDef def, int defaultDamage, int heat) {
+        int damage = parseDamage(def, defaultDamage);
+        register(def, new ThreepeaterBehavior(new TruePeaProjectile(damage, null, heat)));
+    }
+
+    /**
+     * Helper to register Pea Pod levels with its unique behavior.
+     */
+    private static void registerPeaPod(PlantDef def, int defaultDamage, int heat) {
+        int damage = parseDamage(def, defaultDamage);
+        register(def, new PeaPodBehavior(new TruePeaProjectile(damage, null, heat)));
+    }
+
+    /**
+     * Helper to register Split Pea levels with its unique behavior.
+     */
+    private static void registerSplitPea(PlantDef def, int defaultDamage, int heat) {
+        int damage = parseDamage(def, defaultDamage);
+        register(def, new SplitPeaBehavior(new TruePeaProjectile(damage, null, heat)));
+    }
+
+    /**
+     * Helper to register Rotobaga levels with its unique behavior.
+     */
+    private static void registerRotobaga(PlantDef def, int defaultDamage) {
+        int damage = parseDamage(def, defaultDamage);
+        register(def, new RotobagaBehavior(new PeaProjectile(damage, null)));
+    }
+
+    /**
+     * Helper to parse and register Cactus levels, applying specific damage and pierce counts.
+     */
+    private static void registerCactus(PlantDef def, int defaultDamage, int pierceCount) {
+        int damage = parseDamage(def, defaultDamage);
+        int shots = parseShotCount(def, 1);
+        register(def, new DirectShotBehavior(
+            shots,
+            new StrikeThroughProjectile(damage, null, pierceCount)
+        ));
+    }
+
+    /**
+     * Helper to parse and register Starfruit levels.
+     */
+    private static void registerStarfruit(PlantDef def, int defaultDamage) {
+        int damage = parseDamage(def, defaultDamage);
+        register(def, new StarfruitBehavior(new PeaProjectile(damage, null)));
+    }
+
+    /**
+     * Helper to automatically parse and register Melee plants with ranges and pierce counts.
+     */
+    private static void registerMelee(PlantDef def, int defaultDamage, float frontRange, float backRange, int pierce) {
+        int damage = parseDamage(def, defaultDamage);
+        register(def, new MeleeAttackBehavior(frontRange, backRange, pierce, damage));
     }
 }

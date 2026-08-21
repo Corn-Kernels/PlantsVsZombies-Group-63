@@ -12,20 +12,24 @@ public class LobProjectile extends AbstractProjectile {
     public Entity target;
     public Vec2d startPosition;
     public float areaOfEffect = 0f;
+    public int aoeDamage = 0; // Added for leveled AoE damage
 
-    public LobProjectile(int damage, Vec2d startPosition, Entity target,float radius) {
+    public LobProjectile(int damage, Vec2d startPosition, Entity target, float radius, int aoeDamage) {
         super(damage, new Vec2d(LOB_SPEED, 0), startPosition);
         this.target = target;
         this.startPosition = startPosition;
-        areaOfEffect=radius;
+        this.areaOfEffect = radius;
+        this.aoeDamage = aoeDamage;
     }
 
     @Override
     public boolean hit(Entity target) {
         if (target == this.target && super.hit(target)) {
-            if(areaOfEffect==0)
+            if (areaOfEffect == 0) {
                 CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
+            }
             // else spawn the AOE
+            // TODO: Ensure your projectile system spawns AreaOfDamage using the position, areaOfEffect, and aoeDamage
             return true;
         }
         return false;
@@ -34,7 +38,6 @@ public class LobProjectile extends AbstractProjectile {
     @Override
     public AbstractProjectile clone(Vec2d newPosition) {
         int damage = this.get(DamageComponent.class).amount;
-        // Preserves the assigned target from the original instance
-        return new LobProjectile(damage, newPosition, this.target,this.areaOfEffect);
+        return new LobProjectile(damage, newPosition, this.target, this.areaOfEffect, this.aoeDamage);
     }
 }
