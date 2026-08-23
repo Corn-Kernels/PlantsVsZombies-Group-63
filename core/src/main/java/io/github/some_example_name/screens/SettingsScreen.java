@@ -27,27 +27,38 @@ public class SettingsScreen extends BaseScreen {
         buildUI();
         loadCurrentSettings();
     }
-
+    private String getDifficultyLabel(int level) {
+        switch(level) {
+            case 1: return "Very Easy";
+            case 2: return "Easy";
+            case 3: return "Normal";
+            case 4: return "Hard";
+            case 5: return "Very Hard";
+            default: return "Normal";
+        }
+    }
     private void loadCurrentSettings() {
         PlayerProgress progress = user.getProgress();
-
         int level = progress.getDifficultyLevel();
-        difficultySelect.setSelected(level + " - " + getDifficultyLabel(level));
+
+        String target = level + " - " + getDifficultyLabel(level);
+        boolean found = false;
+        for (String item : difficultySelect.getItems()) {
+            if (item.equals(target)) {
+                difficultySelect.setSelected(item);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            difficultySelect.setSelectedIndex(0);
+        }
         speedSlider.setValue(progress.getGameSpeed());
         speedLabel.setText(String.format("%.1fx", progress.getGameSpeed()));
         gridCheck.setChecked(progress.isShowGrid());
         debugCheck.setChecked(progress.isDebugMode());
     }
-    private String getDifficultyLabel(int level) {
-        switch(level) {
-            case 1: return "Easy";
-            case 2: return "";
-            case 3: return "Normal";
-            case 4: return "";
-            case 5: return "Hard";
-            default: return "Normal";
-        }
-    }
+
     private void buildUI() {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
@@ -59,7 +70,7 @@ public class SettingsScreen extends BaseScreen {
         Table difficultyTable = new Table();
         difficultyTable.add(new Label("Difficulty:", skin)).left().padRight(20);
         difficultySelect = new SelectBox<>(skin);
-        difficultySelect.setItems("1 - Easy", "2", "3 - Normal", "4", "5 - Hard");
+        difficultySelect.setItems("1 - Very Easy", "2 - Easy", "3 - Normal", "4 - Hard", "5 - Very Hard");
         difficultySelect.setSelected("3 - Normal");
         difficultyTable.add(difficultySelect).width(150);
         mainTable.add(difficultyTable).padBottom(15).row();
@@ -131,6 +142,7 @@ public class SettingsScreen extends BaseScreen {
 
     private void saveSettings() {
         PlayerProgress progress = user.getProgress();
+        String selected = difficultySelect.getSelected();
         int level = Integer.parseInt(difficultySelect.getSelected().substring(0, 1));
         float speed = speedSlider.getValue();
         boolean showGrid = gridCheck.isChecked();

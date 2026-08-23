@@ -17,10 +17,10 @@ sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
 application.mainClass = 'io.github.some_example_name.lwjgl3.Lwjgl3Launcher'
 application.applicationName = appName
 eclipse.project.name = appName + '-lwjgl3'
-java.sourceCompatibility = 17
-java.targetCompatibility = 17
+java.sourceCompatibility = 21
+java.targetCompatibility = 21
 if (JavaVersion.current().isJava9Compatible()) {
-        compileJava.options.release.set(17)
+        compileJava.options.release.set(21)
 }
 
 dependencies {
@@ -49,9 +49,8 @@ def os = System.properties['os.name'].toLowerCase(Locale.ROOT)
 
 run {
   workingDir = rootProject.file('assets').path
-// You can uncomment the next line if your IDE claims a build failure even when the app closed properly.
-  //setIgnoreExitValue(true)
   jvmArgs += "--enable-native-access=ALL-UNNAMED"
+  jvmArgs += "--add-opens java.base/java.time=ALL-UNNAMED"
   if (os.contains('mac')) jvmArgs += "-XstartOnFirstThread"
 }
 
@@ -158,7 +157,10 @@ construo {
       architecture.set(Target.Architecture.X86_64)
       // Optional: icon for Windows, as a PNG
       icon.set(project.file("icons/logo.png"))
-      jdkUrl.set("https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.10%2B7/OpenJDK21U-jdk_x64_windows_hotspot_21.0.10_7.zip")
+      jdkUrl.set("https://github.com/adoptium/temurin21-binaries/releases/download/jd
+        }
+      }
+    }k-21.0.10%2B7/OpenJDK21U-jdk_x64_windows_hotspot_21.0.10_7.zip")
       // Uncomment the next line to show a console when the game runs, to print messages.
       //useConsole.set(true)
     }
@@ -184,8 +186,8 @@ distributions {
   }
 }
 
-startScripts.dependsOn(':lwjgl3:jar')
-startScripts.classpath = project.tasks.jar.outputs.files
+      startScripts.dependsOn(':lwjgl3:jar')
+      startScripts.classpath = project.tasks.jar.outputs.files
 
 // Helps if debugging on Linux with an Nvidia GPU.
 // This means StartupHelper won't try to restart the JVM, which can prevent debugging.
@@ -195,10 +197,11 @@ startScripts.classpath = project.tasks.jar.outputs.files
 // You can also set __GL_THREADED_OPTIMIZATIONS to 0 in run configurations, which you would need per main() method.
 // StartupHelper will still restart the JVM to set this environment variable when run as a distributable JAR, which is
 // a good thing for end users. They won't need to ever set the debug-specific environment variable.
-tasks.withType(JavaExec.class).configureEach {
-  environment("__GL_THREADED_OPTIMIZATIONS", 0)
-}
+      tasks.withType(JavaExec.class).configureEach {
+        environment("__GL_THREADED_OPTIMIZATIONS", 0)
+      }
 
-if(enableGraalNative == 'true') {
-  apply from: file("nativeimage.gradle")
-}
+      if (enableGraalNative == 'true') {
+        apply from: file("nativeimage.gradle")
+      }
+

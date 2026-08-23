@@ -44,6 +44,7 @@ public class MainMenuScreen extends BaseScreen {
         table.add(settingsBtn).width(200).height(50).padBottom(10).row();
         table.add(newsBtn).width(200).height(50).padBottom(10).row();
         table.add(profileBtn).width(200).height(50).padBottom(10).row();
+        table.add(leaderboardBtn).width(200).height(50).padBottom(10).row();
         table.add(logoutBtn).width(200).height(50).row();
 
 
@@ -87,8 +88,7 @@ public class MainMenuScreen extends BaseScreen {
         });
     }
     private int getUnreadNewsCount() {
-
-        return 3;
+        return user.getProgress().getUnreadNewsCount();
     }
     @Override
     public void render(float delta) {

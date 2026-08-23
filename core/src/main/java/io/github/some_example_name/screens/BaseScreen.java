@@ -2,15 +2,16 @@ package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.raeleus.tenpatch.TenPatch;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.model.User;
 
@@ -28,11 +29,110 @@ public abstract class BaseScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        TenPatch.setDefaultDrawable("tenpatch");
-        skin = new Skin(Gdx.files.internal("skin/pvz2_skin.json"));
+        // ===== ساخت Skin ساده (بدون فایل JSON) =====
+        createSimpleSkin();
+
         loadBackground();
         setupCurrencyDisplay();
     }
+
+    private void createSimpleSkin() {
+        skin = new Skin();
+        BitmapFont font = new BitmapFont();
+        skin.add("default-font", font);
+
+        // ===== ساخت Drawable‌ها =====
+        Pixmap whitePixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        whitePixmap.setColor(Color.WHITE);
+        whitePixmap.fill();
+        Drawable whiteDrawable = new TextureRegionDrawable(new Texture(whitePixmap));
+        whitePixmap.dispose();
+
+        Pixmap grayPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        grayPixmap.setColor(Color.LIGHT_GRAY);
+        grayPixmap.fill();
+        Drawable grayDrawable = new TextureRegionDrawable(new Texture(grayPixmap));
+        grayPixmap.dispose();
+
+        // ===== LabelStyle =====
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+        labelStyle.fontColor = Color.WHITE;
+        skin.add("default", labelStyle);
+
+        // ===== TextButtonStyle =====
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.fontColor = Color.WHITE;
+        buttonStyle.up = grayDrawable;
+        buttonStyle.down = whiteDrawable;
+        skin.add("default", buttonStyle);
+        skin.add("green", buttonStyle);
+        skin.add("brown", buttonStyle);
+
+        // ===== TextFieldStyle =====
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.font = font;
+        textFieldStyle.fontColor = Color.BLACK;
+        textFieldStyle.background = whiteDrawable;
+        textFieldStyle.cursor = whiteDrawable;
+        textFieldStyle.selection = grayDrawable;
+        skin.add("default", textFieldStyle);
+
+        // ===== CheckBoxStyle =====
+        CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
+        checkBoxStyle.font = font;
+        checkBoxStyle.fontColor = Color.WHITE;
+        checkBoxStyle.checkboxOn = whiteDrawable;
+        checkBoxStyle.checkboxOff = grayDrawable;
+        skin.add("default", checkBoxStyle);
+
+        // ===== SelectBoxStyle =====
+        SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
+        selectBoxStyle.font = font;
+        selectBoxStyle.fontColor = Color.BLACK;
+        selectBoxStyle.background = whiteDrawable;
+
+        List.ListStyle listStyle = new List.ListStyle();
+        listStyle.font = font;
+        listStyle.fontColorSelected = Color.WHITE;
+        listStyle.fontColorUnselected = Color.BLACK;
+        listStyle.selection = grayDrawable;
+
+        selectBoxStyle.listStyle = listStyle;
+        selectBoxStyle.scrollStyle = new ScrollPane.ScrollPaneStyle();
+        skin.add("default", selectBoxStyle);
+
+        // ===== ScrollPaneStyle =====
+        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
+        scrollPaneStyle.background = whiteDrawable;
+        skin.add("default", scrollPaneStyle);
+
+        // ===== SliderStyle =====
+        Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
+        sliderStyle.background = grayDrawable;
+        sliderStyle.knob = whiteDrawable;
+        sliderStyle.knobBefore = whiteDrawable;
+        skin.add("default-horizontal", sliderStyle);
+
+        // ===== ProgressBarStyle =====
+        ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle();
+        progressBarStyle.background = grayDrawable;
+        progressBarStyle.knob = whiteDrawable;
+        progressBarStyle.knobBefore = whiteDrawable;
+        skin.add("default-horizontal", progressBarStyle);
+
+        // ===== WindowStyle (برای Dialog‌ها) =====
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.titleFont = font;
+        windowStyle.titleFontColor = Color.WHITE;
+        windowStyle.background = grayDrawable;
+        skin.add("default", windowStyle);
+
+        // ===== DialogStyle (برای Dialog‌ها) =====
+        skin.add("default", windowStyle);
+    }
+
     private void loadBackground() {
         try {
             Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/background.jpg"));
@@ -44,15 +144,24 @@ public abstract class BaseScreen implements Screen {
             System.out.println(" Background not found! Using default color.");
         }
     }
-    // ===== سکه و الماس (همیشه در همه منوها) =====
+
+    private Drawable createColorDrawable(Color color) {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(color);
+        pixmap.fill();
+        Drawable drawable = new TextureRegionDrawable(new Texture(pixmap));
+        pixmap.dispose();
+        return drawable;
+    }
+
     private void setupCurrencyDisplay() {
         currencyTable = new Table();
-        currencyTable.top().right();  // گوشه بالا سمت راست
+        currencyTable.top().right();
         currencyTable.setFillParent(true);
-
         updateCurrencyDisplay();
         stage.addActor(currencyTable);
     }
+
     protected void updateCurrencyDisplay() {
         User currentUser = game.getCurrentUser();
         int coins = (currentUser != null) ? currentUser.getProgress().getCoins() : 0;
@@ -60,41 +169,44 @@ public abstract class BaseScreen implements Screen {
 
         currencyTable.clear();
 
+        Drawable bgDrawable = createColorDrawable(new Color(0, 0, 0, 0.5f));
+
         coinsLabel = new Label("🪙 " + coins, skin);
         diamondsLabel = new Label("💎 " + diamonds, skin);
         coinsLabel.setFontScale(1.2f);
         diamondsLabel.setFontScale(1.2f);
 
-        coinsLabel.setBackground(skin.getDrawable("white_pixel"));
-        diamondsLabel.setBackground(skin.getDrawable("white_pixel"));
-        coinsLabel.getBackground().setMinWidth(80);
-        coinsLabel.getBackground().setMinHeight(30);
-        diamondsLabel.getBackground().setMinWidth(80);
-        diamondsLabel.getBackground().setMinHeight(30);
-        coinsLabel.setColor(0, 0, 0, 0.5f);
-        diamondsLabel.setColor(0, 0, 0, 0.5f);
+        Label.LabelStyle style = new Label.LabelStyle(skin.get(Label.LabelStyle.class));
+        style.background = bgDrawable;
+        coinsLabel.setStyle(style);
+        diamondsLabel.setStyle(style);
 
         currencyTable.add(coinsLabel).padTop(10).padRight(10);
         currencyTable.add(diamondsLabel).padTop(10).padRight(20);
         currencyTable.row();
     }
+
     protected void showToast(String message, float duration, boolean isError) {
         Label toast = new Label(message, skin);
         toast.setAlignment(Align.center);
+
         if (isError) {
             toast.setColor(1, 0.2f, 0.2f, 1);
         } else {
             toast.setColor(0.2f, 1, 0.2f, 1);
         }
         toast.setFontScale(1.2f);
+
+        Drawable toastBg = createColorDrawable(new Color(0, 0, 0, 0.7f));
+
+        Label.LabelStyle style = new Label.LabelStyle(skin.get(Label.LabelStyle.class));
+        style.background = toastBg;
+        toast.setStyle(style);
+
         toast.setPosition(
             stage.getWidth() / 2f - toast.getWidth() / 2f,
             stage.getHeight() / 2f + 100
         );
-        toast.setBackground(skin.getDrawable("white_pixel"));
-        toast.getBackground().setMinWidth(400);
-        toast.getBackground().setMinHeight(50);
-        toast.setColor(0, 0, 0, 0.7f);
 
         stage.addActor(toast);
 
@@ -105,10 +217,9 @@ public abstract class BaseScreen implements Screen {
             }
         }, duration);
     }
+
     @Override
-    public void render(float delta) {
-        // هر Screen خودش render رو پیاده‌سازی میکنه
-    }
+    public void render(float delta) {}
 
     @Override
     public void resize(int width, int height) {
@@ -120,6 +231,7 @@ public abstract class BaseScreen implements Screen {
         stage.dispose();
         skin.dispose();
     }
+
     @Override public void show() {}
     @Override public void hide() {}
     @Override public void pause() {}

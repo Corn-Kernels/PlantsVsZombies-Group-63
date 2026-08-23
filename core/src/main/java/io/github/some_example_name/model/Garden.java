@@ -7,10 +7,10 @@ import java.util.List;
 public class Garden{
     private List<GardenPot>pots;
     private int unlockedPotCount;
-    private static final int ROWS=4;
-    private static final int COLS=5;
-    private static final int MAX_POTS=20;
-    private static final int UNLOCK_COST=2000;
+    private static final int ROWS=3;
+    private static final int COLS=4;
+    private static final int MAX_POTS=12;
+    private static final int UNLOCK_COST=200;
 
     public Garden(){
         this.pots=new ArrayList<>();

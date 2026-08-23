@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.model.User;
 import io.github.some_example_name.model.NewsItem;
+import io.github.some_example_name.model.PlayerProgress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,52 +17,41 @@ public class NewsScreen extends BaseScreen {
 
     private User user;
     private List<NewsItem> allNews;
-    private List<NewsItem> unreadNews;
     private Label detailLabel;
     private Label countLabel;
+    private Table newsTable;
+    private ScrollPane scrollPane;
 
     public NewsScreen(Main game, User user) {
         super(game);
         this.user = user;
 
+        PlayerProgress progress = user.getProgress();
+        allNews = progress.getNewsList();
 
-        allNews = new ArrayList<>();
-        unreadNews = new ArrayList<>();
-
-        allNews.add(new NewsItem(
-            " Welcome to the game!",
-            "2024-01-01",
-            "Welcome to Plants vs. Zombies! Start your adventure by playing Chapter 1.",
-            "GENERAL"
-        ));
-        allNews.add(new NewsItem(
-            " New zombie: Buckethead!",
-            "2024-01-05",
-            "The Buckethead zombie has high armor. Use explosive plants to defeat it.",
-            "ZOMBIE"
-        ));
-        allNews.add(new NewsItem(
-            " New plant: Snow Pea!",
-            "2024-01-10",
-            "Snow Pea slows down zombies with its icy peas.",
-            "PLANT"
-        ));
-        allNews.add(new NewsItem(
-            " Chapter 2 Unlocked!",
-            "2024-01-12",
-            "You have unlocked Chapter 2: Ice Caves. New zombies and plants await!",
-            "LEVEL"
-        ));
-        allNews.add(new NewsItem(
-            " New Minigame: Vasebreaker!",
-            "2024-01-15",
-            "Try the new Vasebreaker minigame. Break vases to find plants and defeat zombies.",
-            "MINIGAME"
-        ));
-        unreadNews.addAll(allNews);
+        if (allNews.isEmpty()) {
+            initializeDefaultNews(progress);
+        }
 
         buildUI();
+        updateNewsList();
     }
+
+    private void initializeDefaultNews(PlayerProgress progress) {
+        progress.addNews(new NewsItem("1", "Welcome to the game!", "2024-01-01",
+            "Welcome to Plants vs. Zombies! Start your adventure by playing Chapter 1.", "GENERAL"));
+        progress.addNews(new NewsItem("2", "New zombie: Buckethead!", "2024-01-05",
+            "The Buckethead zombie has high armor. Use explosive plants to defeat it.", "ZOMBIE"));
+        progress.addNews(new NewsItem("3", "New plant: Snow Pea!", "2024-01-10",
+            "Snow Pea slows down zombies with its icy peas.", "PLANT"));
+        progress.addNews(new NewsItem("4", "Chapter 2 Unlocked!", "2024-01-12",
+            "You have unlocked Chapter 2: Ice Caves. New zombies and plants await!", "LEVEL"));
+        progress.addNews(new NewsItem("5", "New Minigame: Vasebreaker!", "2024-01-15",
+            "Try the new Vasebreaker minigame. Break vases to find plants and defeat zombies.", "MINIGAME"));
+
+        game.getStorageService().saveUsers();
+    }
+
     private void buildUI() {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
@@ -70,35 +60,11 @@ public class NewsScreen extends BaseScreen {
         Label titleLabel = new Label(" NEWS", skin);
         mainTable.add(titleLabel).padBottom(10).row();
 
-        Label countLabel = new Label(" Unread: " + unreadNews.size(), skin);
+        countLabel = new Label("", skin);
         mainTable.add(countLabel).padBottom(20).row();
 
-        Table newsTable = new Table();
-
-        for (NewsItem news : allNews) {
-            String status = unreadNews.contains(news) ? "🔴 " : "✅ ";
-            String typeIcon = getTypeIcon(news.getType());
-
-            TextButton newsBtn = new TextButton(
-                status + typeIcon + " " + news.getTitle() + " (" + news.getDate() + ")",
-                skin, "default"
-            );
-            newsBtn.setWidth(400);
-            newsBtn.setHeight(35);
-            newsTable.add(newsBtn).left().padBottom(5).row();
-
-            newsBtn.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    if (unreadNews.contains(news)) {
-                        unreadNews.remove(news);
-                        countLabel.setText(" Unread: " + unreadNews.size());
-                    }
-                    showNewsDetail(news);
-                }
-            });
-        }
-        ScrollPane scrollPane = new ScrollPane(newsTable, skin);
+        newsTable = new Table();
+        scrollPane = new ScrollPane(newsTable, skin);
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setHeight(300);
         mainTable.add(scrollPane).width(500).padBottom(20).row();
@@ -134,17 +100,41 @@ public class NewsScreen extends BaseScreen {
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.getStorageService().saveUsers();
                 game.setScreen(new MainMenuScreen(game, user));
             }
         });
     }
-    private String getTypeIcon(String type) {
-        switch (type) {
-            case "ZOMBIE": return "🧟";
-            case "PLANT": return "🌱";
-            case "LEVEL": return "📖";
-            case "MINIGAME": return "🎮";
-            default: return "📌";
+    private void updateNewsList() {
+        newsTable.clear();
+        PlayerProgress progress = user.getProgress();
+        int unreadCount = progress.getUnreadNewsCount();
+        countLabel.setText(" Unread: " + unreadCount);
+
+        for (NewsItem news : allNews) {
+            boolean isRead = news.isRead();
+            String status = isRead ? "✅ " : "🔴 ";
+            String typeIcon = getTypeIcon(news.getType());
+
+            TextButton newsBtn = new TextButton(
+                status + typeIcon + " " + news.getTitle() + " (" + news.getDate() + ")",
+                skin, "default"
+            );
+            newsBtn.setWidth(400);
+            newsBtn.setHeight(35);
+            newsTable.add(newsBtn).left().padBottom(5).row();
+
+            newsBtn.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (!news.isRead()) {
+                        news.setRead(true);
+                        game.getStorageService().saveUsers();
+                        updateNewsList();
+                    }
+                    showNewsDetail(news);
+                }
+            });
         }
     }
 
@@ -157,29 +147,46 @@ public class NewsScreen extends BaseScreen {
                 news.getBody()
         );
     }
+
     private void showUnreadNews() {
-        if (unreadNews.isEmpty()) {
+        PlayerProgress progress = user.getProgress();
+        List<NewsItem> unread = progress.getUnreadNews();
+
+        if (unread.isEmpty()) {
             detailLabel.setText(" No unread news!");
             return;
         }
-        StringBuilder sb = new StringBuilder(" Unread News:\n\n");
-        for (NewsItem news : unreadNews) {
+
+        StringBuilder sb = new StringBuilder(" 🔴 Unread News:\n\n");
+        for (NewsItem news : unread) {
             sb.append("🔴 ").append(news.getTitle()).append("\n");
         }
         detailLabel.setText(sb.toString());
     }
+
     private void showAllNews() {
         if (allNews.isEmpty()) {
             detailLabel.setText(" No news!");
             return;
         }
-        StringBuilder sb = new StringBuilder("📚 All News:\n\n");
+
+        StringBuilder sb = new StringBuilder(" All News:\n\n");
         for (NewsItem news : allNews) {
-            String status = unreadNews.contains(news) ? "🔴" : "✅";
+            String status = news.isRead() ? "✅" : "🔴";
             String icon = getTypeIcon(news.getType());
             sb.append(status).append(" ").append(icon).append(" ").append(news.getTitle()).append("\n");
         }
         detailLabel.setText(sb.toString());
+    }
+
+    private String getTypeIcon(String type) {
+        switch (type) {
+            case "ZOMBIE": return "🧟";
+            case "PLANT": return "🌱";
+            case "LEVEL": return "📖";
+            case "MINIGAME": return "🎮";
+            default: return "📌";
+        }
     }
     @Override
     public void render(float delta) {
@@ -187,23 +194,5 @@ public class NewsScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
-    }
-
-    private static class NewsItem {
-        private String title;
-        private String date;
-        private String body;
-        private String type;
-
-        public NewsItem(String title, String date, String body, String type) {
-            this.title = title;
-            this.date = date;
-            this.body = body;
-            this.type = type;
-        }
-        public String getTitle() { return title; }
-        public String getDate() { return date; }
-        public String getBody() { return body; }
-        public String getType() { return type; }
     }
 }

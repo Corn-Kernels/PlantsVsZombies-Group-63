@@ -4,12 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.raeleus.tenpatch.TenPatch;
+import com.badlogic.gdx.graphics.Color;
+//import com.raeleus.tenpatch.TenPatch;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.model.User;
 import io.github.some_example_name.model.PlayerProgress;
@@ -41,8 +43,26 @@ public class AdventureMenuScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        TenPatch.setDefaultDrawable("tenpatch");
-        skin = new Skin(Gdx.files.internal("skin/pvz2_skin.json"));
+        //TenPatch.setDefaultDrawable("tenpatch");
+        //skin = new Skin(Gdx.files.internal("skin/pvz2_skin.json"));
+        skin = new Skin();
+        BitmapFont font = new BitmapFont();  // ← این دیگه قرمز نیست
+        skin.add("default-font", font);
+
+
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+        labelStyle.fontColor = Color.WHITE;
+        skin.add("default", labelStyle);
+
+        // ===== TextButtonStyle =====
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.fontColor = Color.WHITE;
+        skin.add("default", buttonStyle);
+        skin.add("green", buttonStyle);
+
 
         loadBackground();
         setupCurrencyDisplay();
