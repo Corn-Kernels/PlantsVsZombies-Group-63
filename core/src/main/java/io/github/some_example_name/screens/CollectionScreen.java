@@ -51,7 +51,6 @@ public class CollectionScreen extends BaseScreen {
 
         createDrawables();
         loadBackground();
-        // ❌ حذف: setupCurrencyDisplay();
         buildUI();
         showPlantsTab();
     }
@@ -192,7 +191,6 @@ public class CollectionScreen extends BaseScreen {
         });
     }
 
-    // ===== بقیه متدها دقیقاً مثل قبل =====
     private void applyFilters() {
         filteredPlants.clear();
         for (Plant plant : allPlants) {
@@ -225,36 +223,76 @@ public class CollectionScreen extends BaseScreen {
         showPlantsTab();
     }
 
+    // ===== متدهای اصلاح‌شده برای اسکرول =====
     private void showPlantsTab() {
         contentTable.clear();
+
         Table plantsTable = new Table();
 
+        int cols = 3;
+        int colCount = 0;
+        Table rowTable = new Table();
+
         for (Plant plant : filteredPlants) {
+            if (colCount >= cols) {
+                plantsTable.add(rowTable).padBottom(5).row();
+                rowTable = new Table();
+                colCount = 0;
+            }
+
             Table card = createPlantCard(plant);
-            plantsTable.add(card).width(160).height(230).pad(5);
+            rowTable.add(card).width(160).height(230).pad(5);
+            colCount++;
+        }
+
+        if (colCount > 0) {
+            plantsTable.add(rowTable).padBottom(5).row();
         }
 
         ScrollPane scrollPane = new ScrollPane(plantsTable, skin);
         scrollPane.setScrollingDisabled(true, false);
-        scrollPane.setHeight(350);
-        contentTable.add(scrollPane).width(600).height(350);
+        scrollPane.setForceScroll(false, true);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setOverscroll(false, true);
+
+        contentTable.add(scrollPane).width(650).height(380);
     }
 
     private void showZombiesTab() {
         contentTable.clear();
+
         Table zombiesTable = new Table();
 
+        int cols = 3;
+        int colCount = 0;
+        Table rowTable = new Table();
+
         for (Zombie zombie : allZombies) {
+            if (colCount >= cols) {
+                zombiesTable.add(rowTable).padBottom(5).row();
+                rowTable = new Table();
+                colCount = 0;
+            }
+
             Table card = createZombieCard(zombie);
-            zombiesTable.add(card).width(140).height(190).pad(5);
+            rowTable.add(card).width(140).height(190).pad(5);
+            colCount++;
+        }
+
+        if (colCount > 0) {
+            zombiesTable.add(rowTable).padBottom(5).row();
         }
 
         ScrollPane scrollPane = new ScrollPane(zombiesTable, skin);
         scrollPane.setScrollingDisabled(true, false);
-        scrollPane.setHeight(350);
-        contentTable.add(scrollPane).width(600).height(350);
+        scrollPane.setForceScroll(false, true);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setOverscroll(false, true);
+
+        contentTable.add(scrollPane).width(650).height(380);
     }
 
+    // ===== بقیه متدها مثل قبل =====
     private Table createPlantCard(Plant plant) {
         Table card = new Table();
         card.setBackground(cardDrawable);
