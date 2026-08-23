@@ -29,7 +29,6 @@ public abstract class BaseScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // ===== ساخت Skin ساده (بدون فایل JSON) =====
         createSimpleSkin();
 
         loadBackground();
@@ -87,12 +86,15 @@ public abstract class BaseScreen implements Screen {
         checkBoxStyle.checkboxOff = grayDrawable;
         skin.add("default", checkBoxStyle);
 
-        // ===== SelectBoxStyle =====
+        // ============================================
+        // ===== SelectBoxStyle (جدید - برای منوهای کشویی) =====
+        // ============================================
         SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
         selectBoxStyle.font = font;
         selectBoxStyle.fontColor = Color.BLACK;
         selectBoxStyle.background = whiteDrawable;
 
+        // ===== ListStyle برای SelectBox (لیستی که باز میشه) =====
         List.ListStyle listStyle = new List.ListStyle();
         listStyle.font = font;
         listStyle.fontColorSelected = Color.WHITE;
@@ -103,33 +105,38 @@ public abstract class BaseScreen implements Screen {
         selectBoxStyle.scrollStyle = new ScrollPane.ScrollPaneStyle();
         skin.add("default", selectBoxStyle);
 
+        // ============================================
         // ===== ScrollPaneStyle =====
+        // ============================================
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
         scrollPaneStyle.background = whiteDrawable;
         skin.add("default", scrollPaneStyle);
 
+        // ============================================
         // ===== SliderStyle =====
+        // ============================================
         Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
         sliderStyle.background = grayDrawable;
         sliderStyle.knob = whiteDrawable;
         sliderStyle.knobBefore = whiteDrawable;
         skin.add("default-horizontal", sliderStyle);
 
+        // ============================================
         // ===== ProgressBarStyle =====
+        // ============================================
         ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle();
         progressBarStyle.background = grayDrawable;
         progressBarStyle.knob = whiteDrawable;
         progressBarStyle.knobBefore = whiteDrawable;
         skin.add("default-horizontal", progressBarStyle);
 
+        // ============================================
         // ===== WindowStyle (برای Dialog‌ها) =====
+        // ============================================
         Window.WindowStyle windowStyle = new Window.WindowStyle();
         windowStyle.titleFont = font;
         windowStyle.titleFontColor = Color.WHITE;
         windowStyle.background = grayDrawable;
-        skin.add("default", windowStyle);
-
-        // ===== DialogStyle (برای Dialog‌ها) =====
         skin.add("default", windowStyle);
     }
 

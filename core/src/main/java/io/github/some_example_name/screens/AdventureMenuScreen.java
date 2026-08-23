@@ -1,30 +1,20 @@
 package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.graphics.Color;
-//import com.raeleus.tenpatch.TenPatch;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.model.User;
 import io.github.some_example_name.model.PlayerProgress;
 
 import java.util.List;
 
-public class AdventureMenuScreen implements Screen {
+public class AdventureMenuScreen extends BaseScreen {
 
-    private Main game;
-    private Stage stage;
-    private Skin skin;
     private User user;
-    private Texture backgroundTexture;
     private Image backgroundImage;
     private Table mainTable;
     private Table chaptersTable;
@@ -32,77 +22,25 @@ public class AdventureMenuScreen implements Screen {
     private boolean showingLevels = false;
     private String currentChapter = "";
 
-    private Label coinsLabel;
-    private Label diamondsLabel;
-    private Table currencyTable;
-
     public AdventureMenuScreen(Main game, User user) {
-        this.game = game;
+        super(game);
         this.user = user;
 
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-
-        //TenPatch.setDefaultDrawable("tenpatch");
-        //skin = new Skin(Gdx.files.internal("skin/pvz2_skin.json"));
-        skin = new Skin();
-        BitmapFont font = new BitmapFont();  // ← این دیگه قرمز نیست
-        skin.add("default-font", font);
-
-
-
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-        labelStyle.fontColor = Color.WHITE;
-        skin.add("default", labelStyle);
-
-        // ===== TextButtonStyle =====
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
-        buttonStyle.fontColor = Color.WHITE;
-        skin.add("default", buttonStyle);
-        skin.add("green", buttonStyle);
-
-
         loadBackground();
-        setupCurrencyDisplay();
+        // ❌ حذف: setupCurrencyDisplay(); ← خود BaseScreen این رو توی سازنده صدا میزنه
         buildUI();
     }
+
     private void loadBackground() {
         try {
-            backgroundTexture = new Texture(Gdx.files.internal("IMAGES/adventure_background.jpg"));
-            backgroundImage = new Image(backgroundTexture);
+            Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/adventure_background.jpg"));
+            backgroundImage = new Image(bgTexture);
             backgroundImage.setFillParent(true);
             backgroundImage.setZIndex(0);
             stage.addActor(backgroundImage);
         } catch (Exception e) {
-            System.out.println(" Adventure background not found! Using default color.");
+            System.out.println("Adventure background not found! Using default color.");
         }
-    }
-
-    private void setupCurrencyDisplay() {
-        currencyTable = new Table();
-        currencyTable.top().right();
-        currencyTable.setFillParent(true);
-        updateCurrencyDisplay();
-        stage.addActor(currencyTable);
-    }
-
-    private void updateCurrencyDisplay() {
-        User currentUser = game.getCurrentUser();
-        int coins = (currentUser != null) ? currentUser.getProgress().getCoins() : 0;
-        int diamonds = (currentUser != null) ? currentUser.getProgress().getDiamonds() : 0;
-
-        currencyTable.clear();
-
-        coinsLabel = new Label("🪙 " + coins, skin);
-        diamondsLabel = new Label("💎 " + diamonds, skin);
-        coinsLabel.setFontScale(1.2f);
-        diamondsLabel.setFontScale(1.2f);
-
-        currencyTable.add(coinsLabel).padTop(10).padRight(10);
-        currencyTable.add(diamondsLabel).padTop(10).padRight(20);
-        currencyTable.row();
     }
 
     private void buildUI() {
@@ -133,6 +71,7 @@ public class AdventureMenuScreen implements Screen {
             }
         });
     }
+
     private void buildChapterList(PlayerProgress progress) {
         chaptersTable.clear();
         showingLevels = false;
@@ -140,6 +79,7 @@ public class AdventureMenuScreen implements Screen {
         List<String> unlockedChapters = progress.getUnlockedChapters();
         String[] allChapters = {"Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4"};
         int totalLevels = 4;
+
         for (String chapter : allChapters) {
             boolean isUnlocked = unlockedChapters.contains(chapter);
             int completedLevels = getCompletedLevelsForChapter(chapter);
@@ -154,22 +94,25 @@ public class AdventureMenuScreen implements Screen {
             }
             chaptersTable.add(chapterBtn).width(400).height(45).padBottom(5).row();
 
+            final String finalChapter = chapter;
+            final boolean finalIsUnlocked = isUnlocked;
             chapterBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if (isUnlocked) {
-                        showLevelsForChapter(chapter);
+                    if (finalIsUnlocked) {
+                        showLevelsForChapter(finalChapter);
                     }
                 }
             });
         }
     }
+
     private void showLevelsForChapter(String chapterName) {
         chaptersTable.clear();
         showingLevels = true;
         currentChapter = chapterName;
 
-        Label titleLabel = new Label( chapterName + " - Levels", skin);
+        Label titleLabel = new Label(" " + chapterName + " - Levels", skin);
         chaptersTable.add(titleLabel).padBottom(10).row();
 
         String[] levels = {"Level 1", "Level 2", "Level 3", "Level 4"};
@@ -186,15 +129,19 @@ public class AdventureMenuScreen implements Screen {
             }
 
             chaptersTable.add(levelBtn).width(350).height(40).padBottom(5).row();
+
+            final boolean isUnlockedFinal = isUnlocked[i];
             levelBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if (isUnlocked[index]) {
+                    if (isUnlockedFinal) {
                         System.out.println("▶ Starting " + levelName);
+                        game.setScreen(new PlantSelectionScreen(game, user, chapterName));
                     }
                 }
             });
         }
+
         TextButton backBtn = new TextButton(" Back to Chapters", skin, "default");
         chaptersTable.add(backBtn).width(350).height(40).padTop(10).row();
 
@@ -219,20 +166,9 @@ public class AdventureMenuScreen implements Screen {
         stage.act(delta);
         stage.draw();
     }
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
+
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
-        if (backgroundTexture != null) {
-            backgroundTexture.dispose();
-        }
+        super.dispose();
     }
-    @Override public void show() {}
-    @Override public void hide() {}
-    @Override public void pause() {}
-    @Override public void resume() {}
 }

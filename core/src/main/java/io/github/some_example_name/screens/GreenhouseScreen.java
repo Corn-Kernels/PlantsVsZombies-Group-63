@@ -1,40 +1,27 @@
 package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.model.Garden;
 import io.github.some_example_name.model.GardenPot;
 import io.github.some_example_name.model.PlayerProgress;
 import io.github.some_example_name.model.User;
 
-import java.util.List;
+public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
 
-public class GreenhouseScreen implements Screen {
-
-    private Main game;
-    private Stage stage;
-    private Skin skin;
     private User user;
     private Image backgroundImage;
     private Garden garden;
-
-    private Table currencyTable;
-    private Label coinsLabel;
-    private Label diamondsLabel;
 
     private Label statusLabel;
     private Table potsTable;
@@ -55,32 +42,16 @@ public class GreenhouseScreen implements Screen {
     private Texture potGrowingBorderTexture;
 
     public GreenhouseScreen(Main game, User user) {
-        this.game = game;
+        super(game);  // ✅ تغییر کلیدی
         this.user = user;
-
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-
-        skin = new Skin();
-        BitmapFont font = new BitmapFont();
-        skin.add("default-font", font);
-
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-        labelStyle.fontColor = Color.WHITE;
-        skin.add("default", labelStyle);
-
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
-        buttonStyle.fontColor = Color.WHITE;
-        skin.add("default", buttonStyle);
-        skin.add("green", buttonStyle);
 
         PlayerProgress progress = user.getProgress();
         garden = progress.getGarden();
 
         loadPotImages();
         createDrawables();
+        loadBackground();
+        // ❌ حذف: setupCurrencyDisplay();
         buildUI();
         updatePotsDisplay();
     }
@@ -138,14 +109,22 @@ public class GreenhouseScreen implements Screen {
         }
     }
 
-    private void buildUI() {
-        loadBackground();
+    private void loadBackground() {
+        try {
+            Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse_background.jpg"));
+            backgroundImage = new Image(bgTexture);
+            backgroundImage.setFillParent(true);
+            backgroundImage.setZIndex(0);
+            stage.addActor(backgroundImage);
+        } catch (Exception e) {
+            System.out.println("Greenhouse background not found! Using default color.");
+        }
+    }
 
+    private void buildUI() {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
         stage.addActor(mainTable);
-
-        setupCurrencyDisplay();
 
         Label titleLabel = new Label(" GREENHOUSE", skin);
         mainTable.add(titleLabel).padBottom(10).row();
@@ -218,55 +197,6 @@ public class GreenhouseScreen implements Screen {
                 game.setScreen(new GameMenuScreen(game, user));
             }
         });
-    }
-
-    private void loadBackground() {
-        try {
-            Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse_background.jpg"));
-            backgroundImage = new Image(bgTexture);
-            backgroundImage.setFillParent(true);
-            backgroundImage.setZIndex(0);
-            stage.addActor(backgroundImage);
-        } catch (Exception e) {
-            System.out.println("Greenhouse background not found! Using default color.");
-        }
-    }
-
-    private void setupCurrencyDisplay() {
-        currencyTable = new Table();
-        currencyTable.top().right();
-        currencyTable.setFillParent(true);
-        updateCurrencyDisplay();
-        stage.addActor(currencyTable);
-    }
-
-    private void updateCurrencyDisplay() {
-        User currentUser = game.getCurrentUser();
-        int coins = (currentUser != null) ? currentUser.getProgress().getCoins() : 0;
-        int diamonds = (currentUser != null) ? currentUser.getProgress().getDiamonds() : 0;
-
-        currencyTable.clear();
-
-        Pixmap bgPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        bgPixmap.setColor(new Color(0, 0, 0, 0.5f));
-        bgPixmap.fill();
-        Drawable bgDrawable = new TextureRegionDrawable(new Texture(bgPixmap));
-        bgPixmap.dispose();
-
-        coinsLabel = new Label("🪙 " + coins, skin);
-        diamondsLabel = new Label("💎 " + diamonds, skin);
-        coinsLabel.setFontScale(1.2f);
-        diamondsLabel.setFontScale(1.2f);
-
-        Label.LabelStyle style = new Label.LabelStyle(skin.get(Label.LabelStyle.class));
-        style.background = bgDrawable;
-
-        coinsLabel.setStyle(style);
-        diamondsLabel.setStyle(style);
-
-        currencyTable.add(coinsLabel).padTop(10).padRight(10).width(80).height(30);
-        currencyTable.add(diamondsLabel).padTop(10).padRight(20).width(80).height(30);
-        currencyTable.row();
     }
 
     private void updateInfoDisplay() {
@@ -479,43 +409,6 @@ public class GreenhouseScreen implements Screen {
         }
     }
 
-    private void showToast(String message, float duration, boolean isError) {
-        Label toast = new Label(message, skin);
-        toast.setAlignment(Align.center);
-        if (isError) {
-            toast.setColor(1, 0.2f, 0.2f, 1);
-        } else {
-            toast.setColor(0.2f, 1, 0.2f, 1);
-        }
-        toast.setFontScale(1.2f);
-        toast.setPosition(
-            stage.getWidth() / 2f - toast.getWidth() / 2f,
-            stage.getHeight() / 2f + 100
-        );
-
-        Pixmap toastPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        toastPixmap.setColor(new Color(0, 0, 0, 0.7f));
-        toastPixmap.fill();
-        Drawable toastBg = new TextureRegionDrawable(new Texture(toastPixmap));
-        toastPixmap.dispose();
-
-        Label.LabelStyle style = new Label.LabelStyle(skin.get(Label.LabelStyle.class));
-        style.background = toastBg;
-        toast.setStyle(style);
-
-        stage.addActor(toast);
-
-        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-            @Override
-            public void run() {
-                toast.remove();
-            }
-        }, duration);
-    }
-
-    @Override
-    public void show() {}
-
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -525,23 +418,8 @@ public class GreenhouseScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
-
-    @Override
-    public void hide() {}
-
-    @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
+        super.dispose();
         if (potEmptyTexture != null) potEmptyTexture.dispose();
         if (potLockedTexture != null) potLockedTexture.dispose();
         if (potReadyBorderTexture != null) potReadyBorderTexture.dispose();

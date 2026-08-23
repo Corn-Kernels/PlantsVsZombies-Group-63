@@ -1,22 +1,17 @@
 package io.github.some_example_name.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.model.Plant;
 import io.github.some_example_name.model.PlayerProgress;
@@ -27,24 +22,16 @@ import io.github.some_example_name.utils.DataLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectionScreen implements Screen {
+public class CollectionScreen extends BaseScreen {
 
-    private Main game;
-    private Stage stage;
-    private Skin skin;
     private User user;
     private Image backgroundImage;
-
     private Table contentTable;
     private Table detailTable;
     private Label detailLabel;
     private Image detailImage;
     private List<Plant> allPlants;
     private List<Zombie> allZombies;
-
-    private Table currencyTable;
-    private Label coinsLabel;
-    private Label diamondsLabel;
 
     private String currentFilter = "ALL";
     private String currentCategoryFilter = "ALL";
@@ -55,33 +42,16 @@ public class CollectionScreen implements Screen {
     private Drawable cardDrawable;
 
     public CollectionScreen(Main game, User user) {
-        this.game = game;
+        super(game);
         this.user = user;
-
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-
-        // ===== ساخت Skin =====
-        skin = new Skin();
-        BitmapFont font = new BitmapFont();
-        skin.add("default-font", font);
-
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.font = font;
-        labelStyle.fontColor = Color.WHITE;
-        skin.add("default", labelStyle);
-
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
-        buttonStyle.fontColor = Color.WHITE;
-        skin.add("default", buttonStyle);
-        skin.add("green", buttonStyle);
 
         allPlants = DataLoader.loadAllPlants();
         allZombies = DataLoader.loadAllZombies();
         filteredPlants = new ArrayList<>(allPlants);
 
         createDrawables();
+        loadBackground();
+        // ❌ حذف: setupCurrencyDisplay();
         buildUI();
         showPlantsTab();
     }
@@ -106,14 +76,22 @@ public class CollectionScreen implements Screen {
         cardPixmap.dispose();
     }
 
-    private void buildUI() {
-        loadBackground();
+    private void loadBackground() {
+        try {
+            Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/collection_background.jpg"));
+            backgroundImage = new Image(bgTexture);
+            backgroundImage.setFillParent(true);
+            backgroundImage.setZIndex(0);
+            stage.addActor(backgroundImage);
+        } catch (Exception e) {
+            System.out.println("Collection background not found! Using default color.");
+        }
+    }
 
+    private void buildUI() {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
         stage.addActor(mainTable);
-
-        setupCurrencyDisplay();
 
         Label titleLabel = new Label(" COLLECTION", skin);
         mainTable.add(titleLabel).padBottom(10).row();
@@ -180,6 +158,7 @@ public class CollectionScreen implements Screen {
                 showPlantsTab();
             }
         });
+
         zombiesTab.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -188,6 +167,7 @@ public class CollectionScreen implements Screen {
                 showZombiesTab();
             }
         });
+
         filterSelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -195,6 +175,7 @@ public class CollectionScreen implements Screen {
                 applyFilters();
             }
         });
+
         categorySelect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -202,6 +183,7 @@ public class CollectionScreen implements Screen {
                 applyFilters();
             }
         });
+
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -210,89 +192,7 @@ public class CollectionScreen implements Screen {
         });
     }
 
-    private void loadBackground() {
-        try {
-            Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/collection_background.jpg"));
-            backgroundImage = new Image(bgTexture);
-            backgroundImage.setFillParent(true);
-            backgroundImage.setZIndex(0);
-            stage.addActor(backgroundImage);
-        } catch (Exception e) {
-            System.out.println("Background not found! Using default color.");
-        }
-    }
-
-    private void setupCurrencyDisplay() {
-        currencyTable = new Table();
-        currencyTable.top().right();
-        currencyTable.setFillParent(true);
-        updateCurrencyDisplay();
-        stage.addActor(currencyTable);
-    }
-
-    private void updateCurrencyDisplay() {
-        User currentUser = game.getCurrentUser();
-        int coins = (currentUser != null) ? currentUser.getProgress().getCoins() : 0;
-        int diamonds = (currentUser != null) ? currentUser.getProgress().getDiamonds() : 0;
-
-        currencyTable.clear();
-
-        Pixmap bgPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        bgPixmap.setColor(new Color(0, 0, 0, 0.5f));
-        bgPixmap.fill();
-        Drawable bgDrawable = new TextureRegionDrawable(new Texture(bgPixmap));
-        bgPixmap.dispose();
-
-        coinsLabel = new Label("🪙 " + coins, skin);
-        diamondsLabel = new Label("💎 " + diamonds, skin);
-        coinsLabel.setFontScale(1.2f);
-        diamondsLabel.setFontScale(1.2f);
-
-        Label.LabelStyle style = new Label.LabelStyle(skin.get(Label.LabelStyle.class));
-        style.background = bgDrawable;
-
-        coinsLabel.setStyle(style);
-        diamondsLabel.setStyle(style);
-
-        currencyTable.add(coinsLabel).padTop(10).padRight(10).width(80).height(30);
-        currencyTable.add(diamondsLabel).padTop(10).padRight(20).width(80).height(30);
-        currencyTable.row();
-    }
-
-    private void showToast(String message, float duration, boolean isError) {
-        Label toast = new Label(message, skin);
-        toast.setAlignment(Align.center);
-        if (isError) {
-            toast.setColor(1, 0.2f, 0.2f, 1);
-        } else {
-            toast.setColor(0.2f, 1, 0.2f, 1);
-        }
-        toast.setFontScale(1.2f);
-        toast.setPosition(
-            stage.getWidth() / 2f - toast.getWidth() / 2f,
-            stage.getHeight() / 2f + 100
-        );
-
-        Pixmap toastPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        toastPixmap.setColor(new Color(0, 0, 0, 0.7f));
-        toastPixmap.fill();
-        Drawable toastBg = new TextureRegionDrawable(new Texture(toastPixmap));
-        toastPixmap.dispose();
-
-        Label.LabelStyle style = new Label.LabelStyle(skin.get(Label.LabelStyle.class));
-        style.background = toastBg;
-        toast.setStyle(style);
-
-        stage.addActor(toast);
-
-        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
-            @Override
-            public void run() {
-                toast.remove();
-            }
-        }, duration);
-    }
-
+    // ===== بقیه متدها دقیقاً مثل قبل =====
     private void applyFilters() {
         filteredPlants.clear();
         for (Plant plant : allPlants) {
@@ -633,9 +533,6 @@ public class CollectionScreen implements Screen {
     }
 
     @Override
-    public void show() {}
-
-    @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -644,22 +541,7 @@ public class CollectionScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
-
-    @Override
-    public void hide() {}
-
-    @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
+        super.dispose();
     }
 }
