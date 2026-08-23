@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
 
 public class LineOfDamage extends AbstractProjectile {
@@ -20,10 +21,10 @@ public class LineOfDamage extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target) {
+    public boolean hit(Entity target, Field field) {
         this.used = true; // Mark as used the moment collision is processed
 
-        if (super.hit(target)) {
+        if (super.hit(target, field)) {
             Vec2d targetPos = target.get(PositionComponent.class).position;
             Vec2d myPos = this.get(PositionComponent.class).position;
 

@@ -5,6 +5,8 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage; // Added import
+import com.cornkernels.game.map.Field; // Added import
 import com.cornkernels.game.systems.entity.CombatSystem;
 
 public class TruePeaProjectile extends AbstractProjectile {
@@ -22,19 +24,24 @@ public class TruePeaProjectile extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target) {
-        if (super.hit(target)) {
+    public boolean hit(Entity target, Field field) {
+        if (super.hit(target, field)) {
             int baseDamage = this.get(DamageComponent.class).amount;
 
             if (heat == 1) {
-                // Inflamed: Deal double damage
+                // Inflamed: Deal double damage.
                 int finalDamage = baseDamage * 2;
-                CombatSystem.applyDamage(target, finalDamage, false);
 
-                // Spawn a small 0.3 radius AOE with 20% damage (rounded up)
-                // TODO: add the aoe spawning
+                // Calculate splash damage (20% rounded up)
+                int splashDamage = (int) Math.ceil(baseDamage * 0.20);
 
-                // Note: Add 'aoe' to your field via your combat/projectile system if not handled automatically
+                // We subtract the splash damage from the direct hit so the primary target
+                // doesn't accidentally take double damage when the AoE hits it next tick!
+                CombatSystem.applyDamage(target, finalDamage - splashDamage, false);
+
+                // Spawn a small 0.3 radius AOE with 20% damage
+                field.addProjectile(new AreaOfDamage(this.get(PositionComponent.class).position, 0.3f, splashDamage));
+
             } else if (heat == -1) {
                 // Cold: Deal normal damage + slow down effect
                 CombatSystem.applyDamage(target, baseDamage, false);

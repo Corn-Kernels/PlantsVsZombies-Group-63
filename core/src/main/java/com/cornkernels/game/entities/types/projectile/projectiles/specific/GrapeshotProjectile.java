@@ -30,12 +30,7 @@ public class GrapeshotProjectile extends StrikeThroughProjectile {
         return new GrapeshotProjectile(this.get(DamageComponent.class).amount, newPosition, vel, this.pierceLeft, this.bouncesLeft, this.lifetime);
     }
 
-    /**
-     * TODO: Call this method every frame in your ProjectileMovementSystem to handle the bouncing and lifespan!
-     *
-     * By simply inverting the X or Y velocity upon hitting a wall, the projectile
-     * mathematically maintains its exact angle (e.g., 45 degrees) indefinitely.
-     */
+
     public void handleBounceAndLifetime(float dt, float minX, float maxX, float minY, float maxY) {
         lifetime -= dt;
         if (lifetime <= 0) {

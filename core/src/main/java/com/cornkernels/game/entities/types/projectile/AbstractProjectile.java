@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+import com.cornkernels.game.map.Field; // Added import
 
 public class AbstractProjectile extends Entity {
 
@@ -29,7 +30,7 @@ public class AbstractProjectile extends Entity {
      * This function is called for each projectile for each zombie to determine if it hits any zombie or not.
      * This is overwritten by each projectile type to ensure correct behavior.
      */
-    public boolean hit(Entity target) {
+    public boolean hit(Entity target, Field field) {
         double distance = Math.abs(target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position));
 
         if ((target instanceof ZombieInstance || target instanceof Grave) && distance <= HIT_DISTANCE) {

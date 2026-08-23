@@ -4,7 +4,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
-import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
 
 public class PeaProjectile extends AbstractProjectile {
@@ -13,13 +13,12 @@ public class PeaProjectile extends AbstractProjectile {
 
     public PeaProjectile(int damage, Vec2d startPosition) {
         super(damage, new Vec2d(PEA_SPEED, 0), startPosition);
-
     }
 
     @Override
-    public boolean hit(Entity target){
-        if(super.hit(target)){
-                CombatSystem.applyDamage(target,this.get(DamageComponent.class).amount,false);
+    public boolean hit(Entity target, Field field) {
+        if(super.hit(target, field)){
+            CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
             return true;
         }
         return false;

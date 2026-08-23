@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
 
 public class AreaOfDamage extends AbstractProjectile {
@@ -18,10 +19,10 @@ public class AreaOfDamage extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target) {
+    public boolean hit(Entity target, Field field) {
         this.used = true; // Mark as used the moment collision is processed
 
-        if (super.hit(target) && target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position) < radius) {
+        if (super.hit(target, field) && target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position) < radius) {
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
         }
 

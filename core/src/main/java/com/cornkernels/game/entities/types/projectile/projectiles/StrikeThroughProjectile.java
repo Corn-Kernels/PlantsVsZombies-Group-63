@@ -7,6 +7,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
 
 public class StrikeThroughProjectile extends AbstractProjectile {
@@ -21,9 +22,9 @@ public class StrikeThroughProjectile extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target) {
+    public boolean hit(Entity target, Field field) {
         // Ensure the target is valid (Zombie or Grave) and has not already been hit by this projectile
-        if (super.hit(target) && !hitTargets.contains(target)) {
+        if (super.hit(target, field) && !hitTargets.contains(target)) {
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
             hitTargets.add(target);
             pierceLeft--;

@@ -4,6 +4,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
 
 public class LightningCloudProjectile extends AbstractProjectile {
@@ -16,8 +17,8 @@ public class LightningCloudProjectile extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target) {
-        if (target == this.target && super.hit(target)) {
+    public boolean hit(Entity target, Field field) {
+        if (target == this.target && super.hit(target, field)) {
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
             return true;
         }

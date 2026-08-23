@@ -68,7 +68,7 @@ public class CombatSystem extends EntitySystem {
                 // graves that are being eaten shouldnt get hit
                 if (target.has(GraveBeingEatenComponent.class))continue;
                 // Checking all projectiles since each one has a different hitbox logic
-                if (!projectile.hit(target)) {
+                if (!projectile.hit(target,field)) {
                     continue;
                 }
 
