@@ -459,17 +459,17 @@ public class CollectionScreen extends BaseScreen {
         int cost = plant.getUpgradeCost();
 
         if (progress.getCoins() < cost) {
-            showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
+            showToast(" Not enough coins! Need " + cost + " coins.", 2f, true);
             return;
         }
 
         if (plant.getSeedPackets() < plant.getSeedPacketsNeeded()) {
-            showToast("❌ Not enough seeds! Need " + plant.getSeedPacketsNeeded() + " seeds.", 2f, true);
+            showToast(" Not enough seeds! Need " + plant.getSeedPacketsNeeded() + " seeds.", 2f, true);
             return;
         }
 
         if (plant.getLevel() >= plant.getMaxLevel()) {
-            showToast("⭐ Already at max level!", 2f, false);
+            showToast(" Already at max level!", 2f, false);
             return;
         }
 

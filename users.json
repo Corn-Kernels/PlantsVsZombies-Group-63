@@ -1,0 +1,322 @@
+{
+  "test": {
+    "username": "test",
+    "password": "123",
+    "nickname": "Tester",
+    "email": "test@test.com",
+    "gender": "male",
+    "isLoggedIn": false,
+    "stayLoggedIn": false,
+    "progress": {
+      "coins": 1000,
+      "diamonds": 10,
+      "highScore": 0,
+      "unlockedChapters": [
+        "Chapter 1"
+      ],
+      "ownedPlants": [
+        "SUNFLOWER",
+        "PEASHOOTER",
+        "WALL_NUT"
+      ],
+      "seenZombies": [],
+      "completedLevels": 0,
+      "gamesPlayed": 0,
+      "pots": 0,
+      "plantFood": 0,
+      "seedPackets": [],
+      "difficultyLevel": 3,
+      "gameSpeed": 1.0,
+      "showGrid": false,
+      "debugMode": false,
+      "minigamesCompleted": 0,
+      "dailyQuestsCompleted": 0,
+      "nonDailyQuestsCompleted": 0,
+      "newsList": [],
+      "garden": {
+        "pots": [
+          {
+            "row": 1,
+            "col": 1,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          }
+        ],
+        "unlockedPotCount": 0
+      }
+    },
+    "securityQuestionIndex": 0,
+    "securityAnswer": ""
+  },
+  "bahar": {
+    "username": "bahar",
+    "password": "abc",
+    "nickname": "bahar",
+    "email": "bahar@gmail.com",
+    "gender": "female",
+    "isLoggedIn": true,
+    "stayLoggedIn": false,
+    "progress": {
+      "coins": 900,
+      "diamonds": 10,
+      "highScore": 0,
+      "unlockedChapters": [
+        "Chapter 1"
+      ],
+      "ownedPlants": [
+        "SUNFLOWER",
+        "PEASHOOTER",
+        "WALL_NUT",
+        "DOOM-SHROOM"
+      ],
+      "seenZombies": [],
+      "completedLevels": 0,
+      "gamesPlayed": 0,
+      "pots": 0,
+      "plantFood": 0,
+      "seedPackets": [],
+      "difficultyLevel": 3,
+      "gameSpeed": 1.0,
+      "showGrid": false,
+      "debugMode": false,
+      "minigamesCompleted": 0,
+      "dailyQuestsCompleted": 0,
+      "nonDailyQuestsCompleted": 0,
+      "newsList": [
+        {
+          "id": "1",
+          "title": "Welcome to the game!",
+          "date": "2024-01-01",
+          "body": "Welcome to Plants vs. Zombies! Start your adventure by playing Chapter 1.",
+          "isRead": false,
+          "type": "GENERAL"
+        },
+        {
+          "id": "2",
+          "title": "New zombie: Buckethead!",
+          "date": "2024-01-05",
+          "body": "The Buckethead zombie has high armor. Use explosive plants to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "3",
+          "title": "New plant: Snow Pea!",
+          "date": "2024-01-10",
+          "body": "Snow Pea slows down zombies with its icy peas.",
+          "isRead": false,
+          "type": "PLANT"
+        },
+        {
+          "id": "4",
+          "title": "Chapter 2 Unlocked!",
+          "date": "2024-01-12",
+          "body": "You have unlocked Chapter 2: Ice Caves. New zombies and plants await!",
+          "isRead": false,
+          "type": "LEVEL"
+        },
+        {
+          "id": "5",
+          "title": "New Minigame: Vasebreaker!",
+          "date": "2024-01-15",
+          "body": "Try the new Vasebreaker minigame. Break vases to find plants and defeat zombies.",
+          "isRead": false,
+          "type": "MINIGAME"
+        }
+      ],
+      "garden": {
+        "pots": [
+          {
+            "row": 1,
+            "col": 1,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          }
+        ],
+        "unlockedPotCount": 0
+      }
+    },
+    "securityQuestionIndex": 0,
+    "securityAnswer": "baran"
+  }
+}
