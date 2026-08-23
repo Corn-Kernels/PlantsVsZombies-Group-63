@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.InstaTrapComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
+import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.map.Field;
 
 public class TrapExplosiveBehavior implements PlantAttackBehavior {
@@ -44,8 +45,7 @@ public class TrapExplosiveBehavior implements PlantAttackBehavior {
 
             if (state.isArmed || armTimeSeconds == 0) {
                 // EXPLODE!
-                // TODO: Spawn AreaOfDamage using the 'radius' and 'damage' variables
-                // Example: field.addProjectile(new AreaOfDamage(self.get(PositionComponent.class).position, radius, damage));
+                field.addProjectile(new AreaOfDamage(self.get(PositionComponent.class).position, radius, damage));
 
                 hc.currentHealth = 0; // Die immediately after triggering
             } else {

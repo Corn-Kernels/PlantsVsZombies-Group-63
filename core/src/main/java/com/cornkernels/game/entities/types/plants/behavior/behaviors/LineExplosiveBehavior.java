@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.ExplosionTimerComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
+import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
 import com.cornkernels.game.map.Field;
 
 public class LineExplosiveBehavior implements PlantAttackBehavior {
@@ -35,8 +36,8 @@ public class LineExplosiveBehavior implements PlantAttackBehavior {
         timer.timeElapsed += (1.0f / 20.0f);
 
         if (timer.timeElapsed >= waitTimeSeconds) {
-            // TODO: Spawn LineOfDamage
-            // Example: field.addProjectile(new LineOfDamage(self.get(PositionComponent.class).position, length, width, damage));
+            // Spawn the piercing line explosion
+            field.addProjectile(new LineOfDamage(self.get(PositionComponent.class).position, length, width, damage));
 
             // Snap health exactly to 0
             hc.currentHealth = 0;

@@ -8,8 +8,15 @@ import java.util.Optional;
 
 public enum PlantDef {
 
+    // ==========================================
+    // FULLY IMPLEMENTED PLANTS
+    // ==========================================
     //region IMPLEMENTED PLANTS
 
+    // ------------------------------------------
+    // Sun Producers
+    // Plants that generate sun points over time.
+    // ------------------------------------------
     //region Sun Producers
     SUNFLOWER1(1001, "Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 50, 300, "0", 24.0f, 5f),
     SUNFLOWER2(2001, "Sunflower", PlantCategory.SUN_PRODUCER, tags(PlantTag.DAY), 50, 300, "0", 22.0f, 5f),
@@ -32,6 +39,10 @@ public enum PlantDef {
     SUN_SHROOM4(4003, "Sun-shroom", PlantCategory.SUN_PRODUCER, tags(PlantTag.SHROOM, PlantTag.WRAMP_UP, PlantTag.NIGHT), 25, 450, "0", 0.0f, 5f),
     //endregion
 
+    // ------------------------------------------
+    // Peashooters
+    // Straight-shooting projectile plants.
+    // ------------------------------------------
     //region Peashooters
     PEASHOOTER1(1006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "20", 1.5f, 5f),
     PEASHOOTER2(2006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "30", 1.5f, 5f),
@@ -74,6 +85,10 @@ public enum PlantDef {
     SPLIT_PEA4(4012, "Split Pea", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 500, "30", 1.5f, 5f),
     //endregion
 
+    // ------------------------------------------
+    // Short Range & Spreaders
+    // Plants that shoot multi-directionally or have limited range.
+    // ------------------------------------------
     //region Short Range & Spreaders
     ROTOBAGA1(1010, "Rotobaga", PlantCategory.SHOOTER, tags(), 150, 300, "10x3", 1.5f, 5f),
     ROTOBAGA2(2010, "Rotobaga", PlantCategory.SHOOTER, tags(), 150, 300, "20x3", 1.5f, 5f),
@@ -96,13 +111,47 @@ public enum PlantDef {
     STARFRUIT4(4019, "Starfruit", PlantCategory.SHOOTER, tags(), 125, 300, "30", 1.35f, 5f),
     //endregion
 
+    // ------------------------------------------
+    // Charge & Special Shooters
+    // Plants with custom shooting mechanics or ammo systems.
+    // ------------------------------------------
+    //region Charge & Special Shooters
+    CITRON1(1013, "Citron", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 350, 300, "800", 9.0f, 5f),
+    CITRON2(2013, "Citron", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 350, 300, "800", 8.0f, 5f),
+    CITRON3(3013, "Citron", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 350, 300, "950", 8.0f, 5f),
+    CITRON4(4013, "Citron", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 300, 300, "950", 8.0f, 5f),
+
+    GOO_PEASHOOTER1(1020, "Goo Peashooter", PlantCategory.SHOOTER, tags(PlantTag.POISON), 125, 300, "20", 1.5f, 5f),
+    GOO_PEASHOOTER2(2020, "Goo Peashooter", PlantCategory.SHOOTER, tags(PlantTag.POISON), 125, 300, "20", 1.5f, 5f),
+    GOO_PEASHOOTER3(3020, "Goo Peashooter", PlantCategory.SHOOTER, tags(PlantTag.POISON), 125, 450, "20", 1.5f, 5f),
+    GOO_PEASHOOTER4(4020, "Goo Peashooter", PlantCategory.SHOOTER, tags(PlantTag.POISON), 100, 450, "20", 1.5f, 5f),
+
+    BOWLING_BULB1(1016, "Bowling Bulb", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 200, 300, "40/120/180", 0.0f, 5f),
+    BOWLING_BULB2(2016, "Bowling Bulb", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 200, 300, "40/120/180", 0.0f, 5f),
+    BOWLING_BULB3(3016, "Bowling Bulb", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 200, 300, "55/135/195", 0.0f, 5f),
+    BOWLING_BULB4(4016, "Bowling Bulb", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 175, 300, "55/135/195", 0.0f, 5f),
+    //endregion
+
+    // ------------------------------------------
+    // Strike-Through
+    // Projectiles that pierce multiple targets.
+    // ------------------------------------------
     //region Strike-Through
     CACTUS1(1017, "Cactus", PlantCategory.STRIKE_THROUGH, tags(), 175, 300, "30", 1.5f, 5f),
     CACTUS2(2017, "Cactus", PlantCategory.STRIKE_THROUGH, tags(), 175, 300, "30", 1.5f, 5f),
     CACTUS3(3017, "Cactus", PlantCategory.STRIKE_THROUGH, tags(), 175, 300, "40", 1.5f, 5f),
     CACTUS4(4017, "Cactus", PlantCategory.STRIKE_THROUGH, tags(), 150, 300, "40", 1.5f, 5f),
+
+    FUME_SHROOM1(1024, "Fume-shroom", PlantCategory.STRIKE_THROUGH, tags(PlantTag.SHROOM), 125, 300, "20", 1.5f, 5f),
+    FUME_SHROOM2(2024, "Fume-shroom", PlantCategory.STRIKE_THROUGH, tags(PlantTag.SHROOM), 125, 300, "20", 1.5f, 5f),
+    FUME_SHROOM3(3024, "Fume-shroom", PlantCategory.STRIKE_THROUGH, tags(PlantTag.SHROOM), 125, 300, "30", 1.5f, 5f),
+    FUME_SHROOM4(4024, "Fume-shroom", PlantCategory.STRIKE_THROUGH, tags(PlantTag.SHROOM), 100, 300, "30", 1.5f, 5f),
     //endregion
 
+    // ------------------------------------------
+    // Lobbers
+    // Plants that lob projectiles over obstacles.
+    // ------------------------------------------
     //region Lobbers
     CABBAGE_PULT1(1025, "Cabbage-pult", PlantCategory.LOBBER, tags(), 100, 300, "40", 2.9f, 5f),
     CABBAGE_PULT2(2025, "Cabbage-pult", PlantCategory.LOBBER, tags(), 100, 300, "50", 2.9f, 5f),
@@ -130,6 +179,10 @@ public enum PlantDef {
     PEPPER_PULT4(4029, "Pepper-pult", PlantCategory.LOBBER, tags(PlantTag.FIRE, PlantTag.AOE), 175, 300, "65", 2.9f, 5f),
     //endregion
 
+    // ------------------------------------------
+    // Melee
+    // Close-range physical attackers.
+    // ------------------------------------------
     //region Melee
     BONK_CHOY1(1039, "Bonk Choy", PlantCategory.MELEE, tags(), 150, 300, "15", 0.25f, 5f),
     BONK_CHOY2(2039, "Bonk Choy", PlantCategory.MELEE, tags(), 150, 300, "20", 0.25f, 5f),
@@ -157,116 +210,151 @@ public enum PlantDef {
     KIWIBEAST4(4043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 500, "30/45/60", 2.0f, 5f),
     //endregion
 
+    // ------------------------------------------
+    // Wall-nuts
+    // Defensive plants with high HP.
+    // ------------------------------------------
     //region Wall-nuts
     WALL_NUT1(1044, "Wall-nut", PlantCategory.WALL_NUT, tags(), 50, 4000, "0", null, 20f),
-    WALL_NUT2(2044, "Wall-nut", PlantCategory.WALL_NUT, tags(), 50, 5000, "0", null, 20f), // Lvl 2: HP +1000
-    WALL_NUT3(3044, "Wall-nut", PlantCategory.WALL_NUT, tags(), 50, 5000, "0", null, 15f), // Lvl 3: Cooldown -5s
-    WALL_NUT4(4044, "Wall-nut", PlantCategory.WALL_NUT, tags(), 50, 6500, "0", null, 15f), // Lvl 4: HP +1500
+    WALL_NUT2(2044, "Wall-nut", PlantCategory.WALL_NUT, tags(), 50, 5000, "0", null, 20f),
+    WALL_NUT3(3044, "Wall-nut", PlantCategory.WALL_NUT, tags(), 50, 5000, "0", null, 15f),
+    WALL_NUT4(4044, "Wall-nut", PlantCategory.WALL_NUT, tags(), 50, 6500, "0", null, 15f),
 
     TALL_NUT1(1045, "Tall-nut", PlantCategory.WALL_NUT, tags(), 125, 8000, "0", null, 20f),
-    TALL_NUT2(2045, "Tall-nut", PlantCategory.WALL_NUT, tags(), 125, 10000, "0", null, 20f), // Lvl 2: HP +2000
-    TALL_NUT3(3045, "Tall-nut", PlantCategory.WALL_NUT, tags(), 125, 10000, "0", null, 15f), // Lvl 3: Cooldown -5s
-    TALL_NUT4(4045, "Tall-nut", PlantCategory.WALL_NUT, tags(), 125, 13000, "0", null, 15f), // Lvl 4: HP +3000
+    TALL_NUT2(2045, "Tall-nut", PlantCategory.WALL_NUT, tags(), 125, 10000, "0", null, 20f),
+    TALL_NUT3(3045, "Tall-nut", PlantCategory.WALL_NUT, tags(), 125, 10000, "0", null, 15f),
+    TALL_NUT4(4045, "Tall-nut", PlantCategory.WALL_NUT, tags(), 125, 13000, "0", null, 15f),
 
     ENDURIAN1(1046, "Endurian", PlantCategory.WALL_NUT, tags(), 100, 3000, "20", null, 15f),
-    ENDURIAN2(2046, "Endurian", PlantCategory.WALL_NUT, tags(), 100, 3000, "25", null, 15f), // Lvl 2: Dmg +5
-    ENDURIAN3(3046, "Endurian", PlantCategory.WALL_NUT, tags(), 100, 4000, "25", null, 15f), // Lvl 3: HP +1000
-    ENDURIAN4(4046, "Endurian", PlantCategory.WALL_NUT, tags(), 75, 4000, "25", null, 15f),  // Lvl 4: Cost -25
+    ENDURIAN2(2046, "Endurian", PlantCategory.WALL_NUT, tags(), 100, 3000, "25", null, 15f),
+    ENDURIAN3(3046, "Endurian", PlantCategory.WALL_NUT, tags(), 100, 4000, "25", null, 15f),
+    ENDURIAN4(4046, "Endurian", PlantCategory.WALL_NUT, tags(), 75, 4000, "25", null, 15f),
 
     GARLIC1(1047, "Garlic", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 50, 300, "0", null, 20f),
-    GARLIC2(2047, "Garlic", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 50, 450, "0", null, 20f), // Lvl 2: HP +150
-    GARLIC3(3047, "Garlic", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 50, 450, "0", null, 17f), // Lvl 3: Cooldown -3s
-    GARLIC4(4047, "Garlic", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 50, 700, "0", null, 17f), // Lvl 4: HP +250
+    GARLIC2(2047, "Garlic", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 50, 450, "0", null, 20f),
+    GARLIC3(3047, "Garlic", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 50, 450, "0", null, 17f),
+    GARLIC4(4047, "Garlic", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 50, 700, "0", null, 17f),
 
     SWEET_POTATO1(1048, "Sweet Potato", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 150, 3000, "0", null, 20f),
-    SWEET_POTATO2(2048, "Sweet Potato", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 150, 4000, "0", null, 20f), // Lvl 2: HP +1000
-    SWEET_POTATO3(3048, "Sweet Potato", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 150, 4000, "0", null, 15f), // Lvl 3: Cooldown -5s
-    SWEET_POTATO4(4048, "Sweet Potato", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 150, 5500, "0", null, 15f), // Lvl 4: HP +1500
+    SWEET_POTATO2(2048, "Sweet Potato", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 150, 4000, "0", null, 20f),
+    SWEET_POTATO3(3048, "Sweet Potato", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 150, 4000, "0", null, 15f),
+    SWEET_POTATO4(4048, "Sweet Potato", PlantCategory.WALL_NUT, tags(PlantTag.MOVE_ZOMBIES), 150, 5500, "0", null, 15f),
 
-    // NOTE: Base HP is doubled here so the behavior can explode it safely at its "real" 0 HP (half value)
     EXPLODE_O_NUT1(1049, "Explode-o-nut", PlantCategory.WALL_NUT, tags(PlantTag.EXPLOSIVE), 50, 8000, "1800", null, 20f),
-    EXPLODE_O_NUT2(2049, "Explode-o-nut", PlantCategory.WALL_NUT, tags(PlantTag.EXPLOSIVE), 50, 10000, "1800", null, 20f), // Lvl 2: HP +1000 (+2000 Doubled)
-    EXPLODE_O_NUT3(3049, "Explode-o-nut", PlantCategory.WALL_NUT, tags(PlantTag.EXPLOSIVE), 50, 10000, "2000", null, 20f), // Lvl 3: Explode Dmg +200
-    EXPLODE_O_NUT4(4049, "Explode-o-nut", PlantCategory.WALL_NUT, tags(PlantTag.EXPLOSIVE), 25, 10000, "2000", null, 20f), // Lvl 4: Cost -25
+    EXPLODE_O_NUT2(2049, "Explode-o-nut", PlantCategory.WALL_NUT, tags(PlantTag.EXPLOSIVE), 50, 10000, "1800", null, 20f),
+    EXPLODE_O_NUT3(3049, "Explode-o-nut", PlantCategory.WALL_NUT, tags(PlantTag.EXPLOSIVE), 50, 10000, "2000", null, 20f),
+    EXPLODE_O_NUT4(4049, "Explode-o-nut", PlantCategory.WALL_NUT, tags(PlantTag.EXPLOSIVE), 25, 10000, "2000", null, 20f),
 
     PUMPKIN1(1050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 4000, "0", null, 20f),
-    PUMPKIN2(2050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 5000, "0", null, 20f), // Lvl 2: HP +1000
-    PUMPKIN3(3050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 5000, "0", null, 15f), // Lvl 3: Cooldown -5s
-    PUMPKIN4(4050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 6500, "0", null, 15f), // Lvl 4: HP +1500
+    PUMPKIN2(2050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 5000, "0", null, 20f),
+    PUMPKIN3(3050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 5000, "0", null, 15f),
+    PUMPKIN4(4050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 6500, "0", null, 15f),
 
     SUN_BEAN1(1051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1000, "0", null, 20f),
-    SUN_BEAN2(2051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1000, "0", null, 20f), // Lvl 2: Sun Drop +5 (Logic implemented later)
-    SUN_BEAN3(3051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1150, "0", null, 20f), // Lvl 3: HP +150
-    SUN_BEAN4(4051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 25, 1150, "0", null, 20f), // Lvl 4: Cost -25
+    SUN_BEAN2(2051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1000, "0", null, 20f),
+    SUN_BEAN3(3051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1150, "0", null, 20f),
+    SUN_BEAN4(4051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 25, 1150, "0", null, 20f),
     //endregion
 
+    // ------------------------------------------
+    // Explosives & Traps
+    // Instant-use and armed proximity explosives.
+    // ------------------------------------------
     //region Explosives
     POTATO_MINE1(1030, "Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 25, 100000, "1800", 0f, 25f),
-    POTATO_MINE2(2030, "Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 25, 100000, "1800", 0f, 25f), // Lvl 2: Arm Time -3s
-    POTATO_MINE3(3030, "Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 25, 100000, "1800", 0f, 20f), // Lvl 3: Cooldown -5s
-    POTATO_MINE4(4030, "Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 25, 100000, "2400", 0f, 20f), // Lvl 4: Dmg +600
+    POTATO_MINE2(2030, "Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 25, 100000, "1800", 0f, 25f),
+    POTATO_MINE3(3030, "Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 25, 100000, "1800", 0f, 20f),
+    POTATO_MINE4(4030, "Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 25, 100000, "2400", 0f, 20f),
 
     PRIMAL_POTATO_MINE1(1031, "Primal Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 50, 100000, "2400", 0f, 5f),
-    PRIMAL_POTATO_MINE2(2031, "Primal Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 50, 100000, "2400", 0f, 5f), // Lvl 2: Arm Time -1s
-    PRIMAL_POTATO_MINE3(3031, "Primal Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 50, 100000, "2400", 0f, 2f), // Lvl 3: Cooldown -3s
-    PRIMAL_POTATO_MINE4(4031, "Primal Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 50, 100000, "2800", 0f, 2f), // Lvl 4: Dmg +400
+    PRIMAL_POTATO_MINE2(2031, "Primal Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 50, 100000, "2400", 0f, 5f),
+    PRIMAL_POTATO_MINE3(3031, "Primal Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 50, 100000, "2400", 0f, 2f),
+    PRIMAL_POTATO_MINE4(4031, "Primal Potato Mine", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.CHARGE), 50, 100000, "2800", 0f, 2f),
 
     CHERRY_BOMB1(1032, "Cherry Bomb", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "1800", 0.0f, 35f),
-    CHERRY_BOMB2(2032, "Cherry Bomb", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "1800", 0.0f, 30f), // Lvl 2: Cooldown -5s
-    CHERRY_BOMB3(3032, "Cherry Bomb", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "2400", 0.0f, 30f), // Lvl 3: Dmg +600
-    CHERRY_BOMB4(4032, "Cherry Bomb", PlantCategory.EXPLOSIVE, tags(), 125, 100000, "2400", 0.0f, 30f), // Lvl 4: Cost -25
+    CHERRY_BOMB2(2032, "Cherry Bomb", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "1800", 0.0f, 30f),
+    CHERRY_BOMB3(3032, "Cherry Bomb", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "2400", 0.0f, 30f),
+    CHERRY_BOMB4(4032, "Cherry Bomb", PlantCategory.EXPLOSIVE, tags(), 125, 100000, "2400", 0.0f, 30f),
 
     JALAPENO1(1035, "Jalapeno", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 125, 100000, "1800", 0.0f, 35f),
-    JALAPENO2(2035, "Jalapeno", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 125, 100000, "1800", 0.0f, 30f), // Lvl 2: Cooldown -5s
-    JALAPENO3(3035, "Jalapeno", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 125, 100000, "2400", 0.0f, 30f), // Lvl 3: Dmg +600
-    JALAPENO4(4035, "Jalapeno", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 100, 100000, "2400", 0.0f, 30f), // Lvl 4: Cost -25
+    JALAPENO2(2035, "Jalapeno", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 125, 100000, "1800", 0.0f, 30f),
+    JALAPENO3(3035, "Jalapeno", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 125, 100000, "2400", 0.0f, 30f),
+    JALAPENO4(4035, "Jalapeno", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 100, 100000, "2400", 0.0f, 30f),
 
     DOOM_SHROOM1(1036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 125, 100000, "1800", 0.0f, 15f),
-    DOOM_SHROOM2(2036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 125, 100000, "1800", 0.0f, 10f), // Lvl 2: Cooldown -5s
-    DOOM_SHROOM3(3036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 125, 100000, "2600", 0.0f, 10f), // Lvl 3: Dmg +800
-    DOOM_SHROOM4(4036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 75,  100000, "2600", 0.0f, 10f), // Lvl 4: Cost -50
+    DOOM_SHROOM2(2036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 125, 100000, "1800", 0.0f, 10f),
+    DOOM_SHROOM3(3036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 125, 100000, "2600", 0.0f, 10f),
+    DOOM_SHROOM4(4036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 75,  100000, "2600", 0.0f, 10f),
 
     ICE_SHROOM1(1057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "20", 0.0f, 50f),
-    ICE_SHROOM2(2057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "20", 0.0f, 50f), // Lvl 2: Freeze Time +2s (Wait for component)
-    ICE_SHROOM3(3057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "20", 0.0f, 45f), // Lvl 3: Cooldown -5s
-    ICE_SHROOM4(4057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "70", 0.0f, 45f), // Lvl 4: Dmg +50
+    ICE_SHROOM2(2057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "20", 0.0f, 50f),
+    ICE_SHROOM3(3057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "20", 0.0f, 45f),
+    ICE_SHROOM4(4057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "70", 0.0f, 45f),
 
     GRAPESHOT1(1034, "Grapeshot", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "1800", 0.0f, 35f),
-    GRAPESHOT2(2034, "Grapeshot", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "2400", 0.0f, 35f), // Lvl 2: Dmg +600
-    GRAPESHOT3(3034, "Grapeshot", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "2400", 0.0f, 35f), // Lvl 3: Bounces +1
-    GRAPESHOT4(4034, "Grapeshot", PlantCategory.EXPLOSIVE, tags(), 125, 100000, "2400", 0.0f, 35f), // Lvl 4: Cost -25
+    GRAPESHOT2(2034, "Grapeshot", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "2400", 0.0f, 35f),
+    GRAPESHOT3(3034, "Grapeshot", PlantCategory.EXPLOSIVE, tags(), 150, 100000, "2400", 0.0f, 35f),
+    GRAPESHOT4(4034, "Grapeshot", PlantCategory.EXPLOSIVE, tags(), 125, 100000, "2400", 0.0f, 35f),
+
+    TANGLE_KELP1(1037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 25, 100000, "Insta-kill", 0.0f, 15f),
+    TANGLE_KELP2(2037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 25, 100000, "Insta-kill", 0.0f, 10f),
+    TANGLE_KELP3(3037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 25, 100000, "Insta-kill", 0.0f, 10f),
+    TANGLE_KELP4(4037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 0,  100000, "Insta-kill", 0.0f, 10f),
+
+    SQUASH1(1033, "Squash", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP), 50, 100000, "1800", 0.0f, 20f),
+    SQUASH2(2033, "Squash", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP), 50, 100000, "1800", 0.0f, 17f),
+    SQUASH3(3033, "Squash", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP), 50, 100000, "2400", 0.0f, 17f),
+    SQUASH4(4033, "Squash", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP), 50, 100000, "2400", 0.0f, 17f),
+
+    HOT_POTATO1(1059, "Hot Potato", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 0, 100000, "0", 0.0f, 5f),
+    HOT_POTATO2(2059, "Hot Potato", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 0, 100000, "0", 0.0f, 3f),
+    HOT_POTATO3(3059, "Hot Potato", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 0, 100000, "0", 0.0f, 3f),
+    HOT_POTATO4(4059, "Hot Potato", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 0, 100000, "1800", 0.0f, 3f),
+
+    GRAVE_BUSTER1(1060, "Grave Buster", PlantCategory.EXPLOSIVE, tags(), 0, 300, "Insta-kill", 0.0f, 10f),
+    GRAVE_BUSTER2(2060, "Grave Buster", PlantCategory.EXPLOSIVE, tags(), 0, 300, "Insta-kill", 0.0f, 10f),
+    GRAVE_BUSTER3(3060, "Grave Buster", PlantCategory.EXPLOSIVE, tags(), 0, 300, "Insta-kill", 0.0f, 8f),
+    GRAVE_BUSTER4(4060, "Grave Buster", PlantCategory.EXPLOSIVE, tags(), 0, 300, "1800", 0.0f, 8f),
     //endregion
 
+    // ------------------------------------------
+    // Homing
+    // Plants whose projectiles track targets across lanes.
+    // ------------------------------------------
+    //region Homing
+    CAT_TAIL1(1055, "Cat-tail", PlantCategory.HOMING, tags(), 175, 300, "15", 1.5f, 20f),
+    CAT_TAIL2(2055, "Cat-tail", PlantCategory.HOMING, tags(), 175, 300, "25", 1.5f, 20f),
+    CAT_TAIL3(3055, "Cat-tail", PlantCategory.HOMING, tags(), 175, 500, "25", 1.5f, 20f),
+    CAT_TAIL4(4055, "Cat-tail", PlantCategory.HOMING, tags(), 150, 500, "25", 1.5f, 20f),
 
+    ELECTRIC_BLUEBERRY1(1015, "Electric Blueberry", PlantCategory.HOMING, tags(PlantTag.CHARGE), 150, 300, "5000", 12.0f, 15f),
+    ELECTRIC_BLUEBERRY2(2015, "Electric Blueberry", PlantCategory.HOMING, tags(PlantTag.CHARGE), 150, 300, "5000", 12.0f, 13f),
+    ELECTRIC_BLUEBERRY3(3015, "Electric Blueberry", PlantCategory.HOMING, tags(PlantTag.CHARGE), 150, 300, "5000", 12.0f, 13f),
+    ELECTRIC_BLUEBERRY4(4015, "Electric Blueberry", PlantCategory.HOMING, tags(PlantTag.CHARGE), 125, 300, "5000", 12.0f, 13f),
 
+    CAULIPOWER1(1014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 300, "Insta-kill", 12.0f, 15f),
+    CAULIPOWER2(2014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 300, "Insta-kill", 12.0f, 13f),
+    CAULIPOWER3(3014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 450, "Insta-kill", 12.0f, 13f),
+    CAULIPOWER4(4014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 200, 450, "Insta-kill", 12.0f, 13f),
+    //endregion
 
     //endregion
 
     // ==========================================
     // UNIMPLEMENTED PLANTS
+    // These plants have mechanics handled externally
+    // or are waiting for specific system triggers.
     // ==========================================
+    //region UNIMPLEMENTED PLANTS
 
     // Shooters
-    CITRON(13, "Citron", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 350, 300, "800", 9.0f, 5f),
-    BOWLING_BULB(16, "Bowling Bulb", PlantCategory.SHOOTER, tags(PlantTag.CHARGE), 200, 300, "40/120/180", 2.0f, 5f),
-    GOO_PEASHOOTER(20, "Goo Peashooter", PlantCategory.SHOOTER, tags(PlantTag.POISON), 125, 300, "20", 1.5f, 5f),
-    FUME_SHROOM(24, "Fume-shroom", PlantCategory.STRIKE_THROUGH, tags(PlantTag.SHROOM), 125, 300, "20", 1.5f, 5f),
+    // None Currently
 
     // Homing
-    CAULIPOWER(14, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 300, "Insta-kill", 12.0f, 15f),
-    ELECTRIC_BLUEBERRY(15, "Electric Blueberry", PlantCategory.HOMING, tags(PlantTag.CHARGE), 150, 300, "5000", 12.0f, 15f),
     MAGNET_SHROOM(53, "Magnet-shroom", PlantCategory.HOMING, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", 10.0f, 15f),
-    CAT_TAIL(55, "Cat-tail", PlantCategory.HOMING, tags(), 175, 300, "15", 1.5f, 20f),
 
     // Explosives
-
-
-
-    SQUASH(33, "Squash", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP), 50, 300, "1800", null, 20f),
-    TANGLE_KELP(37, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 25, 300, "Insta-kill", null, 15f),
     ICEBERG_LETTUCE(38, "Iceberg Lettuce", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.ICE), 0, 300, "0", null, 20f),
-    HOT_POTATO(59, "Hot Potato", PlantCategory.EXPLOSIVE, tags(PlantTag.FIRE), 0, 0, "0", null, 5f),
-    GRAVE_BUSTER(60, "Grave Buster", PlantCategory.EXPLOSIVE, tags(), 0, 0, "Insta-kill", null, 10f),
 
     // Modifiers / Environment
     TORCHWOOD(52, "Torchwood", PlantCategory.MODIFIER, tags(PlantTag.FIRE), 175, 300, "0", null, 5f),
@@ -284,6 +372,7 @@ public enum PlantDef {
     ENCHANT_MINT(67, "Enchant-mint", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 85f),
     PIERCE_MINT(68, "Pierce-mint", PlantCategory.STRIKE_THROUGH, tags(), 0, 0, "0", null, 85f),
     CATTAIL_MINT(69, "catTail-mint", PlantCategory.HOMING, tags(), 0, 0, "0", null, 85f);
+    //endregion
 
     private final int id;
     private final String plantName;
