@@ -11,11 +11,8 @@ public class LineOfDamage extends AbstractProjectile {
 
     public float length;
     public float width;
+    public boolean used = false;
 
-    /*
-     * This class should be used to make a rectangular area to deal damage to zombies (e.g., Jalapeno).
-     * It has a lifespan of 1 tick.
-     */
     public LineOfDamage(Vec2d position, float length, float width, int damage) {
         super(damage, new Vec2d(0, 0), position);
         this.length = length;
@@ -24,17 +21,24 @@ public class LineOfDamage extends AbstractProjectile {
 
     @Override
     public boolean hit(Entity target) {
+        this.used = true; // Mark as used the moment collision is processed
+
         if (super.hit(target)) {
             Vec2d targetPos = target.get(PositionComponent.class).position;
             Vec2d myPos = this.get(PositionComponent.class).position;
 
-            // Check if the target falls within the rectangle
             if (Math.abs(targetPos.getY() - myPos.getY()) <= (width / 2.0f) &&
                 Math.abs(targetPos.getX() - myPos.getX()) <= (length / 2.0f)) {
                 CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
             }
         }
-        // Always return false so the AOE is not destroyed immediately upon hitting one target
+
+        // Always return false so the Line AOE is not destroyed immediately
         return false;
+    }
+
+    @Override
+    public AbstractProjectile clone(Vec2d newPosition) {
+        return new LineOfDamage(newPosition, this.length, this.width, this.get(DamageComponent.class).amount);
     }
 }

@@ -2,7 +2,9 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors.specific;
 
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.HealthComponent;
+import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
+import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.map.Field;
 
 public class ExplodeONutBehavior implements PlantAttackBehavior {
@@ -24,8 +26,8 @@ public class ExplodeONutBehavior implements PlantAttackBehavior {
 
         if (hc.currentHealth <= realDeathThreshold && hc.currentHealth > 0) {
 
-            // TODO: Spawn AreaOfDamage using the 'radius' (1.5f) and 'explosionDamage'
-            // Example: field.addProjectile(new AreaOfDamage(self.get(PositionComponent.class).position, radius, explosionDamage));
+            // Spawn the massive explosion AoE
+            field.addProjectile(new AreaOfDamage(self.get(PositionComponent.class).position, radius, explosionDamage));
 
             // Snap health exactly to 0 so the standard entity removal system destroys the plant safely
             hc.currentHealth = 0;

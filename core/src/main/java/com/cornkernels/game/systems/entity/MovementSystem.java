@@ -4,7 +4,9 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
+import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
+import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.GrapeshotProjectile;
 
 public class MovementSystem extends EntitySystem {
@@ -29,7 +31,6 @@ public class MovementSystem extends EntitySystem {
                     double currentAngle = Math.atan2(vel.getY(), vel.getX());
 
                     double deltaAngle = desiredAngle - currentAngle;
-
                     deltaAngle = Math.atan2(Math.sin(deltaAngle), Math.cos(deltaAngle));
 
                     double maxRotation = Math.toRadians(10);
@@ -56,11 +57,34 @@ public class MovementSystem extends EntitySystem {
 
                 continue;
             }
-            if (e instanceof GrapeshotProjectile grapeshotProjectile){
-                grapeshotProjectile.handleBounceAndLifetime(1f/20f,0.5f,9.5f,0.5f,5.5f);
+
+            if (e instanceof GrapeshotProjectile grapeshotProjectile) {
+                grapeshotProjectile.handleBounceAndLifetime(1f/20f, 0.5f, 9.5f, 0.5f, 5.5f);
             }
-            float speed = velComp.velocityPerTick.getX();
-            posComp.position.subtractInPlace(new Vec2d(speed, 0));
+
+            if (e instanceof AreaOfDamage) {
+                if (((AreaOfDamage) e).used) {
+                    e.markForRemoval();
+                } else {
+                    ((AreaOfDamage) e).used = true;
+                }
+                continue; // AoEs don't move, skip standard movement logic
+            }
+
+            if (e instanceof LineOfDamage) {
+                if (((LineOfDamage) e).used) {
+                    e.markForRemoval();
+                } else {
+                    ((LineOfDamage) e).used = true;
+                }
+                continue; // Line AoEs don't move, skip standard movement logic
+            }
+
+            // Standard Movement Logic (Now correctly applies X and Y velocities for bouncing projectiles!)
+            posComp.position = new Vec2d(
+                posComp.position.getX() + velComp.velocityPerTick.getX(),
+                posComp.position.getY() + velComp.velocityPerTick.getY()
+            );
         }
     }
 }
