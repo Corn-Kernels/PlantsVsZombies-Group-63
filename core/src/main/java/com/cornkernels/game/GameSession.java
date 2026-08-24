@@ -51,6 +51,9 @@ public final class GameSession {
         }
         if (!pauseController.isPaused()) {
             simulation.update(deltaTick);
+            if (simulation.isGameLost()) {
+                end();
+            }
         }
     }
 

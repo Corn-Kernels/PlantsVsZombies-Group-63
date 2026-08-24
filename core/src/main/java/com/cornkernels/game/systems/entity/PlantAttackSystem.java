@@ -1,34 +1,61 @@
 package com.cornkernels.game.systems.entity;
 
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantStateComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
+import com.cornkernels.game.utility.PlantAnimationLocator;
+import org.jspecify.annotations.NonNull;
+import pvz.libpvz.pam.PamPlayer;
 
 public class PlantAttackSystem extends EntitySystem {
+
+    private final PamPlayer pamPlayer;
+
+    public PlantAttackSystem(PamPlayer pamPlayer) {
+        this.pamPlayer = pamPlayer;
+    }
 
     @Override
     public void update(float deltaTick) {
         for (PlantInstance plant : field.getActivePlants()) {
             if (plant.isMarkedForRemoval()) continue;
 
-            // Check if plant is frozen solid
             PlantFreezeComponent freezeComp = plant.get(PlantFreezeComponent.class);
             if (freezeComp != null && freezeComp.frozenHp > 0) {
-                continue; // Cannot attack or tick down cooldown while frozen!
+                continue;
             }
 
             PlantAttackComponent attack = plant.get(PlantAttackComponent.class);
             if (attack == null) continue;
 
-            // Fixed math: Correctly decrement the cooldown timer by deltaTick without snapping to 0 instantly
             attack.cooldownRemaining = Math.max(0, attack.cooldownRemaining - deltaTick);
 
-            if (attack.cooldownRemaining > 0) continue;
+            boolean hasTarget = attack.behavior.hasTarget(plant, field);
+            updateAttackAnimation(plant, hasTarget);
 
-            if (!attack.behavior.hasTarget(plant, field)) continue;
+            if (attack.cooldownRemaining > 0) continue;
+            if (!hasTarget) continue;
 
             attack.behavior.execute(plant, field);
             attack.cooldownRemaining = attack.actionInterval;
         }
+    }
+
+    private void updateAttackAnimation(@NonNull PlantInstance plant, boolean hasTarget) {
+        PlantStateComponent stateComp = plant.get(PlantStateComponent.class);
+        if (stateComp == null || stateComp.state == PlantStateComponent.State.DEAD) return;
+
+        PlantStateComponent.State desired = hasTarget
+            ? PlantStateComponent.State.SHOOTING
+            : PlantStateComponent.State.IDLE;
+        if (stateComp.state == desired) return;
+
+        stateComp.state = desired;
+        PlantAnimationLocator.applyClip(pamPlayer, plant.get(PamAnimationComponent.class),
+            plant.get(PlantDefComponent.class).def(),
+            desired == PlantStateComponent.State.SHOOTING ? "attack" : "idle");
     }
 }

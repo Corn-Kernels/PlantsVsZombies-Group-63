@@ -54,6 +54,26 @@ public final class PlantAnimationLocator {
         anim.isLooping = queue.isEmpty();
     }
 
+    public static void applyClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
+                                 @NonNull PlantDef plantDef, @NonNull String preferredClip) {
+        String path = findPamPath(plantDef);
+        if (path == null) return;
+        pamPlayer.loadSync(path);
+
+        List<String> available = pamPlayer.clips(path);
+        if (available == null || available.isEmpty()) return;
+
+        String clipName = available.contains(preferredClip) ? preferredClip
+            : available.contains("idle") ? "idle" : available.get(0);
+        ClipRef clip = pamPlayer.getClip(path, clipName);
+        if (clip == null) return;
+
+        anim.currentClip = clip;
+        anim.stateTime = 0f;
+        anim.isLooping = true;
+        anim.upcomingClips.clear();
+    }
+
     private static @NonNull List<String> resolveSpawnSequence(@Nullable List<String> availableClips) {
         List<String> sequence = new ArrayList<>();
         if (availableClips == null || availableClips.isEmpty()) return sequence;

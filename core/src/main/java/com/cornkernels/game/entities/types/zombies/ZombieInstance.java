@@ -15,7 +15,7 @@ public class ZombieInstance extends Entity {
 
         add(new ZombieDefComponent(def));
         add(new PositionComponent(position));
-        add(new VelocityComponent(new Vec2d(def.baseSpeed, 0f)));
+        add(new VelocityComponent(new Vec2d(-def.baseSpeed, 0f)));
         add(new ZombieStateComponent());
         add(new PamAnimationComponent());
 

@@ -16,6 +16,7 @@ import com.cornkernels.engine.renderer.camera.Camera;
 import com.cornkernels.engine.utility.InputSnapshot;
 import com.cornkernels.game.GameAttributes;
 import com.cornkernels.game.GameSession;
+import com.cornkernels.game.hud.EndGameMenu;
 import com.cornkernels.game.hud.HudFactory;
 import com.cornkernels.game.hud.PauseMenu;
 import com.cornkernels.game.hud.seeds.PlantSelectionMenu;
@@ -108,6 +109,11 @@ public class GameplayScreen implements Screen {
         pauseMenu.setPosition((hudWidth - pauseMenu.getWidth()) / 2f, (hudHeight - pauseMenu.getHeight()) / 2f);
         hudStage.addActor(pauseMenu);
 
+        EndGameMenu endGameMenu = hudFactory.createEndGameMenu(this::restartLevel,
+            () -> gameSession.getPhase() == GameSession.LevelPhase.ENDED);
+        endGameMenu.setPosition((hudWidth - endGameMenu.getWidth()) / 2f, (hudHeight - endGameMenu.getHeight()) / 2f);
+        hudStage.addActor(endGameMenu);
+
         PlantSelectionMenu plantMenu = seedChooser.getMenu();
         plantMenu.setPosition((hudWidth - plantMenu.getWidth()) / 2f,
             (hudHeight - plantMenu.getHeight()) / 2f);
@@ -151,7 +157,7 @@ public class GameplayScreen implements Screen {
         boolean hudConsumedClick = rawInput.confirmPressed() && isPointerOverHud(rawInput);
         InputSnapshot worldInput = hudConsumedClick ? rawInput.withoutConfirm() : rawInput;
 
-        if (!gameSession.getPauseController().isPaused()) {
+        if (!gameSession.getPauseController().isPaused() || gameSession.getPhase() == GameSession.LevelPhase.ENDED) {
             camera.update(delta);
             gameSession.updateInput(delta, worldInput);
 

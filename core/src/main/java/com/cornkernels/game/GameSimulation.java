@@ -16,27 +16,33 @@ public class GameSimulation {
     private final RandomGenerator random;
     private final GameAttributes attributes;
     private final List<EntitySystem> systems = new ArrayList<>();
+    private final LawnMowersSystem lawnMowersSystem;
 
     public GameSimulation(Field field, @NonNull GameAttributes gameAttributes, PamPlayer pamPlayer) {
         this.field = field;
         this.attributes = gameAttributes;
         this.random = new Random();
+        this.lawnMowersSystem = new LawnMowersSystem();
 
         addSystem(new MovementSystem());
         addSystem(new CombatSystem());
-        addSystem(new PlantAttackSystem());
+        addSystem(new PlantAttackSystem(pamPlayer));
         addSystem(new SunSystem(random));
         addSystem(new ZombieSystem(pamPlayer));
-        addSystem(new LawnMowersSystem());
+        addSystem(lawnMowersSystem);
         addSystem(new WaveSystem(1, random, gameAttributes.eligibleZombies, pamPlayer));
     }
 
     public void update(float deltaTick) {
-        field.update(deltaTick);
+        field.update();
         for (EntitySystem entitySystem : systems) {
             entitySystem.update(deltaTick);
-            attributes.update(deltaTick);
         }
+        attributes.update(deltaTick);
+    }
+
+    public boolean isGameLost() {
+        return lawnMowersSystem.isGameLost();
     }
 
     private void addSystem(@NonNull EntitySystem system) {

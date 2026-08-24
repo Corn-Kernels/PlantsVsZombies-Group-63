@@ -53,7 +53,12 @@ public class GameManager extends Game {
                 new SeedSlot(PlantDef.BOWLING_BULB1),
                 new SeedSlot(PlantDef.SQUASH1),
                 new SeedSlot(PlantDef.ENFORCE_MINT),
-                new SeedSlot(PlantDef.CHOMPER1)), List.of(ZombieDef.ARCADE)))); // Temporary
+                new SeedSlot(PlantDef.CHOMPER1)), List.of(
+            ZombieDef.DEFAULT,
+            ZombieDef.ARCADE,
+            ZombieDef.PIANO,
+            ZombieDef.PROSPECTOR,
+            ZombieDef.GARGANTUAR)))); // Temporary
     }
 
     @Override

@@ -44,10 +44,10 @@ public enum PlantDef {
     // Straight-shooting projectile plants.
     // ------------------------------------------
     //region Peashooters
-    PEASHOOTER1(1006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "20", 1.5f, 5f),
-    PEASHOOTER2(2006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "30", 1.5f, 5f),
-    PEASHOOTER3(3006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 450, "30", 1.5f, 5f),
-    PEASHOOTER4(4006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 75, 450, "30", 1.5f, 5f),
+    PEASHOOTER1(1006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "20", 1.0f, 5f),
+    PEASHOOTER2(2006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 300, "30", 0.8f, 5f),
+    PEASHOOTER3(3006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 100, 450, "30", 0.8f, 5f),
+    PEASHOOTER4(4006, "Peashooter", PlantCategory.SHOOTER, tags(PlantTag.PEA), 75, 450, "30", 0.8f, 5f),
 
     REPEATER1(1007, "Repeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 200, 300, "20x2", 1.5f, 5f),
     REPEATER2(2007, "Repeater", PlantCategory.SHOOTER, tags(PlantTag.PEA), 200, 300, "30x2", 1.5f, 5f),

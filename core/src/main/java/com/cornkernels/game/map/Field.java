@@ -52,12 +52,13 @@ public class Field {
         initializeLawnMowers(lawnMowerSlots);
     }
 
-    public void update(float deltaTick) {
+    public void update() {
         activePlants.removeIf(PlantInstance::isMarkedForRemoval);
         activeZombies.removeIf(ZombieInstance::isMarkedForRemoval);
         activeSuns.removeIf(SunInstance::isMarkedForRemoval);
         activeProjectiles.removeIf(AbstractProjectile::isMarkedForRemoval);
         activeLawnMowers.removeIf(LawnMower::isMarkedForRemoval);
+        activeObstacles.removeIf(AbstractObstacle::isMarkedForRemoval);
 
         for (int i = 0; i < totalLanes; i++) {
             for (int j = 0; j < totalColumns; j++) {
@@ -174,6 +175,7 @@ public class Field {
         entities.addAll(activeProjectiles);
         entities.addAll(activeSuns);
         entities.addAll(activeLawnMowers);
+        entities.addAll(activeObstacles);
         return entities;
     }
 

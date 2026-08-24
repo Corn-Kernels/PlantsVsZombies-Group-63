@@ -26,4 +26,8 @@ public class LawnMowersSystem extends EntitySystem {
             }
         }
     }
+
+    public boolean isGameLost() {
+        return markGameFinished;
+    }
 }

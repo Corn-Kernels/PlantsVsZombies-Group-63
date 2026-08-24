@@ -10,14 +10,17 @@ import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.sun_specific.SunComponent;
 import com.cornkernels.game.entities.types.lawnmower.LawnMower;
+import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.utility.LawnMowerAnimationLocator;
+import com.cornkernels.game.utility.ProjectileAnimationLocator;
 import com.cornkernels.game.utility.SunAnimationLocator;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.ClipRef;
 import pvz.libpvz.pam.PamPlayer;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class PamRenderSystem extends RenderSystem {
@@ -35,6 +38,8 @@ public class PamRenderSystem extends RenderSystem {
     @Override
     public void render(float delta) {
         List<Entity> renderableEntities = field.getEntitiesWith(PositionComponent.class, PamAnimationComponent.class);
+        renderableEntities.sort(Comparator.comparingDouble(e -> -e.get(PositionComponent.class).position.getY()));
+
         for (Entity entity : renderableEntities) {
             PositionComponent positionComponent = entity.get(PositionComponent.class);
             PamAnimationComponent anim = entity.get(PamAnimationComponent.class);
@@ -44,6 +49,9 @@ public class PamRenderSystem extends RenderSystem {
             }
             if (anim.currentClip == null && entity instanceof LawnMower) {
                 assignLawnMowerClip(anim);
+            }
+            if (anim.currentClip == null && entity instanceof AbstractProjectile projectile) {
+                ProjectileAnimationLocator.assignClip(pamPlayer, anim, projectile);
             }
 
             anim.stateTime += delta;

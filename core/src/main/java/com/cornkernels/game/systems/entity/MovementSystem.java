@@ -120,9 +120,15 @@ public class MovementSystem extends EntitySystem {
             }
 
             // 4. Standard Movement Logic
+            float vx = velComp.velocityPerTick.getX();
+            float vy = velComp.velocityPerTick.getY();
+            if (e instanceof ZombieInstance) {
+                vx *= delta;
+                vy *= delta;
+            }
             posComp.position = new Vec2d(
-                posComp.position.getX() + velComp.velocityPerTick.getX(),
-                posComp.position.getY() + velComp.velocityPerTick.getY()
+                posComp.position.getX() + vx,
+                posComp.position.getY() + vy
             );
 
         }

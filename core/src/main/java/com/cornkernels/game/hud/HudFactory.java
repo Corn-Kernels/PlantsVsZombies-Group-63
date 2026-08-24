@@ -253,6 +253,21 @@ public class HudFactory implements Disposable {
             List.of(resumeButton, restartButton, exitButton), pauseController);
     }
 
+    public @NonNull EndGameMenu createEndGameMenu(@NonNull Runnable onRestart, @NonNull BooleanSupplier visibleWhen) {
+        NinePatch patch = new NinePatch(alwaysLoadedAtlas.findRegion("reward1_bg"),
+            PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET);
+        Image background = new Image(new NinePatchDrawable(patch));
+
+        Label title = new Label("Zombies ate you brain!", new Label.LabelStyle(counterFont, Color.WHITE));
+        title.setAlignment(Align.center);
+
+        TextButton restartButton = createTextButton("Play Level Again", "GreenButton", "GreenButton_Down", onRestart);
+        TextButton exitButton = createTextButton("Exit Level", "BrownButton", "BrownButton_Down", () -> {
+        });
+
+        return new EndGameMenu(background, title, List.of(restartButton, exitButton), visibleWhen);
+    }
+
     private @NonNull TextButton createTextButton(String text, String upRegion, String downRegion, Runnable onClick) {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.up = drawable(alwaysLoadedAtlas, upRegion);

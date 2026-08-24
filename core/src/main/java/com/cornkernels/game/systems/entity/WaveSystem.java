@@ -61,7 +61,7 @@ public class WaveSystem extends EntitySystem {
 
         if (affordable.isEmpty()) return null;
 
-        ZombieDef chosen = affordable.get(rng.nextInt(affordable.size()));
+        ZombieDef chosen = pickWeighted(affordable);
         int lane = rng.nextInt(field.getTotalLanes());
         Vec2d spawnPosition = new Vec2d(field.getTotalColumns(), lane);
 
@@ -71,6 +71,19 @@ public class WaveSystem extends EntitySystem {
         remainingWaveCost -= chosen.wavePointCost;
 
         return zombie;
+    }
+
+    private @NotNull ZombieDef pickWeighted(@NotNull List<ZombieDef> candidates) {
+        int totalWeight = candidates.stream().mapToInt(def -> def.weight).sum();
+        if (totalWeight <= 0) return candidates.get(rng.nextInt(candidates.size()));
+
+        int roll = rng.nextInt(totalWeight);
+        int cumulative = 0;
+        for (ZombieDef def : candidates) {
+            cumulative += def.weight;
+            if (roll < cumulative) return def;
+        }
+        return candidates.getLast();
     }
 
     public void startNextWave() {
