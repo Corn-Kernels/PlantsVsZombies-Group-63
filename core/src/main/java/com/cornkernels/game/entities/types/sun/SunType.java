@@ -6,6 +6,8 @@ import java.util.random.RandomGenerator;
 
 public enum SunType {
     NORMAL(80, 25),
+    BIG(0, 50),       // Added for Sunflower / Twin Sunflower
+    LARGE(0, 75),     // Added for Primal Sunflower
     SPECIAL(15, 100),
     RADIOACTIVE(5, 25);
 

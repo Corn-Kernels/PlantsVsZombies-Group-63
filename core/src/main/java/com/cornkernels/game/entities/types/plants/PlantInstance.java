@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantStateComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehaviors;
@@ -22,7 +23,7 @@ public class PlantInstance extends Entity {
         add(new GridPositionComponent(position));
         add(new PlantStateComponent());
         add(new PamAnimationComponent());
-
+        add(new PlantFreezeComponent());
         HealthComponent health = new HealthComponent();
         health.maxHealth = plantDef.getBaseHp();
         health.currentHealth = plantDef.getBaseHp();

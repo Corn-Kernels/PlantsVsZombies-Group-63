@@ -1,4 +1,4 @@
-package com.cornkernels.game.entities.types.plants.behavior.behaviors;
+package com.cornkernels.game.entities.types.plants.behavior.behaviors.specific;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
@@ -15,15 +15,19 @@ import com.cornkernels.game.map.grid.GridPosition;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LobShotBehavior implements PlantAttackBehavior {
+public class KernelPultBehavior implements PlantAttackBehavior {
 
     private final int shotCount;
     private final double shotSpacing = 0.3f;
-    private final AbstractProjectile projectile;
+    private final AbstractProjectile normalProjectile;
+    private final AbstractProjectile specialProjectile;
+    private final double specialChance;
 
-    public LobShotBehavior(int shotCount, AbstractProjectile projectile) {
+    public KernelPultBehavior(int shotCount, AbstractProjectile normalProjectile, AbstractProjectile specialProjectile, double specialChance) {
         this.shotCount = shotCount;
-        this.projectile = projectile;
+        this.normalProjectile = normalProjectile;
+        this.specialProjectile = specialProjectile;
+        this.specialChance = specialChance;
     }
 
     @Override
@@ -72,13 +76,18 @@ public class LobShotBehavior implements PlantAttackBehavior {
 
         for (int i = 0; i < shotCount; i++) {
             Vec2d spawnPos = new Vec2d((float) (origin.getX() + 0.5 + i * shotSpacing), origin.getY());
-            AbstractProjectile spawned = projectile.clone(spawnPos);
+
+            // Roll the dice to determine which projectile gets fired
+            AbstractProjectile selectedProjectile = (Math.random() < specialChance) ? specialProjectile : normalProjectile;
+            AbstractProjectile spawned = selectedProjectile.clone(spawnPos);
+
             if (spawned instanceof LobProjectile) {
                 ((LobProjectile) spawned).target = closestTarget;
             }
             if (spawned instanceof HomingProjectile) {
                 ((HomingProjectile) spawned).target = closestTarget;
             }
+
             field.addProjectile(spawned);
         }
     }

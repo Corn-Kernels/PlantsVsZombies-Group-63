@@ -5,7 +5,11 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
+import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
+import com.cornkernels.game.entities.types.projectile.projectiles.specific.GrapeshotProjectile;
+import com.cornkernels.game.entities.types.projectile.projectiles.specific.LightningCloudProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 
 public class MovementSystem extends EntitySystem {
@@ -14,11 +18,6 @@ public class MovementSystem extends EntitySystem {
     public void update(float delta) {
         for (Entity e : field.getEntities()) {
             if (!e.has(PositionComponent.class) || !e.has(VelocityComponent.class)) {
-                continue;
-            }
-
-            if (e instanceof ZombieInstance zombie
-                && zombie.get(ZombieStateComponent.class).state == ZombieStateComponent.State.EATING) {
                 continue;
             }
 
@@ -63,11 +62,59 @@ public class MovementSystem extends EntitySystem {
                 continue;
             }
 
-            float speed = velComp.velocityPerTick.getX();
-            if (e instanceof ZombieInstance) {
-                speed *= delta;
+            // 2. Straight-Line Tracking (Electric Blueberry)
+            // Bypasses the rotation limit to snap directly towards the target
+            if (e instanceof LightningCloudProjectile cloudProj) {
+                if (cloudProj.target != null && cloudProj.target.has(PositionComponent.class)) {
+                    Vec2d pos = posComp.position;
+                    Vec2d targetPos = cloudProj.target.get(PositionComponent.class).position;
+                    Vec2d vel = velComp.velocityPerTick;
+
+                    double desiredAngle = Math.atan2(targetPos.getY() - pos.getY(), targetPos.getX() - pos.getX());
+                    double speedMag = Math.hypot(vel.getX(), vel.getY());
+
+                    velComp.velocityPerTick = new Vec2d(
+                        (float) (Math.cos(desiredAngle) * speedMag),
+                        (float) (Math.sin(desiredAngle) * speedMag)
+                    );
+                }
+
+                posComp.position = new Vec2d(
+                    posComp.position.getX() + velComp.velocityPerTick.getX(),
+                    posComp.position.getY() + velComp.velocityPerTick.getY()
+                );
+
+                continue;
             }
-            posComp.position.subtractInPlace(new Vec2d(speed, 0));
+
+            if (e instanceof GrapeshotProjectile grapeshotProjectile) {
+                grapeshotProjectile.handleBounceAndLifetime(1f/20f, 0.5f, 9.5f, 0.5f, 5.5f);
+            }
+
+            // 3. AoE Processing (No movement applied)
+            if (e instanceof AreaOfDamage) {
+                if (((AreaOfDamage) e).used) {
+                    e.markForRemoval();
+                } else {
+                    ((AreaOfDamage) e).used = true;
+                }
+                continue;
+            }
+
+            if (e instanceof LineOfDamage) {
+                if (((LineOfDamage) e).used) {
+                    e.markForRemoval();
+                } else {
+                    ((LineOfDamage) e).used = true;
+                }
+                continue;
+            }
+
+            // 4. Standard Movement Logic
+            posComp.position = new Vec2d(
+                posComp.position.getX() + velComp.velocityPerTick.getX(),
+                posComp.position.getY() + velComp.velocityPerTick.getY()
+            );
         }
     }
 }

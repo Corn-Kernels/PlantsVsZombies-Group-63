@@ -1,4 +1,4 @@
-package com.cornkernels.game.entities.types.projectile.projectiles;
+package com.cornkernels.game.entities.types.projectile.projectiles.specific;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
@@ -7,13 +7,12 @@ import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
 
-public class HomingProjectile extends AbstractProjectile {
-
-    private final static float HOMING_SPEED = 1f;
+public class LightningCloudProjectile extends AbstractProjectile {
     public Entity target;
 
-    public HomingProjectile(int damage, Vec2d startPosition, Entity target) {
-        super(damage, new Vec2d(HOMING_SPEED, 0), startPosition);
+    public LightningCloudProjectile(int damage, Vec2d startPosition, Entity target) {
+        // Lightning clouds move slightly faster than normal peas to ensure they reach their target
+        super(damage, new Vec2d(2.0f, 0), startPosition);
         this.target = target;
     }
 
@@ -29,6 +28,6 @@ public class HomingProjectile extends AbstractProjectile {
     @Override
     public AbstractProjectile clone(Vec2d newPosition) {
         int damage = this.get(DamageComponent.class).amount;
-        return new HomingProjectile(damage, newPosition, this.target);
+        return new LightningCloudProjectile(damage, newPosition, this.target);
     }
 }
