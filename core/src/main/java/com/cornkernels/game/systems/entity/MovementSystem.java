@@ -21,74 +21,83 @@ public class MovementSystem extends EntitySystem {
                 continue;
             }
 
+            // TODO: MUST BE ADDED TO ZOMBIE BEHAVIORS
+            if (e instanceof ZombieInstance zombie
+                && zombie.get(ZombieStateComponent.class).state == ZombieStateComponent.State.EATING) {
+                continue;
+            }
+
             PositionComponent posComp = e.get(PositionComponent.class);
             VelocityComponent velComp = e.get(VelocityComponent.class);
 
-            if (e instanceof HomingProjectile homingProj) {
-                if (homingProj.target != null && homingProj.target.has(PositionComponent.class)) {
-                    Vec2d pos = posComp.position;
-                    Vec2d targetPos = homingProj.target.get(PositionComponent.class).position;
-                    Vec2d vel = velComp.velocityPerTick;
+            switch (e) {
+                case HomingProjectile homingProj -> {
+                    if (homingProj.target != null && homingProj.target.has(PositionComponent.class)) {
+                        Vec2d pos = posComp.position;
+                        Vec2d targetPos = homingProj.target.get(PositionComponent.class).position;
+                        Vec2d vel = velComp.velocityPerTick;
 
-                    double desiredAngle = Math.atan2(targetPos.getY() - pos.getY(), targetPos.getX() - pos.getX());
-                    double currentAngle = Math.atan2(vel.getY(), vel.getX());
+                        double desiredAngle = Math.atan2(targetPos.getY() - pos.getY(), targetPos.getX() - pos.getX());
+                        double currentAngle = Math.atan2(vel.getY(), vel.getX());
 
-                    double deltaAngle = desiredAngle - currentAngle;
+                        double deltaAngle = desiredAngle - currentAngle;
 
-                    deltaAngle = Math.atan2(Math.sin(deltaAngle), Math.cos(deltaAngle));
+                        deltaAngle = Math.atan2(Math.sin(deltaAngle), Math.cos(deltaAngle));
 
-                    double maxRotation = Math.toRadians(10);
-                    double newAngle;
+                        double maxRotation = Math.toRadians(10);
+                        double newAngle;
 
-                    if (Math.abs(deltaAngle) <= maxRotation) {
-                        newAngle = desiredAngle;
-                    } else {
-                        newAngle = currentAngle + Math.signum(deltaAngle) * maxRotation;
+                        if (Math.abs(deltaAngle) <= maxRotation) {
+                            newAngle = desiredAngle;
+                        } else {
+                            newAngle = currentAngle + Math.signum(deltaAngle) * maxRotation;
+                        }
+
+                        double speedMag = Math.hypot(vel.getX(), vel.getY());
+
+                        velComp.velocityPerTick = new Vec2d(
+                            (float) (Math.cos(newAngle) * speedMag),
+                            (float) (Math.sin(newAngle) * speedMag)
+                        );
                     }
 
-                    double speedMag = Math.hypot(vel.getX(), vel.getY());
-
-                    velComp.velocityPerTick = new Vec2d(
-                        (float) (Math.cos(newAngle) * speedMag),
-                        (float) (Math.sin(newAngle) * speedMag)
+                    posComp.position = new Vec2d(
+                        posComp.position.getX() + velComp.velocityPerTick.getX(),
+                        posComp.position.getY() + velComp.velocityPerTick.getY()
                     );
+
+                    continue;
                 }
 
-                posComp.position = new Vec2d(
-                    posComp.position.getX() + velComp.velocityPerTick.getX(),
-                    posComp.position.getY() + velComp.velocityPerTick.getY()
-                );
 
-                continue;
-            }
+                // 2. Straight-Line Tracking (Electric Blueberry)
+                // Bypasses the rotation limit to snap directly towards the target
+                case LightningCloudProjectile cloudProj -> {
+                    if (cloudProj.target != null && cloudProj.target.has(PositionComponent.class)) {
+                        Vec2d pos = posComp.position;
+                        Vec2d targetPos = cloudProj.target.get(PositionComponent.class).position;
+                        Vec2d vel = velComp.velocityPerTick;
 
-            // 2. Straight-Line Tracking (Electric Blueberry)
-            // Bypasses the rotation limit to snap directly towards the target
-            if (e instanceof LightningCloudProjectile cloudProj) {
-                if (cloudProj.target != null && cloudProj.target.has(PositionComponent.class)) {
-                    Vec2d pos = posComp.position;
-                    Vec2d targetPos = cloudProj.target.get(PositionComponent.class).position;
-                    Vec2d vel = velComp.velocityPerTick;
+                        double desiredAngle = Math.atan2(targetPos.getY() - pos.getY(), targetPos.getX() - pos.getX());
+                        double speedMag = Math.hypot(vel.getX(), vel.getY());
 
-                    double desiredAngle = Math.atan2(targetPos.getY() - pos.getY(), targetPos.getX() - pos.getX());
-                    double speedMag = Math.hypot(vel.getX(), vel.getY());
+                        velComp.velocityPerTick = new Vec2d(
+                            (float) (Math.cos(desiredAngle) * speedMag),
+                            (float) (Math.sin(desiredAngle) * speedMag)
+                        );
+                    }
 
-                    velComp.velocityPerTick = new Vec2d(
-                        (float) (Math.cos(desiredAngle) * speedMag),
-                        (float) (Math.sin(desiredAngle) * speedMag)
+                    posComp.position = new Vec2d(
+                        posComp.position.getX() + velComp.velocityPerTick.getX(),
+                        posComp.position.getY() + velComp.velocityPerTick.getY()
                     );
+
+                    continue;
                 }
-
-                posComp.position = new Vec2d(
-                    posComp.position.getX() + velComp.velocityPerTick.getX(),
-                    posComp.position.getY() + velComp.velocityPerTick.getY()
-                );
-
-                continue;
-            }
-
-            if (e instanceof GrapeshotProjectile grapeshotProjectile) {
-                grapeshotProjectile.handleBounceAndLifetime(1f/20f, 0.5f, 9.5f, 0.5f, 5.5f);
+                case GrapeshotProjectile grapeshotProjectile ->
+                    grapeshotProjectile.handleBounceAndLifetime(1f / 20f, 0.5f, 9.5f, 0.5f, 5.5f);
+                default -> {
+                }
             }
 
             // 3. AoE Processing (No movement applied)
@@ -115,6 +124,7 @@ public class MovementSystem extends EntitySystem {
                 posComp.position.getX() + velComp.velocityPerTick.getX(),
                 posComp.position.getY() + velComp.velocityPerTick.getY()
             );
+
         }
     }
 }

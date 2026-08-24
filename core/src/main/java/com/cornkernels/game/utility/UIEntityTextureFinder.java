@@ -12,9 +12,9 @@ import java.util.Map;
 public class UIEntityTextureFinder {
 
     private static final Map<PlantDef, String> REGION_NAME_OVERRIDES = Map.of(
-        PlantDef.MEGA_GATLING_PEA, "megagatling",
-        PlantDef.MELON_PULT, "Melonpult",
-        PlantDef.CHERRY_BOMB, "cherry_bomb"
+        PlantDef.MEGA_GATLING_PEA1, "megagatling",
+        PlantDef.MELON_PULT1, "Melonpult",
+        PlantDef.CHERRY_BOMB1, "cherry_bomb"
     );
 
     private final TextureAtlas seedPacketsAtlas;

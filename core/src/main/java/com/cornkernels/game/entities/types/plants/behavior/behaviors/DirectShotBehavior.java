@@ -5,9 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
-import com.cornkernels.game.entities.types.projectile.projectiles.PeaProjectile;
 import com.cornkernels.game.map.Field;
-import com.cornkernels.game.map.grid.GridPosition;
 
 public class DirectShotBehavior implements PlantAttackBehavior {
 
@@ -17,7 +15,7 @@ public class DirectShotBehavior implements PlantAttackBehavior {
 
     public DirectShotBehavior(int shotCount, AbstractProjectile projectile) {
         this.shotCount = shotCount;
-        this.projectile=projectile;
+        this.projectile = projectile;
     }
     /*
         each behavior should be able to spawn other projectile types we use this to allow it

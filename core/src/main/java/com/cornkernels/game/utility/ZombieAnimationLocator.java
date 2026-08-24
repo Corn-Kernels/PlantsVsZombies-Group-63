@@ -41,7 +41,7 @@ public final class ZombieAnimationLocator {
         if (clip == null) {
             List<String> available = pamPlayer.clips(path);
             if (available == null || available.isEmpty()) return;
-            clip = pamPlayer.getClip(path, available.get(0));
+            clip = pamPlayer.getClip(path, available.getFirst());
         }
         if (clip == null) return;
 

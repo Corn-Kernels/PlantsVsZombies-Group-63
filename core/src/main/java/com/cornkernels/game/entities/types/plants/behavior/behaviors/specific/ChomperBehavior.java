@@ -12,6 +12,7 @@ import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.systems.entity.CombatSystem;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ChomperBehavior implements PlantAttackBehavior {
@@ -70,10 +71,7 @@ public class ChomperBehavior implements PlantAttackBehavior {
 
         if (!frontTargets.isEmpty()) {
             // Sort leftmost to rightmost so we hit the closest one in front
-            frontTargets.sort((a, b) -> Double.compare(
-                a.get(PositionComponent.class).position.getX(),
-                b.get(PositionComponent.class).position.getX()
-            ));
+            frontTargets.sort(Comparator.comparingDouble(a -> a.get(PositionComponent.class).position.getX()));
 
             Entity target = frontTargets.get(0);
             HealthComponent hc = target.get(HealthComponent.class);

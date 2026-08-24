@@ -284,7 +284,7 @@ public enum PlantDef {
     DOOM_SHROOM1(1036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 125, 100000, "1800", 0.0f, 15f),
     DOOM_SHROOM2(2036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 125, 100000, "1800", 0.0f, 10f),
     DOOM_SHROOM3(3036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 125, 100000, "2600", 0.0f, 10f),
-    DOOM_SHROOM4(4036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 75,  100000, "2600", 0.0f, 10f),
+    DOOM_SHROOM4(4036, "Doom-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM), 75, 100000, "2600", 0.0f, 10f),
 
     ICE_SHROOM1(1057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "20", 0.0f, 50f),
     ICE_SHROOM2(2057, "Ice-shroom", PlantCategory.EXPLOSIVE, tags(PlantTag.SHROOM, PlantTag.ICE), 75, 100000, "20", 0.0f, 50f),
@@ -299,7 +299,7 @@ public enum PlantDef {
     TANGLE_KELP1(1037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 25, 100000, "Insta-kill", 0.0f, 15f),
     TANGLE_KELP2(2037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 25, 100000, "Insta-kill", 0.0f, 10f),
     TANGLE_KELP3(3037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 25, 100000, "Insta-kill", 0.0f, 10f),
-    TANGLE_KELP4(4037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 0,  100000, "Insta-kill", 0.0f, 10f),
+    TANGLE_KELP4(4037, "Tangle Kelp", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.WATER), 0, 100000, "Insta-kill", 0.0f, 10f),
 
     SQUASH1(1033, "Squash", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP), 50, 100000, "1800", 0.0f, 20f),
     SQUASH2(2033, "Squash", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP), 50, 100000, "1800", 0.0f, 17f),

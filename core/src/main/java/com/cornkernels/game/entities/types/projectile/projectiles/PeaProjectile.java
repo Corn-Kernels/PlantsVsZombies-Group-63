@@ -17,7 +17,7 @@ public class PeaProjectile extends AbstractProjectile {
 
     @Override
     public boolean hit(Entity target, Field field) {
-        if(super.hit(target, field)){
+        if (super.hit(target, field)) {
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
             return true;
         }

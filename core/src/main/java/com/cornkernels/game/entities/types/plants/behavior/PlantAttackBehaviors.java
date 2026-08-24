@@ -423,7 +423,8 @@ public class PlantAttackBehaviors {
             try {
                 normalDmg = Integer.parseInt(parts[0].trim());
                 butterDmg = Integer.parseInt(parts[1].trim());
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
 
         int shots = parseShotCount(def, 1);

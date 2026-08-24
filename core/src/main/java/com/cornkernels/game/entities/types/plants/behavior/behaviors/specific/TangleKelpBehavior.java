@@ -76,7 +76,7 @@ public class TangleKelpBehavior implements PlantAttackBehavior {
                 double targetX = z.get(PositionComponent.class).position.getX() + 0.5;
 
                 // Ensure target in the range
-                if (targetX >= originX - lengthRange/2 && targetX <= originX + lengthRange/2) {
+                if (targetX >= originX - lengthRange / 2 && targetX <= originX + lengthRange / 2) {
                     laneTargets.add(z);
                 }
             }

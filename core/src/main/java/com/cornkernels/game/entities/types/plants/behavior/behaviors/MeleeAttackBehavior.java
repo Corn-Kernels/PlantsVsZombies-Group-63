@@ -13,7 +13,7 @@ import com.cornkernels.game.systems.entity.CombatSystem;
 import java.util.ArrayList;
 import java.util.List;
 
-    public class MeleeAttackBehavior implements PlantAttackBehavior {
+public class MeleeAttackBehavior implements PlantAttackBehavior {
     private final float frontRange;
     private final float backRange;
     private final int pierce;

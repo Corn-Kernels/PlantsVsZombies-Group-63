@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Random;
 
 public class BowlingProjectile extends AbstractProjectile {
-    private int bouncesLeft = 20;
     private final List<Entity> hitTargets = new ArrayList<>();
     private final Random random = new Random();
+    private int bouncesLeft = 20;
 
     public BowlingProjectile(int damage, Vec2d startPosition) {
         // Moves faster than a normal pea
@@ -25,7 +25,7 @@ public class BowlingProjectile extends AbstractProjectile {
     @Override
     public boolean hit(Entity target, Field field) {
         // Prevent multi-hitting the same zombie instantly in the same frame
-        if (super.hit(target,field) && !hitTargets.contains(target)) {
+        if (super.hit(target, field) && !hitTargets.contains(target)) {
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
             hitTargets.add(target);
             bouncesLeft--;

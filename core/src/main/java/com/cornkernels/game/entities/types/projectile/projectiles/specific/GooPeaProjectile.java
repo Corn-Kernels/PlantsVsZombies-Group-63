@@ -14,8 +14,8 @@ public class GooPeaProjectile extends PeaProjectile {
     }
 
     @Override
-    public boolean hit(Entity target,Field field) {
-        if (super.hit(target,field)) {
+    public boolean hit(Entity target, Field field) {
+        if (super.hit(target, field)) {
             // TODO: Apply a PoisonComponent to the target using poisonDamagePerTick
             return true;
         }

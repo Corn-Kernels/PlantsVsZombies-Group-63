@@ -47,12 +47,13 @@ public class GameManager extends Game {
         inputManager.init(inputSettings);
 
         setScreen(new GameplayScreen(this, new GameAttributes(
-            List.of(new SeedSlot(PlantDef.CACTUS),
-                new SeedSlot(PlantDef.PEASHOOTER),
-                new SeedSlot(PlantDef.CABBAGE_PULT),
-                new SeedSlot(PlantDef.BOWLING_BULB),
-                new SeedSlot(PlantDef.SQUASH),
-                new SeedSlot(PlantDef.ENFORCE_MINT)), List.of(ZombieDef.ARCADE)))); // Temporary
+            List.of(new SeedSlot(PlantDef.APPEASE_MINT),
+                new SeedSlot(PlantDef.PEASHOOTER1),
+                new SeedSlot(PlantDef.CABBAGE_PULT1),
+                new SeedSlot(PlantDef.BOWLING_BULB1),
+                new SeedSlot(PlantDef.SQUASH1),
+                new SeedSlot(PlantDef.ENFORCE_MINT),
+                new SeedSlot(PlantDef.CHOMPER1)), List.of(ZombieDef.ARCADE)))); // Temporary
     }
 
     @Override

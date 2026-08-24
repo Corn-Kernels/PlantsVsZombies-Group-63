@@ -76,10 +76,10 @@ public class RotobagaBehavior implements PlantAttackBehavior {
         }
 
         // Spawn projectiles along the triggered diagonals
-        if (shootTopRight)    spawnProjectiles(field, centerX, centerY, diagSpeed, -diagSpeed, 1, -1);
+        if (shootTopRight) spawnProjectiles(field, centerX, centerY, diagSpeed, -diagSpeed, 1, -1);
         if (shootBottomRight) spawnProjectiles(field, centerX, centerY, diagSpeed, diagSpeed, 1, 1);
-        if (shootTopLeft)     spawnProjectiles(field, centerX, centerY, -diagSpeed, -diagSpeed, -1, -1);
-        if (shootBottomLeft)  spawnProjectiles(field, centerX, centerY, -diagSpeed, diagSpeed, -1, 1);
+        if (shootTopLeft) spawnProjectiles(field, centerX, centerY, -diagSpeed, -diagSpeed, -1, -1);
+        if (shootBottomLeft) spawnProjectiles(field, centerX, centerY, -diagSpeed, diagSpeed, -1, 1);
     }
 
     private void spawnProjectiles(Field field, double startX, double startY, float velX, float velY, int dirX, int dirY) {

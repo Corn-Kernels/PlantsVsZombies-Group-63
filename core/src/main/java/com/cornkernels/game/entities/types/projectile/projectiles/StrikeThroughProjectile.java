@@ -1,14 +1,14 @@
 package com.cornkernels.game.entities.types.projectile.projectiles;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StrikeThroughProjectile extends AbstractProjectile {
 

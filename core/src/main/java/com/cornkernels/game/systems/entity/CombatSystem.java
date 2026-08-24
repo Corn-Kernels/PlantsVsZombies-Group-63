@@ -1,11 +1,13 @@
 package com.cornkernels.game.systems.entity;
 
+import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.ArmorComponent;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.GraveBeingEatenComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 
@@ -43,7 +45,7 @@ public class CombatSystem extends EntitySystem {
         // 1. Pre-filter potential targets ONCE outside the projectile loop
         List<Entity> validTargets = new ArrayList<>();
         for (Entity e : field.getEntities()) {
-            if (!e.isMarkedForRemoval() && (e instanceof ZombieInstance || e instanceof com.cornkernels.game.entities.types.obstacles.Grave)) {
+            if (!e.isMarkedForRemoval() && (e instanceof ZombieInstance || e instanceof Grave)) {
                 validTargets.add(e);
             }
         }
@@ -52,7 +54,7 @@ public class CombatSystem extends EntitySystem {
         for (AbstractProjectile projectile : List.copyOf(field.getActiveProjectiles())) {
             if (projectile.isMarkedForRemoval()) continue;
 
-            var pos = projectile.get(PositionComponent.class).position;
+            Vec2d pos = projectile.get(PositionComponent.class).position;
 
             // Clean up out-of-bounds projectiles
             if (pos.getX() < 0 || pos.getX() > field.getTotalColumns()) {
@@ -66,9 +68,9 @@ public class CombatSystem extends EntitySystem {
                 // might have just killed this target, and we don't want to hit a corpse.
                 if (target.isMarkedForRemoval()) continue;
                 // graves that are being eaten shouldnt get hit
-                if (target.has(GraveBeingEatenComponent.class))continue;
+                if (target.has(GraveBeingEatenComponent.class)) continue;
                 // Checking all projectiles since each one has a different hitbox logic
-                if (!projectile.hit(target,field)) {
+                if (!projectile.hit(target, field)) {
                     continue;
                 }
 
