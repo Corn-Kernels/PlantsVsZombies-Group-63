@@ -2250,6 +2250,7 @@ IMAGES/greenhouse_background.jpg
 IMAGES/plant_selection_background.jpg
 IMAGES/plants/appease_mint.png
 IMAGES/plants/arma_mint.png
+IMAGES/plants/armamint.png
 IMAGES/plants/bombard_mint.png
 IMAGES/plants/bonk_choy.png
 IMAGES/plants/bowling_bulb.png
@@ -2291,6 +2292,7 @@ IMAGES/plants/pea_pod.png
 IMAGES/plants/peashooter.png
 IMAGES/plants/pepper_pult.png
 IMAGES/plants/phat_beet.png
+IMAGES/plants/phet_beet.png
 IMAGES/plants/pierce_mint.png
 IMAGES/plants/potato_mine.png
 IMAGES/plants/primal_potato_mine.png

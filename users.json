@@ -146,7 +146,7 @@
     "isLoggedIn": true,
     "stayLoggedIn": false,
     "progress": {
-      "coins": 0,
+      "coins": 1900,
       "diamonds": 7,
       "highScore": 0,
       "unlockedChapters": [
@@ -158,14 +158,21 @@
         "WALL_NUT",
         "DOOM-SHROOM",
         "CAT-TAIL",
-        "CATTAIL-MINT"
+        "CATTAIL-MINT",
+        "PHAT BEET",
+        "ELECTRIC BLUEBERRY",
+        "CHOMPER",
+        "GOLD BLOOM"
       ],
       "seenZombies": [],
       "completedLevels": 0,
       "gamesPlayed": 0,
       "pots": 0,
       "plantFood": 1,
-      "seedPackets": [],
+      "seedPackets": [
+        "SNOW_PEA",
+        "WALL_NUT"
+      ],
       "difficultyLevel": 3,
       "gameSpeed": 1.0,
       "showGrid": false,
@@ -221,37 +228,35 @@
             "row": 1,
             "col": 1,
             "isLocked": false,
-            "plantType": "MARIGOLD",
-            "plantedAt": 1787581284676,
-            "readyAt": 1787588484676,
+            "plantedAt": 0,
+            "readyAt": 0,
             "isReady": false
           },
           {
             "row": 1,
             "col": 2,
             "isLocked": false,
-            "plantType": "MARIGOLD",
-            "plantedAt": 1787582262341,
-            "readyAt": 1787589462341,
+            "plantedAt": 0,
+            "readyAt": 0,
             "isReady": false
           },
           {
             "row": 1,
             "col": 3,
             "isLocked": false,
-            "plantType": "MARIGOLD",
-            "plantedAt": 1787582567236,
-            "readyAt": 1787589767236,
-            "isReady": false
+            "plantType": "SNOW_PEA",
+            "plantedAt": 1787591451173,
+            "readyAt": 1787591459173,
+            "isReady": true
           },
           {
             "row": 1,
             "col": 4,
             "isLocked": false,
-            "plantType": "MARIGOLD",
-            "plantedAt": 1787584037194,
-            "readyAt": 1787591237194,
-            "isReady": false
+            "plantType": "PEASHOOTER",
+            "plantedAt": 1787591448507,
+            "readyAt": 1787591456507,
+            "isReady": true
           },
           {
             "row": 2,
@@ -265,7 +270,7 @@
           {
             "row": 2,
             "col": 2,
-            "isLocked": true,
+            "isLocked": false,
             "plantedAt": 0,
             "readyAt": 0,
             "isReady": false
@@ -273,7 +278,7 @@
           {
             "row": 2,
             "col": 3,
-            "isLocked": true,
+            "isLocked": false,
             "plantedAt": 0,
             "readyAt": 0,
             "isReady": false
@@ -281,7 +286,7 @@
           {
             "row": 2,
             "col": 4,
-            "isLocked": true,
+            "isLocked": false,
             "plantedAt": 0,
             "readyAt": 0,
             "isReady": false
