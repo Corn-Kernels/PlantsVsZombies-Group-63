@@ -1,48 +1,55 @@
 package io.github.some_example_name.model;
 
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-
 import java.util.ArrayList;
 import java.util.List;
-public class Garden{
-    private List<GardenPot>pots;
-    private int unlockedPotCount;
-    private static final int ROWS=3;
-    private static final int COLS=4;
-    private static final int MAX_POTS=12;
-    private static final int UNLOCK_COST=200;
 
-    public Garden(){
-        this.pots=new ArrayList<>();
-        this.unlockedPotCount=0;
+public class Garden {
+    private List<GardenPot> pots;
+    private static final int ROWS = 3;      // 3 ردیف
+    private static final int COLS = 4;      // 4 ستون
+    private static final int MAX_POTS = 12; // 12 گلدان
+
+    public Garden() {
+        this.pots = new ArrayList<>();
         initializePots();
     }
-    private void initializePots(){
-        for(int row=1;row<=ROWS;row++){
-            for(int col=1;col<=COLS;col++){
-                boolean isLocked=(row>=2);
-                pots.add(new GardenPot(row,col,isLocked));
+
+    private void initializePots() {
+        for (int row = 1; row <= ROWS; row++) {
+            for (int col = 1; col <= COLS; col++) {
+                // ردیف اول: ۲ تا آنلاک، بقیه لاک
+                boolean isLocked = !(row == 1 && col <= 2);
+                pots.add(new GardenPot(row, col, isLocked));
             }
         }
     }
-    public List<GardenPot>getPots(){return pots;}
-    public GardenPot getPot(int row,int col){
-        for(GardenPot pot:pots){
-            if(pot.getRow()==row&&pot.getCol()==col)
+
+    public List<GardenPot> getPots() { return pots; }
+
+    public GardenPot getPot(int row, int col) {
+        for (GardenPot pot : pots) {
+            if (pot.getRow() == row && pot.getCol() == col) {
                 return pot;
+            }
         }
         return null;
     }
-    public int getUnlockedPotCount(){return unlockedPotCount;}
-    public void unlockPot(int row,int col){
-        GardenPot pot=getPot(row,col);
-        if(pot!=null&&pot.isLocked()){
-            pot.setLocked(false);
-            unlockedPotCount++;
 
+    // ===== تعداد گلدان‌های آنلاک‌شده =====
+    public int getUnlockedPotCount() {
+        int count = 0;
+        for (GardenPot pot : pots) {
+            if (!pot.isLocked()) count++;
         }
+        return count;
     }
-    public boolean isFull(){
-        return unlockedPotCount>=MAX_POTS;
+
+    // ===== تعداد کل گلدان‌ها =====
+    public int getTotalPotCount() {
+        return MAX_POTS;
+    }
+
+    public boolean isFull() {
+        return getUnlockedPotCount() >= MAX_POTS;
     }
 }

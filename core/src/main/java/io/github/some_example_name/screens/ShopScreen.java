@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.model.GardenPot;
 import io.github.some_example_name.model.PlayerProgress;
@@ -19,7 +18,7 @@ import io.github.some_example_name.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
+public class ShopScreen extends BaseScreen {
 
     private User user;
     private Image backgroundImage;
@@ -38,14 +37,55 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
     };
 
     public ShopScreen(Main game, User user) {
-        super(game);  // ✅ تغییر کلیدی
+        super(game);
         this.user = user;
 
         initializeShopItems();
-        loadBackground();
-        // ❌ حذف: setupCurrencyDisplay();
+        createBackground();
         buildUI();
         updateItemsDisplay();
+    }
+
+    // ===== ساخت پس‌زمینه ساده با رنگ =====
+    private void createBackground() {
+        try {
+            Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/shop_background.jpg"));
+            backgroundImage = new Image(bgTexture);
+            backgroundImage.setFillParent(true);
+            backgroundImage.setZIndex(0);
+            stage.addActor(backgroundImage);
+        } catch (Exception e) {
+            System.out.println("Shop background not found! Creating simple background.");
+            // ===== ساخت پس‌زمینه ساده با Pixmap =====
+            Pixmap pixmap = new Pixmap(800, 600, Pixmap.Format.RGBA8888);
+
+            // گرادینت آبی تیره تا آبی روشن
+            for (int y = 0; y < 600; y++) {
+                float ratio = y / 600f;
+                int r = (int)(20 + 30 * ratio);
+                int g = (int)(40 + 80 * ratio);
+                int b = (int)(120 + 80 * ratio);
+                pixmap.setColor(r/255f, g/255f, b/255f, 1);
+                pixmap.drawLine(0, y, 800, y);
+            }
+
+            // اضافه کردن طرح شطرنجی ساده
+            pixmap.setColor(0.2f, 0.3f, 0.5f, 0.3f);
+            for (int x = 0; x < 800; x += 80) {
+                for (int y = 0; y < 600; y += 80) {
+                    if ((x/80 + y/80) % 2 == 0) {
+                        pixmap.fillRectangle(x, y, 80, 80);
+                    }
+                }
+            }
+
+            Texture bgTexture2 = new Texture(pixmap);
+            pixmap.dispose();
+            backgroundImage = new Image(bgTexture2);
+            backgroundImage.setFillParent(true);
+            backgroundImage.setZIndex(0);
+            stage.addActor(backgroundImage);
+        }
     }
 
     private void initializeShopItems() {
@@ -91,51 +131,49 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
         }
     }
 
-    private void loadBackground() {
-        try {
-            Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/shop_background.jpg"));
-            backgroundImage = new Image(bgTexture);
-            backgroundImage.setFillParent(true);
-            backgroundImage.setZIndex(0);
-            stage.addActor(backgroundImage);
-        } catch (Exception e) {
-            System.out.println("Shop background not found! Using default color.");
-        }
-    }
-
     private void buildUI() {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
         stage.addActor(mainTable);
 
+        // ===== عنوان =====
         Label titleLabel = new Label(" SHOP", skin);
-        mainTable.add(titleLabel).padBottom(10).row();
+        titleLabel.setFontScale(2f);
+        titleLabel.setColor(1, 1, 0.8f, 1);
+        mainTable.add(titleLabel).padBottom(15).row();
 
+        // ===== اطلاعات سکه و الماس =====
         infoTable = new Table();
         updateInfoDisplay();
         mainTable.add(infoTable).padBottom(10).row();
 
+        // ===== لیست آیتم‌ها =====
         itemsTable = new Table();
-        itemsTable.setBackground(skin.getDrawable("white_pixel"));
-        itemsTable.setColor(0.2f, 0.15f, 0.1f, 0.5f);
         itemsTable.pad(10);
 
         ScrollPane scrollPane = new ScrollPane(itemsTable, skin);
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setHeight(350);
-        mainTable.add(scrollPane).width(500).height(350).padBottom(10).row();
+        scrollPane.setFadeScrollBars(false);
+        mainTable.add(scrollPane).width(550).height(350).padBottom(10).row();
 
+        // ===== وضعیت =====
         statusLabel = new Label("Select an item to buy", skin);
+        statusLabel.setFontScale(1.2f);
         statusLabel.setColor(1, 1, 0.8f, 1);
         mainTable.add(statusLabel).padBottom(10).row();
 
+        // ===== دکمه‌ها =====
         Table buttonTable = new Table();
 
         TextButton buyBtn = new TextButton(" Buy Selected", skin, "green");
         TextButton backBtn = new TextButton(" Back", skin, "default");
 
-        buttonTable.add(buyBtn).width(150).height(50).padRight(10);
-        buttonTable.add(backBtn).width(100).height(50);
+        buyBtn.getLabel().setFontScale(1.2f);
+        backBtn.getLabel().setFontScale(1.2f);
+
+        buttonTable.add(buyBtn).width(160).height(50).padRight(10);
+        buttonTable.add(backBtn).width(120).height(50);
 
         mainTable.add(buttonTable).row();
 
@@ -157,8 +195,16 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
     private void updateInfoDisplay() {
         infoTable.clear();
         PlayerProgress progress = user.getProgress();
-        infoTable.add(new Label(" Coins: " + progress.getCoins(), skin)).padRight(20);
-        infoTable.add(new Label(" Diamonds: " + progress.getDiamonds(), skin));
+
+        Label coinsLabel = new Label("🪙 " + progress.getCoins(), skin);
+        coinsLabel.setFontScale(1.3f);
+        coinsLabel.setColor(1, 1, 0.2f, 1);
+        infoTable.add(coinsLabel).padRight(30);
+
+        Label diamondsLabel = new Label("💎 " + progress.getDiamonds(), skin);
+        diamondsLabel.setFontScale(1.3f);
+        diamondsLabel.setColor(0.3f, 0.8f, 1, 1);
+        infoTable.add(diamondsLabel);
     }
 
     private void updateItemsDisplay() {
@@ -166,42 +212,74 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
 
         for (ShopItem item : shopItems) {
             Table card = createItemCard(item);
-            itemsTable.add(card).width(450).height(80).pad(5).row();
+            itemsTable.add(card).width(500).height(90).pad(6).row();
         }
     }
 
     private Table createItemCard(ShopItem item) {
         Table card = new Table();
-        card.setBackground(skin.getDrawable("white_pixel"));
-        card.setColor(0.18f, 0.18f, 0.18f, 0.85f);
+
+        // ===== کارت با رنگ تیره و حاشیه =====
+        card.setColor(new Color(0.15f, 0.15f, 0.25f, 0.85f));
         card.pad(10);
 
+        // ===== حاشیه دور کارت =====
+        Pixmap borderPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        borderPixmap.setColor(new Color(0.3f, 0.4f, 0.6f, 0.5f));
+        borderPixmap.fill();
+        Drawable borderDrawable = new TextureRegionDrawable(new Texture(borderPixmap));
+        borderPixmap.dispose();
+        card.setBackground(borderDrawable);
+
+        // ===== تصویر (با placeholder اگه پیدا نشه) =====
         Image itemImage;
         try {
             Texture texture = new Texture(Gdx.files.internal(item.imagePath));
             itemImage = new Image(texture);
-            itemImage.setSize(50, 50);
+            itemImage.setSize(55, 55);
         } catch (Exception e) {
             itemImage = new Image();
-            itemImage.setSize(50, 50);
-            itemImage.setColor(0.3f, 0.3f, 0.3f, 1);
+            itemImage.setSize(55, 55);
+            if (item.name.contains("DAILY")) {
+                itemImage.setColor(1, 0.8f, 0, 1); // طلایی
+            } else if (item.name.equals("POT")) {
+                itemImage.setColor(0.6f, 0.4f, 0.2f, 1); // قهوه‌ای
+            } else if (item.name.equals("PLANT FOOD")) {
+                itemImage.setColor(0.2f, 0.8f, 0.2f, 1); // سبز
+            } else {
+                itemImage.setColor(0.5f, 0.5f, 0.8f, 1); // آبی
+            }
         }
 
+        // ===== نام و توضیحات =====
         Label nameLabel = new Label(item.name, skin);
-        nameLabel.setFontScale(0.8f);
+        nameLabel.setFontScale(1.1f);
+        nameLabel.setColor(1, 1, 1, 1);
 
         Label descLabel = new Label(item.description, skin);
-        descLabel.setFontScale(0.6f);
-        descLabel.setColor(0.8f, 0.8f, 0.8f, 1);
+        descLabel.setFontScale(0.8f);
+        descLabel.setColor(0.7f, 0.7f, 0.7f, 1);
 
+        // ===== قیمت =====
         String priceText = item.currency.equals("Coins") ? "🪙" : "💎";
         Label priceLabel = new Label(priceText + " " + item.price, skin);
-        priceLabel.setFontScale(0.8f);
+        priceLabel.setFontScale(1.1f);
         priceLabel.setColor(1, 0.8f, 0, 1);
 
+        // ===== دکمه انتخاب =====
         TextButton selectBtn = new TextButton("Select", skin, "default");
-        selectBtn.setWidth(80);
-        selectBtn.setHeight(30);
+        selectBtn.setWidth(90);
+        selectBtn.setHeight(35);
+        selectBtn.getLabel().setFontScale(0.9f);
+
+        // ===== نشان روزانه =====
+        if (item.isDaily) {
+            Label dailyLabel = new Label("⭐ DAILY", skin);
+            dailyLabel.setFontScale(0.6f);
+            dailyLabel.setColor(1, 0.8f, 0, 1);
+            card.add(dailyLabel).top().right().pad(2);
+            card.row();
+        }
 
         final ShopItem finalItem = item;
         selectBtn.addListener(new ClickListener() {
@@ -211,15 +289,16 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
             }
         });
 
-        card.add(itemImage).size(50, 50).padRight(10);
+        // ===== چینش المان‌ها =====
+        card.add(itemImage).size(55, 55).padRight(15);
 
         Table infoTable = new Table();
         infoTable.add(nameLabel).left().row();
         infoTable.add(descLabel).left().row();
-        card.add(infoTable).padRight(10);
+        card.add(infoTable).padRight(15).expandX().left();
 
         Table rightTable = new Table();
-        rightTable.add(priceLabel).padRight(10);
+        rightTable.add(priceLabel).padRight(15);
         rightTable.add(selectBtn);
         card.add(rightTable);
 
@@ -229,6 +308,7 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
     private void selectItem(ShopItem item) {
         selectedItem = item;
         statusLabel.setText("Selected: " + item.name + " - Price: " + item.price + " " + item.currency);
+        statusLabel.setColor(0.3f, 1, 0.3f, 1);
     }
 
     private void handleBuy() {
@@ -239,6 +319,7 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
 
         PlayerProgress progress = user.getProgress();
 
+        // ===== بررسی موجودی =====
         if (selectedItem.currency.equals("Coins")) {
             if (progress.getCoins() < selectedItem.price) {
                 showToast("❌ Not enough coins! Need " + selectedItem.price + " coins.", 2f, true);
@@ -281,6 +362,7 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
             progress.deductDiamonds(item.price);
         }
 
+        // ===== اجرای خرید =====
         if (item.name.startsWith("DAILY OFFER:")) {
             String plantName = item.name.replace("DAILY OFFER: ", "");
             progress.addSeedPacket(plantName);
@@ -332,6 +414,7 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
 
         for (String plant : plants) {
             TextButton plantBtn = new TextButton(plant, skin, "default");
+            plantBtn.getLabel().setFontScale(0.9f);
             final String selectedPlant = plant;
             plantBtn.addListener(new ClickListener() {
                 @Override
@@ -346,12 +429,13 @@ public class ShopScreen extends BaseScreen {  // ✅ تغییر کلیدی
                     showToast("✅ " + selectedPlant + " seed added!", 2f, false);
                 }
             });
-            plantTable.add(plantBtn).width(150).height(40).pad(5).row();
+            plantTable.add(plantBtn).width(150).height(35).pad(4).row();
         }
 
         plantDialog.getContentTable().add(plantTable);
 
         TextButton cancelBtn = new TextButton("Cancel", skin, "default");
+        cancelBtn.getLabel().setFontScale(0.9f);
         cancelBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

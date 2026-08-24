@@ -10,17 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import io.github.some_example_name.Main;
 import io.github.some_example_name.model.Garden;
 import io.github.some_example_name.model.GardenPot;
 import io.github.some_example_name.model.PlayerProgress;
 import io.github.some_example_name.model.User;
 
-public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
+public class GreenhouseScreen extends BaseScreen {
 
     private User user;
-    private Image backgroundImage;
     private Garden garden;
 
     private Label statusLabel;
@@ -38,20 +36,31 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
 
     private Texture potEmptyTexture;
     private Texture potLockedTexture;
-    private Texture potReadyBorderTexture;
-    private Texture potGrowingBorderTexture;
+
+    // ===== لیست ۵ گیاه ثابت =====
+    private static final String[] AVAILABLE_PLANTS = {
+        "SUNFLOWER",
+        "PEASHOOTER",
+        "WALL_NUT",
+        "SNOW_PEA",
+        "REPEATER"
+    };
 
     public GreenhouseScreen(Main game, User user) {
-        super(game);  // ✅ تغییر کلیدی
+        super(game);
         this.user = user;
 
         PlayerProgress progress = user.getProgress();
         garden = progress.getGarden();
 
+        if (garden == null) {
+            garden = new Garden();
+            progress.setGarden(garden);
+        }
+
         loadPotImages();
         createDrawables();
         loadBackground();
-        // ❌ حذف: setupCurrencyDisplay();
         buildUI();
         updatePotsDisplay();
     }
@@ -59,11 +68,18 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
     private void loadPotImages() {
         try {
             potEmptyTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse/pot_empty.png"));
-            potLockedTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse/pot_locked.png"));
-            potReadyBorderTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse/pot_ready_border.png"));
-            potGrowingBorderTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse/pot_growing_border.png"));
+            System.out.println("✅ pot_empty.png loaded");
         } catch (Exception e) {
-            System.out.println("Pot images not found! Using default colors.");
+            System.out.println("❌ pot_empty.png not found!");
+            potEmptyTexture = null;
+        }
+
+        try {
+            potLockedTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse/pot_locked.png"));
+            System.out.println("✅ pot_locked.png loaded");
+        } catch (Exception e) {
+            System.out.println("❌ pot_locked.png not found!");
+            potLockedTexture = null;
         }
     }
 
@@ -71,9 +87,11 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         if (potLockedTexture != null) {
             lockedDrawable = new TextureRegionDrawable(potLockedTexture);
         } else {
-            Pixmap lockedPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-            lockedPixmap.setColor(new Color(0.1f, 0.1f, 0.1f, 0.9f));
+            Pixmap lockedPixmap = new Pixmap(100, 90, Pixmap.Format.RGBA8888);
+            lockedPixmap.setColor(new Color(0.15f, 0.15f, 0.15f, 1));
             lockedPixmap.fill();
+            lockedPixmap.setColor(Color.DARK_GRAY);
+            lockedPixmap.drawRectangle(2, 2, 96, 86);
             lockedDrawable = new TextureRegionDrawable(new Texture(lockedPixmap));
             lockedPixmap.dispose();
         }
@@ -81,32 +99,30 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         if (potEmptyTexture != null) {
             emptyDrawable = new TextureRegionDrawable(potEmptyTexture);
         } else {
-            Pixmap emptyPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-            emptyPixmap.setColor(new Color(0.3f, 0.2f, 0.1f, 0.8f));
+            Pixmap emptyPixmap = new Pixmap(100, 90, Pixmap.Format.RGBA8888);
+            emptyPixmap.setColor(new Color(0.4f, 0.25f, 0.1f, 1));
             emptyPixmap.fill();
+            emptyPixmap.setColor(new Color(0.5f, 0.35f, 0.15f, 1));
+            emptyPixmap.drawRectangle(2, 2, 96, 86);
             emptyDrawable = new TextureRegionDrawable(new Texture(emptyPixmap));
             emptyPixmap.dispose();
         }
 
-        if (potGrowingBorderTexture != null) {
-            growingDrawable = new TextureRegionDrawable(potGrowingBorderTexture);
-        } else {
-            Pixmap growingPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-            growingPixmap.setColor(new Color(0.3f, 0.3f, 0.1f, 0.8f));
-            growingPixmap.fill();
-            growingDrawable = new TextureRegionDrawable(new Texture(growingPixmap));
-            growingPixmap.dispose();
-        }
+        Pixmap growingPixmap = new Pixmap(100, 90, Pixmap.Format.RGBA8888);
+        growingPixmap.setColor(new Color(0.4f, 0.3f, 0.05f, 1));
+        growingPixmap.fill();
+        growingPixmap.setColor(Color.YELLOW);
+        growingPixmap.drawRectangle(2, 2, 96, 86);
+        growingDrawable = new TextureRegionDrawable(new Texture(growingPixmap));
+        growingPixmap.dispose();
 
-        if (potReadyBorderTexture != null) {
-            readyDrawable = new TextureRegionDrawable(potReadyBorderTexture);
-        } else {
-            Pixmap readyPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-            readyPixmap.setColor(new Color(0.1f, 0.6f, 0.1f, 0.8f));
-            readyPixmap.fill();
-            readyDrawable = new TextureRegionDrawable(new Texture(readyPixmap));
-            readyPixmap.dispose();
-        }
+        Pixmap readyPixmap = new Pixmap(100, 90, Pixmap.Format.RGBA8888);
+        readyPixmap.setColor(new Color(0.05f, 0.3f, 0.05f, 1));
+        readyPixmap.fill();
+        readyPixmap.setColor(Color.GREEN);
+        readyPixmap.drawRectangle(2, 2, 96, 86);
+        readyDrawable = new TextureRegionDrawable(new Texture(readyPixmap));
+        readyPixmap.dispose();
     }
 
     private void loadBackground() {
@@ -127,6 +143,7 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         stage.addActor(mainTable);
 
         Label titleLabel = new Label(" GREENHOUSE", skin);
+        titleLabel.setFontScale(1.5f);
         mainTable.add(titleLabel).padBottom(10).row();
 
         infoTable = new Table();
@@ -134,16 +151,15 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         mainTable.add(infoTable).padBottom(10).row();
 
         potsTable = new Table();
-        potsTable.setBackground(skin.getDrawable("white_pixel"));
-        potsTable.setColor(0.2f, 0.15f, 0.1f, 0.5f);
         potsTable.pad(10);
 
         ScrollPane scrollPane = new ScrollPane(potsTable, skin);
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setHeight(350);
-        mainTable.add(scrollPane).width(500).height(350).padBottom(10).row();
+        mainTable.add(scrollPane).width(560).height(350).padBottom(10).row();
 
         statusLabel = new Label("Select a pot to interact", skin);
+        statusLabel.setFontScale(1.2f);
         statusLabel.setColor(1, 1, 0.8f, 1);
         mainTable.add(statusLabel).padBottom(10).row();
 
@@ -151,7 +167,7 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
 
         TextButton plantBtn = new TextButton(" Plant", skin, "default");
         TextButton harvestBtn = new TextButton(" Harvest", skin, "green");
-        TextButton speedBtn = new TextButton(" Speed Up (💎5)", skin, "default");
+        TextButton speedBtn = new TextButton(" Speed Up", skin, "default");
         TextButton buyPotBtn = new TextButton(" Buy Pot (200)", skin, "default");
         TextButton backBtn = new TextButton(" Back", skin, "default");
 
@@ -203,10 +219,19 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         infoTable.clear();
         PlayerProgress progress = user.getProgress();
         int unlockedPots = garden.getUnlockedPotCount();
+        int totalPots = garden.getTotalPotCount();
 
-        infoTable.add(new Label(" Pots: " + unlockedPots + "/20", skin)).padRight(20);
-        infoTable.add(new Label(" Coins: " + progress.getCoins(), skin)).padRight(20);
-        infoTable.add(new Label(" Diamonds: " + progress.getDiamonds(), skin));
+        Label potsLabel = new Label(" Pots: " + unlockedPots + "/" + totalPots, skin);
+        potsLabel.setFontScale(1.2f);
+        infoTable.add(potsLabel).padRight(20);
+
+        Label coinsLabel = new Label(" Coins: " + progress.getCoins(), skin);
+        coinsLabel.setFontScale(1.2f);
+        infoTable.add(coinsLabel).padRight(20);
+
+        Label diamondsLabel = new Label(" Diamonds: " + progress.getDiamonds(), skin);
+        diamondsLabel.setFontScale(1.2f);
+        infoTable.add(diamondsLabel);
     }
 
     private void updatePotsDisplay() {
@@ -215,16 +240,38 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         for (int row = 1; row <= 3; row++) {
             for (int col = 1; col <= 4; col++) {
                 GardenPot pot = garden.getPot(row, col);
-                Table potCard = createPotCard(pot, row, col);
-                potsTable.add(potCard).width(85).height(75).pad(3);
+                Table potCard;
+                if (pot != null) {
+                    potCard = createPotCard(pot, row, col);
+                } else {
+                    potCard = createEmptyPotCard(row, col);
+                }
+                potsTable.add(potCard).width(105).height(95).pad(5);
             }
             potsTable.row();
         }
     }
 
+    private Table createEmptyPotCard(int row, int col) {
+        Table card = new Table();
+        card.setBackground(lockedDrawable);
+        card.pad(3);
+
+        Label label = new Label("🔒", skin);
+        label.setFontScale(2.5f);
+        card.add(label).center().row();
+
+        Label posLabel = new Label(row + "," + col, skin);
+        posLabel.setFontScale(0.6f);
+        posLabel.setColor(0.7f, 0.7f, 0.7f, 1);
+        card.add(posLabel).bottom().right().pad(2);
+
+        return card;
+    }
+
     private Table createPotCard(GardenPot pot, int row, int col) {
         Table card = new Table();
-        card.setBackground(skin.getDrawable("white_pixel"));
+        card.pad(5);
 
         if (pot.isLocked()) {
             card.setBackground(lockedDrawable);
@@ -236,50 +283,62 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
             card.setBackground(growingDrawable);
         }
 
-        Image plantImage = null;
+        // ===== نمایش اسم گیاه =====
         if (!pot.isEmpty() && !pot.isLocked()) {
             String plantName = pot.getPlantType();
             if (plantName != null) {
-                try {
-                    String imagePath = "IMAGES/plants/" + plantName.toLowerCase() + ".png";
-                    Texture texture = new Texture(Gdx.files.internal(imagePath));
-                    plantImage = new Image(texture);
-                    plantImage.setSize(40, 40);
-                } catch (Exception e) {
+                String displayName = plantName;
+                if (displayName.length() > 8) {
+                    displayName = displayName.substring(0, 8) + "..";
+                }
+                Label plantLabel = new Label(displayName, skin);
+                plantLabel.setFontScale(1.0f);
+                plantLabel.setColor(1, 1, 1, 1);
+                card.add(plantLabel).center().row();
+            }
+        } else if (!pot.isLocked() && pot.isEmpty()) {
+            Label emptyLabel = new Label("⬜", skin);
+            emptyLabel.setFontScale(2.5f);
+            card.add(emptyLabel).center().row();
+        }
+
+        // ===== وضعیت (زمان بر حسب ثانیه یا READY) =====
+        if (!pot.isEmpty() && !pot.isLocked()) {
+            if (pot.isReady()) {
+                Label readyLabel = new Label("✅ READY", skin);
+                readyLabel.setFontScale(0.9f);
+                readyLabel.setColor(0, 1, 0, 1);
+                card.add(readyLabel).center().row();
+            } else {
+                long seconds = pot.getSecondsRemaining();
+                if (seconds > 0) {
+                    Label timeLabel = new Label(seconds + "s left", skin);
+                    timeLabel.setFontScale(0.9f);
+                    timeLabel.setColor(1, 1, 0.5f, 1);
+                    card.add(timeLabel).center().row();
+                } else {
+                    Label timeLabel = new Label("Soon", skin);
+                    timeLabel.setFontScale(0.9f);
+                    timeLabel.setColor(1, 1, 0.5f, 1);
+                    card.add(timeLabel).center().row();
                 }
             }
         }
 
-        String statusText = getShortStatus(pot);
-        Label statusLabel = new Label(statusText, skin);
-        statusLabel.setFontScale(0.5f);
-        statusLabel.setColor(1, 1, 1, 1);
-
-        Label rewardLabel = null;
+        // ===== جایزه =====
         if (pot.isReady()) {
             int reward = 5 + (int)(Math.random() * 15);
-            rewardLabel = new Label("💎" + reward, skin);
-            rewardLabel.setFontScale(0.6f);
+            Label rewardLabel = new Label("💎" + reward, skin);
+            rewardLabel.setFontScale(0.9f);
             rewardLabel.setColor(1, 0.8f, 0, 1);
+            card.add(rewardLabel).center().row();
         }
 
+        // ===== موقعیت =====
         Label posLabel = new Label(row + "," + col, skin);
-        posLabel.setFontScale(0.4f);
-        posLabel.setColor(0.7f, 0.7f, 0.7f, 1);
-
-        card.add(posLabel).top().left().pad(2).row();
-
-        if (plantImage != null) {
-            card.add(plantImage).size(40, 40).pad(2).row();
-        } else {
-            card.add(new Label("", skin)).pad(2).row();
-        }
-
-        card.add(statusLabel).center().pad(2).row();
-
-        if (rewardLabel != null) {
-            card.add(rewardLabel).center().pad(2).row();
-        }
+        posLabel.setFontScale(0.5f);
+        posLabel.setColor(0.5f, 0.5f, 0.5f, 1);
+        card.add(posLabel).bottom().right().pad(2);
 
         card.addListener(new ClickListener() {
             @Override
@@ -295,8 +354,8 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         if (pot.isLocked()) return "🔒";
         if (pot.isEmpty()) return "⬜";
         if (pot.isReady()) return "✅ READY";
-        long hours = pot.getHoursRemaining();
-        if (hours > 0) return hours + "h left";
+        long seconds = pot.getSecondsRemaining();
+        if (seconds > 0) return seconds + "s left";
         return "⏳ soon";
     }
 
@@ -310,7 +369,7 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
             return;
         }
 
-        String status = selectedPot.getStatusDisplay();
+        String status = getShortStatus(selectedPot);
         statusLabel.setText("Selected: (" + row + "," + col + ") - " + status);
         updatePotsDisplay();
     }
@@ -321,13 +380,21 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
             return;
         }
 
-        String plantType = "MARIGOLD";
+        String plantType;
+        if (Math.random() < 0.5) {
+            plantType = "MARIGOLD";
+        } else {
+            int randomIndex = (int)(Math.random() * AVAILABLE_PLANTS.length);
+            plantType = AVAILABLE_PLANTS[randomIndex];
+        }
 
         selectedPot.plant(plantType);
         game.getStorageService().saveUsers();
         updatePotsDisplay();
         updateInfoDisplay();
-        showToast("✅ Planted " + plantType + " in (" + selectedRow + "," + selectedCol + ")", 2f, false);
+
+        String displayName = plantType.length() > 8 ? plantType.substring(0, 8) + ".." : plantType;
+        showToast("✅ Planted " + displayName + " in (" + selectedRow + "," + selectedCol + ")", 2f, false);
     }
 
     private void handleHarvest() {
@@ -337,20 +404,24 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         }
 
         PlayerProgress progress = user.getProgress();
+        String plantType = selectedPot.getPlantType();
 
-        int coinsReward = 30 + (int)(Math.random() * 70);
-        int diamondsReward = 5 + (int)(Math.random() * 15);
+        int coinsReward = 500;
+
+        if (!plantType.equals("MARIGOLD")) {
+            progress.addSeedPacket(plantType);
+            showToast("🌱 +1 " + plantType + " seed packet!", 2f, false);
+        }
 
         progress.addCoins(coinsReward);
-        progress.addDiamonds(diamondsReward);
-
         selectedPot.clear();
+
         game.getStorageService().saveUsers();
         updateCurrencyDisplay();
         updatePotsDisplay();
         updateInfoDisplay();
 
-        showToast("✅ Harvested! +" + coinsReward + " coins, +" + diamondsReward + " diamonds", 2f, false);
+        showToast("✅ Harvested! +" + coinsReward + " coins" + (!plantType.equals("MARIGOLD") ? " + seed packet" : ""), 2f, false);
     }
 
     private void handleSpeedUp() {
@@ -360,24 +431,31 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         }
 
         PlayerProgress progress = user.getProgress();
-        int cost = 5;
 
-        if (progress.getDiamonds() < cost) {
-            showToast("❌ Not enough diamonds! Need " + cost + " 💎", 2f, true);
+        long seconds = selectedPot.getSecondsRemaining();
+        if (seconds <= 0) {
+            showToast("❌ Plant is almost ready! Just wait a bit.", 2f, true);
             return;
         }
 
-        progress.deductDiamonds(cost);
+        // ===== ۱ الماس به ازای هر ۵ ثانیه =====
+        int diamondsNeeded = (int)Math.ceil(seconds / 5.0);
+        if (diamondsNeeded < 1) diamondsNeeded = 1;
 
-        selectedPot.plant(selectedPot.getPlantType());
-        selectedPot.checkReady();
+        if (progress.getDiamonds() < diamondsNeeded) {
+            showToast("❌ Not enough diamonds! Need " + diamondsNeeded + " 💎", 2f, true);
+            return;
+        }
+
+        progress.deductDiamonds(diamondsNeeded);
+        selectedPot.forceReady();
 
         game.getStorageService().saveUsers();
         updateCurrencyDisplay();
         updatePotsDisplay();
         updateInfoDisplay();
 
-        showToast("✅ Growth accelerated! Plant is now ready.", 2f, false);
+        showToast("✅ Growth accelerated! Plant is now ready. (Cost: " + diamondsNeeded + " 💎)", 2f, false);
     }
 
     private void handleBuyPot() {
@@ -385,7 +463,9 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         int cost = 200;
 
         int unlockedPots = garden.getUnlockedPotCount();
-        if (unlockedPots >= 20) {
+        int totalPots = garden.getTotalPotCount();
+
+        if (unlockedPots >= totalPots) {
             showToast("❌ All pots are already unlocked!", 2f, true);
             return;
         }
@@ -411,6 +491,12 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
 
     @Override
     public void render(float delta) {
+        if (garden != null) {
+            for (GardenPot pot : garden.getPots()) {
+                pot.checkReady();
+            }
+        }
+
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
@@ -422,7 +508,5 @@ public class GreenhouseScreen extends BaseScreen {  // ✅ تغییر کلیدی
         super.dispose();
         if (potEmptyTexture != null) potEmptyTexture.dispose();
         if (potLockedTexture != null) potLockedTexture.dispose();
-        if (potReadyBorderTexture != null) potReadyBorderTexture.dispose();
-        if (potGrowingBorderTexture != null) potGrowingBorderTexture.dispose();
     }
 }

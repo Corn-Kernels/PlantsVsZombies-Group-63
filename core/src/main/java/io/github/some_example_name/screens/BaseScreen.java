@@ -40,18 +40,24 @@ public abstract class BaseScreen implements Screen {
         BitmapFont font = new BitmapFont();
         skin.add("default-font", font);
 
-        // ===== ساخت Drawable‌ها =====
+        // ===== ساخت Drawable سفید برای white_pixel =====
         Pixmap whitePixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         whitePixmap.setColor(Color.WHITE);
         whitePixmap.fill();
-        Drawable whiteDrawable = new TextureRegionDrawable(new Texture(whitePixmap));
+        Texture whiteTexture = new Texture(whitePixmap);
         whitePixmap.dispose();
+        Drawable whiteDrawable = new TextureRegionDrawable(whiteTexture);
 
+        // ===== اضافه کردن "white_pixel" =====
+        skin.add("white_pixel", whiteDrawable);
+
+        // ===== ساخت Drawable خاکستری =====
         Pixmap grayPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         grayPixmap.setColor(Color.LIGHT_GRAY);
         grayPixmap.fill();
-        Drawable grayDrawable = new TextureRegionDrawable(new Texture(grayPixmap));
+        Texture grayTexture = new Texture(grayPixmap);
         grayPixmap.dispose();
+        Drawable grayDrawable = new TextureRegionDrawable(grayTexture);
 
         // ===== LabelStyle =====
         Label.LabelStyle labelStyle = new Label.LabelStyle();
@@ -87,14 +93,13 @@ public abstract class BaseScreen implements Screen {
         skin.add("default", checkBoxStyle);
 
         // ============================================
-        // ===== SelectBoxStyle (جدید - برای منوهای کشویی) =====
+        // ===== SelectBoxStyle =====
         // ============================================
         SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
         selectBoxStyle.font = font;
         selectBoxStyle.fontColor = Color.BLACK;
         selectBoxStyle.background = whiteDrawable;
 
-        // ===== ListStyle برای SelectBox (لیستی که باز میشه) =====
         List.ListStyle listStyle = new List.ListStyle();
         listStyle.font = font;
         listStyle.fontColorSelected = Color.WHITE;
@@ -131,7 +136,7 @@ public abstract class BaseScreen implements Screen {
         skin.add("default-horizontal", progressBarStyle);
 
         // ============================================
-        // ===== WindowStyle (برای Dialog‌ها) =====
+        // ===== WindowStyle =====
         // ============================================
         Window.WindowStyle windowStyle = new Window.WindowStyle();
         windowStyle.titleFont = font;
@@ -156,9 +161,9 @@ public abstract class BaseScreen implements Screen {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
         pixmap.fill();
-        Drawable drawable = new TextureRegionDrawable(new Texture(pixmap));
+        Texture texture = new Texture(pixmap);
         pixmap.dispose();
-        return drawable;
+        return new TextureRegionDrawable(texture);
     }
 
     private void setupCurrencyDisplay() {

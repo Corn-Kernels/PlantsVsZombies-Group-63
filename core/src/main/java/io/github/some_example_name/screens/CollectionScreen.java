@@ -47,6 +47,14 @@ public class CollectionScreen extends BaseScreen {
 
         allPlants = DataLoader.loadAllPlants();
         allZombies = DataLoader.loadAllZombies();
+
+        // ===== زامبی‌های All Chapters رو دیده‌شده کن =====
+        for (Zombie z : allZombies) {
+            if (z.getChapter().equals("All Chapters")) {
+                z.setSeen(true);
+            }
+        }
+
         filteredPlants = new ArrayList<>(allPlants);
 
         createDrawables();
@@ -223,7 +231,6 @@ public class CollectionScreen extends BaseScreen {
         showPlantsTab();
     }
 
-    // ===== متدهای اصلاح‌شده برای اسکرول =====
     private void showPlantsTab() {
         contentTable.clear();
 
@@ -292,7 +299,6 @@ public class CollectionScreen extends BaseScreen {
         contentTable.add(scrollPane).width(650).height(380);
     }
 
-    // ===== بقیه متدها مثل قبل =====
     private Table createPlantCard(Plant plant) {
         Table card = new Table();
         card.setBackground(cardDrawable);
@@ -300,7 +306,8 @@ public class CollectionScreen extends BaseScreen {
 
         Image plantImage;
         try {
-            Texture texture = new Texture(Gdx.files.internal(plant.getImagePath()));
+            String fullPath = "IMAGES/plants/" + plant.getImagePath();
+            Texture texture = new Texture(Gdx.files.internal(fullPath));
             plantImage = new Image(texture);
             plantImage.setSize(96, 96);
 
@@ -410,7 +417,8 @@ public class CollectionScreen extends BaseScreen {
         Image zombieImage;
         if (zombie.isSeen()) {
             try {
-                Texture texture = new Texture(Gdx.files.internal(zombie.getImagePath()));
+                String fullPath = "IMAGES/zombies/" + zombie.getImagePath();
+                Texture texture = new Texture(Gdx.files.internal(fullPath));
                 zombieImage = new Image(texture);
                 zombieImage.setSize(96, 96);
             } catch (Exception e) {
@@ -459,17 +467,17 @@ public class CollectionScreen extends BaseScreen {
         int cost = plant.getUpgradeCost();
 
         if (progress.getCoins() < cost) {
-            showToast(" Not enough coins! Need " + cost + " coins.", 2f, true);
+            showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
             return;
         }
 
         if (plant.getSeedPackets() < plant.getSeedPacketsNeeded()) {
-            showToast(" Not enough seeds! Need " + plant.getSeedPacketsNeeded() + " seeds.", 2f, true);
+            showToast("❌ Not enough seeds! Need " + plant.getSeedPacketsNeeded() + " seeds.", 2f, true);
             return;
         }
 
         if (plant.getLevel() >= plant.getMaxLevel()) {
-            showToast(" Already at max level!", 2f, false);
+            showToast("⭐ Already at max level!", 2f, false);
             return;
         }
 
@@ -503,7 +511,8 @@ public class CollectionScreen extends BaseScreen {
 
     private void showPlantDetail(Plant plant) {
         try {
-            Texture texture = new Texture(Gdx.files.internal(plant.getImagePath()));
+            String fullPath = "IMAGES/plants/" + plant.getImagePath();
+            Texture texture = new Texture(Gdx.files.internal(fullPath));
             detailImage.setDrawable(new Image(texture).getDrawable());
             detailImage.setSize(80, 80);
         } catch (Exception e) {
@@ -543,7 +552,8 @@ public class CollectionScreen extends BaseScreen {
         }
 
         try {
-            Texture texture = new Texture(Gdx.files.internal(zombie.getImagePath()));
+            String fullPath = "IMAGES/zombies/" + zombie.getImagePath();
+            Texture texture = new Texture(Gdx.files.internal(fullPath));
             detailImage.setDrawable(new Image(texture).getDrawable());
             detailImage.setSize(80, 80);
         } catch (Exception e) {

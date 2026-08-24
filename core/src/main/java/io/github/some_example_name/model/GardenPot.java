@@ -9,8 +9,9 @@ public class GardenPot {
     private long readyAt;
     private boolean isReady;
 
-    private static final int MARIGOLD_GROWTH_HOURS = 2;
-    private static final int OTHER_PLANT_GROWTH_HOURS = 8;
+    // ===== زمان رشد بر حسب ثانیه (برای تست سریع) =====
+    private static final int MARIGOLD_GROWTH_SECONDS = 5;
+    private static final int OTHER_PLANT_GROWTH_SECONDS = 8;
 
     public GardenPot(int row, int col, boolean isLocked) {
         this.row = row;
@@ -36,8 +37,8 @@ public class GardenPot {
     public void plant(String plantType) {
         this.plantType = plantType;
         this.plantedAt = System.currentTimeMillis();
-        int growthHours = plantType.equals("MARIGOLD") ? MARIGOLD_GROWTH_HOURS : OTHER_PLANT_GROWTH_HOURS;
-        this.readyAt = plantedAt + (growthHours * 60 * 60 * 1000L);
+        int growthSeconds = plantType.equals("MARIGOLD") ? MARIGOLD_GROWTH_SECONDS : OTHER_PLANT_GROWTH_SECONDS;
+        this.readyAt = plantedAt + (growthSeconds * 1000L);
         this.isReady = false;
     }
 
@@ -49,6 +50,13 @@ public class GardenPot {
         }
     }
 
+    public void forceReady() {
+        if (plantType != null && !isReady) {
+            this.isReady = true;
+            this.readyAt = System.currentTimeMillis();
+        }
+    }
+
     public void clear() {
         this.plantType = null;
         this.plantedAt = 0;
@@ -56,18 +64,19 @@ public class GardenPot {
         this.isReady = false;
     }
 
-    public long getHoursRemaining() {
+    // ===== زمان باقی‌مونده بر حسب ثانیه =====
+    public long getSecondsRemaining() {
         if (readyAt == 0 || isReady) return 0;
         long diff = readyAt - System.currentTimeMillis();
-        return Math.max(0, diff / (60 * 60 * 1000));
+        return Math.max(0, diff / 1000);
     }
 
     public String getStatusDisplay() {
         if (isLocked) return "LOCKED";
         if (plantType == null) return "EMPTY";
         if (isReady) return " READY - " + plantType;
-        long hours = getHoursRemaining();
-        if (hours > 0) return plantType + " (" + hours + "h left)";
+        long seconds = getSecondsRemaining();
+        if (seconds > 0) return plantType + " (" + seconds + "s left)";
         return plantType + " (soon)";
     }
 }
