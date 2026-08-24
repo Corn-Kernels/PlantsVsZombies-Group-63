@@ -20,7 +20,7 @@ import io.github.some_example_name.utils.DataLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلیدی
+public class PlantSelectionScreen extends BaseScreen {
 
     private User user;
     private String chapterName;
@@ -37,20 +37,31 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
     private Label statusLabel;
     private ScrollPane plantScroll;
 
+    // ===== Drawable برای کارت‌ها =====
+    private Drawable cardDrawable;
+
     public PlantSelectionScreen(Main game, User user, String chapterName) {
-        super(game);  // ✅ تغییر کلیدی
+        super(game);
         this.user = user;
         this.chapterName = chapterName;
         this.selectedPlants = new ArrayList<>();
 
+        createDrawables();
         allPlants = DataLoader.loadAllPlants();
         ownedPlants = getOwnedPlants();
 
         loadBackground();
-        // ❌ حذف: setupCurrencyDisplay();
         buildUI();
         updatePlantList();
         updateSelectedList();
+    }
+
+    private void createDrawables() {
+        Pixmap cardPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        cardPixmap.setColor(new Color(0.18f, 0.18f, 0.18f, 0.85f));
+        cardPixmap.fill();
+        cardDrawable = new TextureRegionDrawable(new Texture(cardPixmap));
+        cardPixmap.dispose();
     }
 
     private List<Plant> getOwnedPlants() {
@@ -92,18 +103,28 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
         stage.addActor(mainTable);
 
         Label titleLabel = new Label(" SELECT PLANTS - " + chapterName, skin);
+        titleLabel.setFontScale(1.2f);
         mainTable.add(titleLabel).padBottom(10).row();
 
         Table infoTable = new Table();
         PlayerProgress progress = user.getProgress();
-        infoTable.add(new Label(" Coins: " + progress.getCoins(), skin)).padRight(20);
-        infoTable.add(new Label(" Diamonds: " + progress.getDiamonds(), skin)).padRight(20);
+
+        Label coinsLabel = new Label(" Coins: " + progress.getCoins(), skin);
+        coinsLabel.setFontScale(1.1f);
+        infoTable.add(coinsLabel).padRight(20);
+
+        Label diamondsLabel = new Label(" Diamonds: " + progress.getDiamonds(), skin);
+        diamondsLabel.setFontScale(1.1f);
+        infoTable.add(diamondsLabel).padRight(20);
+
         selectedCountLabel = new Label("Selected: 0/" + MAX_PLANTS, skin);
+        selectedCountLabel.setFontScale(1.1f);
         infoTable.add(selectedCountLabel);
         mainTable.add(infoTable).padBottom(10).row();
 
         errorLabel = new Label("", skin);
         errorLabel.setColor(1, 0, 0, 1);
+        errorLabel.setFontScale(1.1f);
         mainTable.add(errorLabel).padBottom(10).row();
 
         Table splitTable = new Table();
@@ -125,6 +146,7 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
         mainTable.add(splitTable).padBottom(10).row();
 
         statusLabel = new Label("Select plants for battle (max 8)", skin);
+        statusLabel.setFontScale(1.1f);
         statusLabel.setColor(1, 1, 0.8f, 1);
         mainTable.add(statusLabel).padBottom(10).row();
 
@@ -132,6 +154,9 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
 
         TextButton startBtn = new TextButton(" START BATTLE", skin, "green");
         TextButton backBtn = new TextButton(" Back", skin, "default");
+
+        startBtn.getLabel().setFontScale(1.2f);
+        backBtn.getLabel().setFontScale(1.2f);
 
         buttonTable.add(startBtn).width(180).height(50).padRight(10);
         buttonTable.add(backBtn).width(150).height(50);
@@ -183,12 +208,13 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
 
     private Table createPlantCard(Plant plant) {
         Table card = new Table();
-        card.setBackground(skin.getDrawable("white_pixel"));
+        card.setBackground(cardDrawable);
 
         boolean isSelected = selectedPlants.contains(plant);
         boolean isBoosted = plant.isBoosted();
         boolean isUpgradable = plant.isUpgradable();
 
+        // ===== رنگ‌بندی کارت =====
         if (isBoosted) {
             card.setColor(new Color(0.8f, 0.6f, 0.1f, 0.9f));
         } else if (isSelected) {
@@ -196,10 +222,13 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
         } else {
             card.setColor(new Color(0.18f, 0.18f, 0.18f, 0.85f));
         }
+        card.pad(5);
 
+        // ===== تصویر گیاه =====
         Image plantImage;
         try {
-            Texture texture = new Texture(Gdx.files.internal(plant.getImagePath()));
+            String fullPath = "IMAGES/plants/" + plant.getImagePath();
+            Texture texture = new Texture(Gdx.files.internal(fullPath));
             plantImage = new Image(texture);
             plantImage.setSize(50, 50);
         } catch (Exception e) {
@@ -236,6 +265,7 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
         }
         selectBtn.setWidth(70);
         selectBtn.setHeight(25);
+        selectBtn.getLabel().setFontScale(0.8f);
 
         final Plant finalPlant = plant;
         selectBtn.addListener(new ClickListener() {
@@ -262,6 +292,7 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
             upgradeBtn = new TextButton("⬆", skin, "default");
             upgradeBtn.setWidth(30);
             upgradeBtn.setHeight(25);
+            upgradeBtn.getLabel().setFontScale(0.8f);
             upgradeBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -328,7 +359,7 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
 
         for (Plant plant : selectedPlants) {
             Table card = new Table();
-            card.setBackground(skin.getDrawable("white_pixel"));
+            card.setBackground(cardDrawable);
 
             if (plant.isBoosted()) {
                 card.setColor(new Color(0.8f, 0.6f, 0.1f, 0.9f));
@@ -339,7 +370,8 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
 
             Image plantImage;
             try {
-                Texture texture = new Texture(Gdx.files.internal(plant.getImagePath()));
+                String fullPath = "IMAGES/plants/" + plant.getImagePath();
+                Texture texture = new Texture(Gdx.files.internal(fullPath));
                 plantImage = new Image(texture);
                 plantImage.setSize(30, 30);
             } catch (Exception e) {
@@ -357,6 +389,7 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
             TextButton removeBtn = new TextButton("✕", skin, "default");
             removeBtn.setWidth(25);
             removeBtn.setHeight(25);
+            removeBtn.getLabel().setFontScale(0.8f);
 
             final Plant finalPlant = plant;
             removeBtn.addListener(new ClickListener() {
@@ -381,7 +414,7 @@ public class PlantSelectionScreen extends BaseScreen {  // ✅ تغییر کلی
         int remaining = MAX_PLANTS - selectedPlants.size();
         for (int i = 0; i < remaining; i++) {
             Table emptyCard = new Table();
-            emptyCard.setBackground(skin.getDrawable("white_pixel"));
+            emptyCard.setBackground(cardDrawable);
             emptyCard.setColor(0.1f, 0.1f, 0.1f, 0.5f);
             emptyCard.add(new Label("⬜", skin)).pad(5);
             selectedTable.add(emptyCard).width(60).height(30).pad(2).row();
