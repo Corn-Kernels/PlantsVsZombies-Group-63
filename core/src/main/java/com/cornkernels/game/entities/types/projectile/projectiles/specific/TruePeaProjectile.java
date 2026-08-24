@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage; // Added import
 import com.cornkernels.game.map.Field; // Added import
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 public class TruePeaProjectile extends AbstractProjectile {
 
@@ -24,7 +25,7 @@ public class TruePeaProjectile extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         if (super.hit(target, field)) {
             int baseDamage = this.get(DamageComponent.class).amount;
 

@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 public class LobProjectile extends AbstractProjectile {
 
@@ -25,7 +26,7 @@ public class LobProjectile extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         if (target == this.target && super.hit(target, field)) {
 
             int directDamage = this.get(DamageComponent.class).amount;

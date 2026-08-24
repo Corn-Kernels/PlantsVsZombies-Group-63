@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class BowlingProjectile extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         // Prevent multi-hitting the same zombie instantly in the same frame
         if (super.hit(target, field) && !hitTargets.contains(target)) {
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);

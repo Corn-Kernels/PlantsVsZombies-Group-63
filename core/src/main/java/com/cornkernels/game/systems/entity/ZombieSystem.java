@@ -5,15 +5,12 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
-import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.utility.ZombieAnimationLocator;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
-
-import java.util.List;
 
 public class ZombieSystem extends EntitySystem {
 

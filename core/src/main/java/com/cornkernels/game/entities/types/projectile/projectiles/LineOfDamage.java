@@ -4,9 +4,12 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 public class LineOfDamage extends AbstractProjectile {
 
@@ -21,10 +24,10 @@ public class LineOfDamage extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         this.used = true; // Mark as used the moment collision is processed
 
-        if (super.hit(target, field)) {
+        if (target instanceof ZombieInstance || target instanceof Grave) {
             Vec2d targetPos = target.get(PositionComponent.class).position;
             Vec2d myPos = this.get(PositionComponent.class).position;
 
