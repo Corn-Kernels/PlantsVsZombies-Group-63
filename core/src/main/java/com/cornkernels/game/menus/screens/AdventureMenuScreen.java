@@ -1,4 +1,4 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -6,13 +6,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
-import io.github.some_example_name.model.PlayerProgress;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.GameAttributes;
+import com.cornkernels.game.entities.types.plants.PlantDef;
+import com.cornkernels.game.entities.types.zombies.ZombieDef;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
+import com.cornkernels.game.screens.GameplayScreen;
+import com.cornkernels.game.systems.controller.plants.SeedSlot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AdventureMenuScreen extends BaseScreen {
+
+    // Placeholder roster until levels carry their own zombie eligibility data.
+    private static final List<ZombieDef> DEFAULT_ELIGIBLE_ZOMBIES = List.of(
+        ZombieDef.DEFAULT, ZombieDef.ARCADE, ZombieDef.PIANO, ZombieDef.PROSPECTOR, ZombieDef.GARGANTUAR);
 
     private User user;
     private Image backgroundImage;
@@ -22,7 +34,7 @@ public class AdventureMenuScreen extends BaseScreen {
     private boolean showingLevels = false;
     private String currentChapter = "";
 
-    public AdventureMenuScreen(Main game, User user) {
+    public AdventureMenuScreen(GameManager game, User user) {
         super(game);
         this.user = user;
 
@@ -116,27 +128,29 @@ public class AdventureMenuScreen extends BaseScreen {
         chaptersTable.add(titleLabel).padBottom(10).row();
 
         String[] levels = {"Level 1", "Level 2", "Level 3", "Level 4"};
-        boolean[] isUnlocked = {true, true, false, false};
+        // Sequential unlock: you can play up to one level past however many you've completed.
+        // PlayerProgress only tracks a single global completedLevels counter (not per-chapter),
+        // so this is the best available signal until real per-chapter tracking exists.
+        int completedInChapter = getCompletedLevelsForChapter(chapterName);
 
         for (int i = 0; i < levels.length; i++) {
-            final int index = i;
             final String levelName = levels[i];
-            String status = isUnlocked[i] ? "▶️ " : "🔒 ";
+            boolean isUnlocked = i <= completedInChapter;
+            String status = isUnlocked ? "▶️ " : "🔒 ";
             TextButton levelBtn = new TextButton(status + levelName, skin);
 
-            if (!isUnlocked[i]) {
+            if (!isUnlocked) {
                 levelBtn.setDisabled(true);
             }
 
             chaptersTable.add(levelBtn).width(350).height(40).padBottom(5).row();
 
-            final boolean isUnlockedFinal = isUnlocked[i];
+            final boolean isUnlockedFinal = isUnlocked;
             levelBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if (isUnlockedFinal) {
-                        System.out.println("▶ Starting " + levelName);
-                        game.setScreen(new PlantSelectionScreen(game, user, chapterName));
+                        startLevel(levelName);
                     }
                 }
             });
@@ -156,7 +170,39 @@ public class AdventureMenuScreen extends BaseScreen {
     }
 
     private int getCompletedLevelsForChapter(String chapter) {
-        return 2;
+        return Math.min(user.getProgress().getCompletedLevels(), 4);
+    }
+
+    // Plant selection happens inside GameplayScreen's own seed-chooser, not a separate menu
+    // screen — GameAttributes is seeded with every plant the player owns, and the in-game UI
+    // is what narrows that down to the loadout actually brought into the level.
+    private void startLevel(String levelName) {
+        System.out.println("▶ Starting " + levelName);
+        game.setScreen(new GameplayScreen(game, buildGameAttributes()));
+    }
+
+    private GameAttributes buildGameAttributes() {
+        Map<String, PlantDef> plantsByNormalizedName = new HashMap<>();
+        for (PlantDef def : PlantDef.values()) {
+            plantsByNormalizedName.putIfAbsent(normalizePlantKey(def.getPlantName()), def);
+        }
+
+        List<SeedSlot> seedSlots = new ArrayList<>();
+        for (String ownedPlant : user.getProgress().getOwnedPlants()) {
+            PlantDef def = plantsByNormalizedName.get(normalizePlantKey(ownedPlant));
+            if (def != null) {
+                seedSlots.add(new SeedSlot(def));
+            }
+        }
+
+        return new GameAttributes(seedSlots, DEFAULT_ELIGIBLE_ZOMBIES);
+    }
+
+    // Plant names are written inconsistently across the app ("Wall-nut", "WALL_NUT", ...);
+    // matches PlayerProgress's own normalization so ownership lines up with PlantDef regardless
+    // of which spelling a given screen used to grant the plant.
+    private static String normalizePlantKey(String name) {
+        return name == null ? "" : name.toUpperCase().replaceAll("[^A-Z0-9]", "");
     }
 
     @Override

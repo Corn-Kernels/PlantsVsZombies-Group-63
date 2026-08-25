@@ -1,18 +1,20 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
-import io.github.some_example_name.model.PlayerProgress;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
 
 public class ProfileScreen extends BaseScreen {
 
     private User user;
-    public ProfileScreen(Main game, User user) {
+    public ProfileScreen(GameManager game, User user) {
         super(game);
         this.user = user;
         buildUI();

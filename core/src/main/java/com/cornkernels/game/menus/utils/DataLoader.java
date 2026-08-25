@@ -1,7 +1,7 @@
-package io.github.some_example_name.utils;
+package com.cornkernels.game.menus.utils;
 
-import io.github.some_example_name.model.Plant;
-import io.github.some_example_name.model.Zombie;
+import com.cornkernels.game.menus.model.Plant;
+import com.cornkernels.game.menus.model.Zombie;
 
 import java.util.ArrayList;
 import java.util.List;

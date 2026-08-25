@@ -1,4 +1,4 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -12,12 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.Plant;
-import io.github.some_example_name.model.PlayerProgress;
-import io.github.some_example_name.model.User;
-import io.github.some_example_name.model.Zombie;
-import io.github.some_example_name.utils.DataLoader;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.Plant;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
+import com.cornkernels.game.menus.model.Zombie;
+import com.cornkernels.game.menus.utils.DataLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class CollectionScreen extends BaseScreen {
     private Drawable darkerDrawable;
     private Drawable cardDrawable;
 
-    public CollectionScreen(Main game, User user) {
+    public CollectionScreen(GameManager game, User user) {
         super(game);
         this.user = user;
 

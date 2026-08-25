@@ -1,4 +1,4 @@
-package io.github.some_example_name.model;
+package com.cornkernels.game.menus.model;
 
 public class Plant {
     private int id;

@@ -9,13 +9,10 @@ import com.cornkernels.engine.settings.GameSettings;
 import com.cornkernels.engine.settings.InputSettings;
 import com.cornkernels.engine.settings.VideoSettings;
 import com.cornkernels.engine.video.VideoManager;
-import com.cornkernels.game.GameAttributes;
-import com.cornkernels.game.entities.types.plants.PlantDef;
-import com.cornkernels.game.entities.types.zombies.ZombieDef;
-import com.cornkernels.game.screens.GameplayScreen;
-import com.cornkernels.game.systems.controller.plants.SeedSlot;
-
-import java.util.List;
+import com.cornkernels.game.menus.model.User;
+import com.cornkernels.game.menus.screens.LoginScreen;
+import com.cornkernels.game.menus.screens.MainMenuScreen;
+import com.cornkernels.game.menus.service.StorageService;
 
 public class GameManager extends Game {
 
@@ -30,10 +27,12 @@ public class GameManager extends Game {
     private AudioSettings audioSettings;
     private InputSettings inputSettings;
 
+    private StorageService storageService;
+    private User currentUser;
+
+
     @Override
     public void create() {
-        batch = new SpriteBatch();
-
         gameSettings = new GameSettings();
         videoSettings = new VideoSettings(gameSettings);
         audioSettings = new AudioSettings(gameSettings);
@@ -46,19 +45,24 @@ public class GameManager extends Game {
         inputManager = InputManager.getInstance();
         inputManager.init(inputSettings);
 
-        setScreen(new GameplayScreen(this, new GameAttributes(
-            List.of(new SeedSlot(PlantDef.APPEASE_MINT),
-                new SeedSlot(PlantDef.PEASHOOTER1),
-                new SeedSlot(PlantDef.CABBAGE_PULT1),
-                new SeedSlot(PlantDef.BOWLING_BULB1),
-                new SeedSlot(PlantDef.SQUASH1),
-                new SeedSlot(PlantDef.ENFORCE_MINT),
-                new SeedSlot(PlantDef.CHOMPER1)), List.of(
-            ZombieDef.DEFAULT,
-            ZombieDef.ARCADE,
-            ZombieDef.PIANO,
-            ZombieDef.PROSPECTOR,
-            ZombieDef.GARGANTUAR)))); // Temporary
+        storageService = new StorageService();
+        storageService.loadUsers();
+
+        batch = new SpriteBatch();
+
+        currentUser = storageService.getUser("test");
+        if (currentUser == null) {
+            currentUser = new User("test", "123", "Tester", "test@test.com", "male");
+            storageService.addUser(currentUser);
+            storageService.saveUsers();
+        }
+
+        if (currentUser != null && currentUser.isLoggedIn() && currentUser.isStayLoggedIn()) {
+            System.out.println(" Auto-login: Welcome back " + currentUser.getNickname() + "!");
+            setScreen(new MainMenuScreen(this, currentUser));
+        } else {
+            setScreen(new LoginScreen(this));
+        }
     }
 
     @Override
@@ -69,5 +73,17 @@ public class GameManager extends Game {
 
     @Override
     public void dispose() {
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public StorageService getStorageService() {
+        return storageService;
+    }
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
     }
 }

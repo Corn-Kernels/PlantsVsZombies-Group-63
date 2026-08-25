@@ -1,4 +1,4 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -10,11 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.Garden;
-import io.github.some_example_name.model.GardenPot;
-import io.github.some_example_name.model.PlayerProgress;
-import io.github.some_example_name.model.User;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.Garden;
+import com.cornkernels.game.menus.model.GardenPot;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
 
 public class GreenhouseScreen extends BaseScreen {
 
@@ -46,7 +46,7 @@ public class GreenhouseScreen extends BaseScreen {
         "REPEATER"
     };
 
-    public GreenhouseScreen(Main game, User user) {
+    public GreenhouseScreen(GameManager game, User user) {
         super(game);
         this.user = user;
 

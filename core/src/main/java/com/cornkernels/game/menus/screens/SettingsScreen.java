@@ -1,4 +1,4 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -7,9 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
-import io.github.some_example_name.model.PlayerProgress;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 
 public class SettingsScreen extends BaseScreen {
 
@@ -21,13 +23,14 @@ public class SettingsScreen extends BaseScreen {
     private CheckBox debugCheck;
     private Label statusLabel;
 
-    public SettingsScreen(Main game, User user) {
+    public SettingsScreen(GameManager game, User user) {
         super(game);
         this.user = user;
         buildUI();
         loadCurrentSettings();
     }
-    private String getDifficultyLabel(int level) {
+    @Contract(pure = true)
+    private @NonNull String getDifficultyLabel(int level) {
         switch(level) {
             case 1: return "Very Easy";
             case 2: return "Easy";

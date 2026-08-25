@@ -1,16 +1,19 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.User;
 
 public class ForgetPasswordScreen extends BaseScreen {
 
-    private Main game;
+    private GameManager game;
     private TextField usernameField;
     private TextField emailField;
     private TextField answerField;
@@ -28,7 +31,7 @@ public class ForgetPasswordScreen extends BaseScreen {
         "What was your best friend's name?"
     };
 
-    public ForgetPasswordScreen(Main game) {
+    public ForgetPasswordScreen(GameManager game) {
         super(game);
         this.game = game;
         buildUI();

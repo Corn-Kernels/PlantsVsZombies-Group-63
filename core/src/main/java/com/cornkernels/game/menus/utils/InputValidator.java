@@ -1,4 +1,4 @@
-package io.github.some_example_name.utils;
+package com.cornkernels.game.menus.utils;
 
 import java.util.regex.Pattern;
 public class InputValidator{

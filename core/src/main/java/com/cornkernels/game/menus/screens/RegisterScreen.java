@@ -1,12 +1,12 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.User;
 
 public class RegisterScreen extends BaseScreen {
 
@@ -26,7 +26,7 @@ public class RegisterScreen extends BaseScreen {
         "What was your best friend's name?"
     };
 
-    public RegisterScreen(Main game) {
+    public RegisterScreen(GameManager game) {
         super(game);
         buildUI();
     }

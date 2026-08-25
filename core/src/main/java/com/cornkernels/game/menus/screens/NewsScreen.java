@@ -1,16 +1,19 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
-import io.github.some_example_name.model.NewsItem;
-import io.github.some_example_name.model.PlayerProgress;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.NewsItem;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
+import org.jspecify.annotations.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NewsScreen extends BaseScreen {
@@ -22,7 +25,7 @@ public class NewsScreen extends BaseScreen {
     private Table newsTable;
     private ScrollPane scrollPane;
 
-    public NewsScreen(Main game, User user) {
+    public NewsScreen(GameManager game, @NonNull User user) {
         super(game);
         this.user = user;
 
@@ -37,7 +40,7 @@ public class NewsScreen extends BaseScreen {
         updateNewsList();
     }
 
-    private void initializeDefaultNews(PlayerProgress progress) {
+    private void initializeDefaultNews(@NonNull PlayerProgress progress) {
         progress.addNews(new NewsItem("1", "Welcome to the game!", "2024-01-01",
             "Welcome to Plants vs. Zombies! Start your adventure by playing Chapter 1.", "GENERAL"));
         progress.addNews(new NewsItem("2", "New zombie: Buckethead!", "2024-01-05",

@@ -1,13 +1,16 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
-import io.github.some_example_name.utils.InputValidator;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.User;
+import com.cornkernels.game.menus.utils.InputValidator;
 
 public class EditProfileScreen extends BaseScreen {
 
@@ -20,7 +23,7 @@ public class EditProfileScreen extends BaseScreen {
     private TextField confirmPasswordField;
     private Label statusLabel;
 
-    public EditProfileScreen(Main game, User user) {
+    public EditProfileScreen(GameManager game, User user) {
         super(game);
         this.user = user;
         buildUI();
@@ -160,7 +163,7 @@ public class EditProfileScreen extends BaseScreen {
             user.setPassword(newPass);
         }
         game.getStorageService().saveUsers();
-        statusLabel.setText(" Profile updated successfully!");
+        statusLabel.setText("Profile updated successfully!");
         statusLabel.setColor(0, 1, 0, 1);
 
         oldPasswordField.setText("");

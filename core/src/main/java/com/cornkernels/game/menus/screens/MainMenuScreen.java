@@ -1,18 +1,20 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.User;
 
 public class MainMenuScreen extends BaseScreen {
 
     private User user;
 
-    public MainMenuScreen(Main game, User user) {
+    public MainMenuScreen(GameManager game, User user) {
         super(game);
         this.user = user;
         buildUI();
@@ -25,7 +27,6 @@ public class MainMenuScreen extends BaseScreen {
 
         Label titleLabel = new Label(" Main Menu", skin);
         table.add(titleLabel).padBottom(20).row();
-
 
         table.add(new Label("👤 " + user.getNickname(), skin)).padBottom(5).row();
 

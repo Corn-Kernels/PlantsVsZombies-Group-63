@@ -1,4 +1,4 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -10,10 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.GardenPot;
-import io.github.some_example_name.model.PlayerProgress;
-import io.github.some_example_name.model.User;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.GardenPot;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,7 @@ public class ShopScreen extends BaseScreen {
         "BONK_CHOY", "CACTUS", "STARFRUIT", "MELON_PULT"
     };
 
-    public ShopScreen(Main game, User user) {
+    public ShopScreen(GameManager game, User user) {
         super(game);
         this.user = user;
 
@@ -113,22 +115,23 @@ public class ShopScreen extends BaseScreen {
             "IMAGES/shop/seed_packet.png", false, 0));
     }
 
-    private int getPlantCost(String plantName) {
-        switch (plantName) {
-            case "SUNFLOWER": return 100;
-            case "PEASHOOTER": return 150;
-            case "WALL_NUT": return 80;
-            case "POTATO_MINE": return 60;
-            case "CHERRY_BOMB": return 200;
-            case "SNOW_PEA": return 180;
-            case "REPEATER": return 250;
-            case "FIRE_PEASHOOTER": return 220;
-            case "BONK_CHOY": return 170;
-            case "CACTUS": return 190;
-            case "STARFRUIT": return 160;
-            case "MELON_PULT": return 300;
-            default: return 100;
-        }
+    @Contract(pure = true)
+    private int getPlantCost(@NonNull String plantName) {
+        return switch (plantName) {
+            case "SUNFLOWER" -> 100;
+            case "PEASHOOTER" -> 150;
+            case "WALL_NUT" -> 80;
+            case "POTATO_MINE" -> 60;
+            case "CHERRY_BOMB" -> 200;
+            case "SNOW_PEA" -> 180;
+            case "REPEATER" -> 250;
+            case "FIRE_PEASHOOTER" -> 220;
+            case "BONK_CHOY" -> 170;
+            case "CACTUS" -> 190;
+            case "STARFRUIT" -> 160;
+            case "MELON_PULT" -> 300;
+            default -> 100;
+        };
     }
 
     private void buildUI() {
@@ -216,7 +219,7 @@ public class ShopScreen extends BaseScreen {
         }
     }
 
-    private Table createItemCard(ShopItem item) {
+    private @NonNull Table createItemCard(ShopItem item) {
         Table card = new Table();
 
         // ===== کارت با رنگ تیره و حاشیه =====
@@ -305,7 +308,7 @@ public class ShopScreen extends BaseScreen {
         return card;
     }
 
-    private void selectItem(ShopItem item) {
+    private void selectItem(@NonNull ShopItem item) {
         selectedItem = item;
         statusLabel.setText("Selected: " + item.name + " - Price: " + item.price + " " + item.currency);
         statusLabel.setColor(0.3f, 1, 0.3f, 1);
@@ -335,7 +338,7 @@ public class ShopScreen extends BaseScreen {
         showConfirmDialog(selectedItem);
     }
 
-    private void showConfirmDialog(ShopItem item) {
+    private void showConfirmDialog(@NonNull ShopItem item) {
         Dialog confirmDialog = new Dialog("Confirm Purchase", skin) {
             @Override
             protected void result(Object object) {
@@ -353,7 +356,7 @@ public class ShopScreen extends BaseScreen {
         confirmDialog.show(stage);
     }
 
-    private void completePurchase(ShopItem item) {
+    private void completePurchase(@NonNull ShopItem item) {
         PlayerProgress progress = user.getProgress();
 
         if (item.currency.equals("Coins")) {

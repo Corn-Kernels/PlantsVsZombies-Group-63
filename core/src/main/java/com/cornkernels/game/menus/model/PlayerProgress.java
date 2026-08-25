@@ -1,4 +1,4 @@
-package io.github.some_example_name.model;
+package com.cornkernels.game.menus.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,13 +101,25 @@ public class PlayerProgress {
         return ownedPlants;  // همان ownedPlants رو برمی‌گردونه
     }
 
+    // Plant names are written inconsistently across the app ("Wall-nut", "WALL_NUT", "wall nut", ...),
+    // so ownership is matched on a normalized (letters/digits only, uppercase) key rather than exact
+    // string equality — otherwise plants added under one spelling silently fail to match another.
     public boolean hasPlant(String plant) {
-        return ownedPlants.contains(plant);
+        String key = normalizePlantKey(plant);
+        for (String owned : ownedPlants) {
+            if (normalizePlantKey(owned).equals(key)) return true;
+        }
+        return false;
     }
+
     public void addPlant(String plant) {
         if (!hasPlant(plant)) {
             ownedPlants.add(plant);
         }
+    }
+
+    private static String normalizePlantKey(String plant) {
+        return plant == null ? "" : plant.toUpperCase().replaceAll("[^A-Z0-9]", "");
     }
 
     // ===== زامبی‌ها =====

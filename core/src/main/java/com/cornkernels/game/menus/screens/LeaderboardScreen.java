@@ -1,24 +1,24 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.User;
-import io.github.some_example_name.model.PlayerProgress;
-import io.github.some_example_name.model.LeaderboardEntry;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.LeaderboardEntry;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
+import org.jspecify.annotations.NonNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LeaderboardScreen extends BaseScreen {
 
-    private Main game;
+    private GameManager game;
     private User currentUser;
     private Table leaderboardTable;
     private ScrollPane scrollPane;
@@ -26,7 +26,7 @@ public class LeaderboardScreen extends BaseScreen {
     private String sortBy = "highScore";
     private boolean ascending = false;
 
-    public LeaderboardScreen(Main game, User user) {
+    public LeaderboardScreen(GameManager game, User user) {
         super(game);
         this.game = game;
         this.currentUser = user;
@@ -56,7 +56,7 @@ public class LeaderboardScreen extends BaseScreen {
             entries.add(entry);
         }
     }
-    private String getLastLevel(PlayerProgress progress) {
+    private @NonNull String getLastLevel(@NonNull PlayerProgress progress) {
         List<String> unlocked = progress.getUnlockedChapters();
         if (unlocked.isEmpty()) return "None";
         String lastChapter = unlocked.get(unlocked.size() - 1);
@@ -124,28 +124,14 @@ public class LeaderboardScreen extends BaseScreen {
         });
     }
     private void sortAndDisplay() {
-        Comparator<LeaderboardEntry> comparator;
-        switch (sortBy) {
-            case "username":
-                comparator = Comparator.comparing(LeaderboardEntry::getUsername);
-                break;
-            case "lastLevel":
-                comparator = Comparator.comparing(LeaderboardEntry::getLastLevel);
-                break;
-            case "minigamesCompleted":
-                comparator = Comparator.comparingInt(LeaderboardEntry::getMinigamesCompleted);
-                break;
-            case "dailyQuestsCompleted":
-                comparator = Comparator.comparingInt(LeaderboardEntry::getDailyQuestsCompleted);
-                break;
-            case "nonDailyQuestsCompleted":
-                comparator = Comparator.comparingInt(LeaderboardEntry::getNonDailyQuestsCompleted);
-                break;
-            case "highScore":
-            default:
-                comparator = Comparator.comparingInt(LeaderboardEntry::getHighScore);
-                break;
-        }
+        Comparator<LeaderboardEntry> comparator = switch (sortBy) {
+            case "username" -> Comparator.comparing(LeaderboardEntry::getUsername);
+            case "lastLevel" -> Comparator.comparing(LeaderboardEntry::getLastLevel);
+            case "minigamesCompleted" -> Comparator.comparingInt(LeaderboardEntry::getMinigamesCompleted);
+            case "dailyQuestsCompleted" -> Comparator.comparingInt(LeaderboardEntry::getDailyQuestsCompleted);
+            case "nonDailyQuestsCompleted" -> Comparator.comparingInt(LeaderboardEntry::getNonDailyQuestsCompleted);
+            default -> Comparator.comparingInt(LeaderboardEntry::getHighScore);
+        };
 
         if (!ascending) {
             comparator = comparator.reversed();
