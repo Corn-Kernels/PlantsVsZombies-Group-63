@@ -83,10 +83,10 @@ public class PlantAttackBehaviors {
         registerTruePeaShooter(PlantDef.REPEATER3, 30, 1, 0);
         registerTruePeaShooter(PlantDef.REPEATER4, 30, 1, 0);
 
-        registerTruePeaShooter(PlantDef.SNOW_PEA1, 20, 1, -1);
-        registerTruePeaShooter(PlantDef.SNOW_PEA2, 30, 1, -1);
-        registerTruePeaShooter(PlantDef.SNOW_PEA3, 30, 1, -1);
-        registerTruePeaShooter(PlantDef.SNOW_PEA4, 30, 1, -1);
+        registerSnowPea(PlantDef.SNOW_PEA1, 20, 10.0f);
+        registerSnowPea(PlantDef.SNOW_PEA2, 30, 10.0f);
+        registerSnowPea(PlantDef.SNOW_PEA3, 30, 12.0f);
+        registerSnowPea(PlantDef.SNOW_PEA4, 30, 12.0f);
 
         registerTruePeaShooter(PlantDef.FIRE_PEASHOOTER1, 20, 1, 1);
         registerTruePeaShooter(PlantDef.FIRE_PEASHOOTER2, 30, 1, 1);
@@ -195,30 +195,30 @@ public class PlantAttackBehaviors {
         registerLobberAoE(PlantDef.MELON_PULT3, 80, 1.5f, 55);
         registerLobberAoE(PlantDef.MELON_PULT4, 110, 1.5f, 55);
 
-        registerLobberAoE(PlantDef.WINTER_MELON1, 80, 1.5f, 40);
-        registerLobberAoE(PlantDef.WINTER_MELON2, 80, 1.5f, 40);
-        registerLobberAoE(PlantDef.WINTER_MELON3, 80, 1.5f, 55);
-        registerLobberAoE(PlantDef.WINTER_MELON4, 80, 1.5f, 55);
+        registerLobberAoE(PlantDef.WINTER_MELON1, 80, 1.5f, 40, false, 200);
+        registerLobberAoE(PlantDef.WINTER_MELON2, 80, 1.5f, 40, false, 200);
+        registerLobberAoE(PlantDef.WINTER_MELON3, 80, 1.5f, 55, false, 200);
+        registerLobberAoE(PlantDef.WINTER_MELON4, 80, 1.5f, 55, false, 200);
 
-        registerLobberAoE(PlantDef.PEPPER_PULT1, 50, 1.5f, 25);
-        registerLobberAoE(PlantDef.PEPPER_PULT2, 65, 1.5f, 32);
-        registerLobberAoE(PlantDef.PEPPER_PULT3, 65, 1.5f, 32);
-        registerLobberAoE(PlantDef.PEPPER_PULT4, 65, 1.5f, 32);
+        registerLobberAoE(PlantDef.PEPPER_PULT1, 50, 1.5f, 25, true, 0);
+        registerLobberAoE(PlantDef.PEPPER_PULT2, 65, 1.5f, 32, true, 0);
+        registerLobberAoE(PlantDef.PEPPER_PULT3, 65, 1.5f, 32, true, 0);
+        registerLobberAoE(PlantDef.PEPPER_PULT4, 65, 1.5f, 32, true, 0);
         //endregion
 
         // ------------------------------------------
         // Melee
         // ------------------------------------------
         //region Melee
-        registerBonkChoy(PlantDef.BONK_CHOY1, 15, 1.5f, 1.5f, 1);
-        registerBonkChoy(PlantDef.BONK_CHOY2, 20, 1.5f, 1.5f, 1);
-        registerBonkChoy(PlantDef.BONK_CHOY3, 20, 1.5f, 1.5f, 1);
-        registerBonkChoy(PlantDef.BONK_CHOY4, 20, 1.5f, 1.5f, 1);
+        registerBonkChoy(PlantDef.BONK_CHOY1, 15, 1.5f, 1.5f, 1, false);
+        registerBonkChoy(PlantDef.BONK_CHOY2, 20, 1.5f, 1.5f, 1, false);
+        registerBonkChoy(PlantDef.BONK_CHOY3, 20, 1.5f, 1.5f, 1, false);
+        registerBonkChoy(PlantDef.BONK_CHOY4, 20, 1.5f, 1.5f, 1, false);
 
-        registerBonkChoy(PlantDef.WASABI_WHIP1, 40, 1.5f, 1.5f, 1);
-        registerBonkChoy(PlantDef.WASABI_WHIP2, 50, 1.5f, 1.5f, 1);
-        registerBonkChoy(PlantDef.WASABI_WHIP3, 50, 2.5f, 2.5f, 1);
-        registerBonkChoy(PlantDef.WASABI_WHIP4, 50, 2.5f, 2.5f, 1);
+        registerBonkChoy(PlantDef.WASABI_WHIP1, 40, 1.5f, 1.5f, 1, true);
+        registerBonkChoy(PlantDef.WASABI_WHIP2, 50, 1.5f, 1.5f, 1, true);
+        registerBonkChoy(PlantDef.WASABI_WHIP3, 50, 2.5f, 2.5f, 1, true);
+        registerBonkChoy(PlantDef.WASABI_WHIP4, 50, 2.5f, 2.5f, 1, true);
 
         registerChomper(PlantDef.CHOMPER1, 40.0f, 1.5f, 1.5f, 150);
         registerChomper(PlantDef.CHOMPER2, 38.0f, 1.5f, 1.5f, 150);
@@ -280,29 +280,28 @@ public class PlantAttackBehaviors {
         registerTrapExplosive(PlantDef.PRIMAL_POTATO_MINE3, 2400, 1.5f, 4.0f);
         registerTrapExplosive(PlantDef.PRIMAL_POTATO_MINE4, 2800, 1.5f, 4.0f);
 
-        // Cherry Bomb (3x3 area -> 1.5 tile radius, 1.0s wait)
-        registerInstaExplosion(PlantDef.CHERRY_BOMB1, 1800, 1.5f, 1.0f);
-        registerInstaExplosion(PlantDef.CHERRY_BOMB2, 1800, 1.5f, 1.0f);
-        registerInstaExplosion(PlantDef.CHERRY_BOMB3, 2400, 1.5f, 1.0f);
-        registerInstaExplosion(PlantDef.CHERRY_BOMB4, 2400, 1.5f, 1.0f);
+        registerInstaExplosion(PlantDef.CHERRY_BOMB1, 1800, 1.5f, 1.0f, true);
+        registerInstaExplosion(PlantDef.CHERRY_BOMB2, 1800, 1.5f, 1.0f, true);
+        registerInstaExplosion(PlantDef.CHERRY_BOMB3, 2400, 1.5f, 1.0f, true);
+        registerInstaExplosion(PlantDef.CHERRY_BOMB4, 2400, 1.5f, 1.0f, true);
 
         // Doom-shroom (7x7 area -> 3.5 tile radius, 1.0s wait)
-        registerInstaExplosion(PlantDef.DOOM_SHROOM1, 1800, 3.5f, 1.0f);
-        registerInstaExplosion(PlantDef.DOOM_SHROOM2, 1800, 3.5f, 1.0f);
-        registerInstaExplosion(PlantDef.DOOM_SHROOM3, 2600, 3.5f, 1.0f);
-        registerInstaExplosion(PlantDef.DOOM_SHROOM4, 2600, 3.5f, 1.0f);
+        registerInstaExplosion(PlantDef.DOOM_SHROOM1, 1800, 3.5f, 1.0f, false);
+        registerInstaExplosion(PlantDef.DOOM_SHROOM2, 1800, 3.5f, 1.0f, false);
+        registerInstaExplosion(PlantDef.DOOM_SHROOM3, 2600, 3.5f, 1.0f, false);
+        registerInstaExplosion(PlantDef.DOOM_SHROOM4, 2600, 3.5f, 1.0f, false);
 
         // Ice-shroom (Full board -> 100 tile radius, 1.0s wait)
-        registerInstaExplosion(PlantDef.ICE_SHROOM1, 20, 100.0f, 1.0f);
-        registerInstaExplosion(PlantDef.ICE_SHROOM2, 20, 100.0f, 1.0f);
-        registerInstaExplosion(PlantDef.ICE_SHROOM3, 20, 100.0f, 1.0f);
-        registerInstaExplosion(PlantDef.ICE_SHROOM4, 70, 100.0f, 1.0f);
+        // Format: registerIceExplosion(def, damage, radius, waitTime, freezeSeconds, chillSeconds)
+        registerIceExplosion(PlantDef.ICE_SHROOM1, 20, 100.0f, 1.0f, 4.0f, 10.0f);
+        registerIceExplosion(PlantDef.ICE_SHROOM2, 20, 100.0f, 1.0f, 6.0f, 10.0f); // Lvl 2: Freeze Time +2s
+        registerIceExplosion(PlantDef.ICE_SHROOM3, 20, 100.0f, 1.0f, 6.0f, 10.0f);
+        registerIceExplosion(PlantDef.ICE_SHROOM4, 70, 100.0f, 1.0f, 6.0f, 10.0f); // Lvl 4: Dmg +50
 
-        // Jalapeno (Full lane -> 15 tile length, 1.0 tile width, 1.0s wait)
-        registerLineExplosion(PlantDef.JALAPENO1, 1800, 15.0f, 1.0f, 1.0f);
-        registerLineExplosion(PlantDef.JALAPENO2, 1800, 15.0f, 1.0f, 1.0f);
-        registerLineExplosion(PlantDef.JALAPENO3, 2400, 15.0f, 1.0f, 1.0f);
-        registerLineExplosion(PlantDef.JALAPENO4, 2400, 15.0f, 1.0f, 1.0f);
+        registerLineExplosion(PlantDef.JALAPENO1, 1800, 15.0f, 1.0f, 1.0f, true);
+        registerLineExplosion(PlantDef.JALAPENO2, 1800, 15.0f, 1.0f, 1.0f, true);
+        registerLineExplosion(PlantDef.JALAPENO3, 2400, 15.0f, 1.0f, 1.0f, true);
+        registerLineExplosion(PlantDef.JALAPENO4, 2400, 15.0f, 1.0f, 1.0f, true);
 
         // Grapeshot (3x3 area -> 1.5 tile radius, 1.0s wait)
         registerGrapeshot(PlantDef.GRAPESHOT1, 1800, 200, 1.0f, 3);
@@ -402,12 +401,19 @@ public class PlantAttackBehaviors {
     }
 
     /**
-     * Helper to register Lobbers with Area of Effect splash damage (e.g. Melon-pult).
+     * Helper to register Lobbers with Area of Effect splash damage (e.g. Melon-pult, Winter Melon).
      */
-    private static void registerLobberAoE(PlantDef def, int defaultDamage, float radius, int aoeDamage) {
+    private static void registerLobberAoE(PlantDef def, int defaultDamage, float radius, int aoeDamage, boolean fiery, int chillDurationTicks) {
         int damage = parseDamage(def, defaultDamage);
         int shots = parseShotCount(def, 1);
-        register(def, new LobShotBehavior(shots, new LobProjectile(damage, null, null, radius, aoeDamage)));
+        register(def, new LobShotBehavior(shots, new LobProjectile(damage, null, null, radius, aoeDamage, fiery, chillDurationTicks, 0)));
+    }
+
+    /**
+     * Overloaded helper to register Lobbers with Area of Effect splash damage but NO elemental effects.
+     */
+    private static void registerLobberAoE(PlantDef def, int defaultDamage, float radius, int aoeDamage) {
+        registerLobberAoE(def, defaultDamage, radius, aoeDamage, false, 0);
     }
 
     /**
@@ -432,7 +438,7 @@ public class PlantAttackBehaviors {
         register(def, new KernelPultBehavior(
             shots,
             new LobProjectile(normalDmg, null, null, 0f, 0),
-            new LobProjectile(butterDmg, null, null, 0f, 0),
+            new LobProjectile(butterDmg, null, null, 0f, 0, false, 0, 160), // 160 ticks = 8 seconds stun
             butterChance
         ));
     }
@@ -495,7 +501,17 @@ public class PlantAttackBehaviors {
     }
 
     /**
-     * Registers pea shooters that respect the "Heat" system (Snow Pea, Fire Pea).
+     * Specialized helper for Snow Pea to allow variable chill durations across levels.
+     */
+    private static void registerSnowPea(PlantDef def, int defaultDamage, float chillDurationSeconds) {
+        int damage = parseDamage(def, defaultDamage);
+        int chillTicks = (int) (chillDurationSeconds * 20);
+        // heat = -1 (cold)
+        register(def, new DirectShotBehavior(1, new TruePeaProjectile(damage, null, -1, chillTicks)));
+    }
+
+    /**
+     * Registers pea shooters that respect the "Heat" system (Fire Pea).
      */
     private static void registerTruePeaShooter(PlantDef def, int defaultDamage, int defaultShots, int heat) {
         int damage = parseDamage(def, defaultDamage);
@@ -558,9 +574,9 @@ public class PlantAttackBehaviors {
     /**
      * Helper for short-range Melee attackers (Bonk Choy, Wasabi Whip).
      */
-    private static void registerBonkChoy(PlantDef def, int defaultDamage, float frontRange, float backRange, int pierce) {
+    private static void registerBonkChoy(PlantDef def, int defaultDamage, float frontRange, float backRange, int pierce, boolean fiery) {
         int damage = parseDamage(def, defaultDamage);
-        register(def, new MeleeAttackBehavior(frontRange, backRange, pierce, damage));
+        register(def, new MeleeAttackBehavior(frontRange, backRange, pierce, damage, fiery));
     }
 
     /**
@@ -604,17 +620,17 @@ public class PlantAttackBehaviors {
     /**
      * Helper to register immediate radial explosives (Cherry Bomb, Doom-shroom, Ice-shroom).
      */
-    private static void registerInstaExplosion(PlantDef def, int defaultDamage, float radius, float waitTime) {
+    private static void registerInstaExplosion(PlantDef def, int defaultDamage, float radius, float waitTime, boolean fiery) {
         int damage = parseDamage(def, defaultDamage);
-        register(def, new InstaExplosiveBehavior(radius, damage, waitTime));
+        register(def, new InstaExplosiveBehavior(radius, damage, waitTime, fiery));
     }
 
     /**
      * Helper to register immediate linear explosives (Jalapeno).
      */
-    private static void registerLineExplosion(PlantDef def, int defaultDamage, float length, float width, float waitTime) {
+    private static void registerLineExplosion(PlantDef def, int defaultDamage, float length, float width, float waitTime, boolean fiery) {
         int damage = parseDamage(def, defaultDamage);
-        register(def, new LineExplosiveBehavior(length, width, damage, waitTime));
+        register(def, new LineExplosiveBehavior(length, width, damage, waitTime, fiery));
     }
 
     /**
@@ -711,6 +727,16 @@ public class PlantAttackBehaviors {
     private static void registerGraveBuster(PlantDef def, float eatTimeSeconds, int defaultExplosionDamage) {
         int explosionDamage = parseDamage(def, defaultExplosionDamage);
         register(def, new GraveBusterBehavior(eatTimeSeconds, explosionDamage));
+    }
+
+    /**
+     * Helper to register Ice-shroom, passing freeze and lingering chill durations.
+     */
+    private static void registerIceExplosion(PlantDef def, int defaultDamage, float radius, float waitTime, float freezeSeconds, float chillSeconds) {
+        int damage = parseDamage(def, defaultDamage);
+        int freezeTicks = (int) (freezeSeconds * 20);
+        int chillTicks = (int) (chillSeconds * 20);
+        register(def, new IceExplosiveBehavior(radius, damage, waitTime, freezeTicks, chillTicks));
     }
 
     //endregion

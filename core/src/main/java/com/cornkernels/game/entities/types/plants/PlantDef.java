@@ -250,10 +250,10 @@ public enum PlantDef {
     PUMPKIN3(3050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 5000, "0", null, 15f),
     PUMPKIN4(4050, "Pumpkin", PlantCategory.WALL_NUT, tags(PlantTag.STACK), 150, 6500, "0", null, 15f),
 
-    SUN_BEAN1(1051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1000, "0", null, 20f),
-    SUN_BEAN2(2051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1000, "0", null, 20f),
-    SUN_BEAN3(3051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1150, "0", null, 20f),
-    SUN_BEAN4(4051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 25, 1150, "0", null, 20f),
+    SUN_BEAN1(1051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1, "0", null, 20f),
+    SUN_BEAN2(2051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1, "0", null, 20f),
+    SUN_BEAN3(3051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 50, 1, "0", null, 20f),
+    SUN_BEAN4(4051, "Sun Bean", PlantCategory.WALL_NUT, tags(PlantTag.SUN), 25, 1, "0", null, 20f),
     //endregion
 
     // ------------------------------------------
@@ -338,6 +338,12 @@ public enum PlantDef {
     CAULIPOWER4(4014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 200, 450, "Insta-kill", 12.0f, 13f),
     //endregion
 
+    TORCH_WOOD1(1052, "Torch Wood", PlantCategory.WALL_NUT, tags(PlantTag.FIRE), 175, 300, "0", 1000.0f, 5f),
+    TORCH_WOOD2(2052, "Torch Wood", PlantCategory.WALL_NUT, tags(PlantTag.FIRE), 175, 600, "0", 1000.0f, 5f),
+    TORCH_WOOD3(3052, "Torch Wood", PlantCategory.WALL_NUT, tags(PlantTag.FIRE), 175, 600, "0", 1000.0f, 5f),
+    TORCH_WOOD4(4052, "Torch Wood", PlantCategory.WALL_NUT, tags(PlantTag.FIRE), 150, 600, "0", 1000.0f, 5f),
+
+
     //endregion
 
     // ==========================================
@@ -353,11 +359,7 @@ public enum PlantDef {
     // Homing
     MAGNET_SHROOM(53, "Magnet-shroom", PlantCategory.HOMING, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", 10.0f, 15f),
 
-    // Explosives
-    ICEBERG_LETTUCE(38, "Iceberg Lettuce", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.ICE), 0, 300, "0", null, 20f),
-
     // Modifiers / Environment
-    TORCHWOOD(52, "Torchwood", PlantCategory.MODIFIER, tags(PlantTag.FIRE), 175, 300, "0", null, 5f),
     HYPNO_SHROOM(54, "Hypno-shroom", PlantCategory.MODIFIER, tags(PlantTag.SHROOM, PlantTag.MAGIC), 125, 300, "0", null, 20f),
     IMITATER(56, "Imitater", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 0f),
     LILY_PAD(58, "Lily Pad", PlantCategory.MODIFIER, tags(PlantTag.WATER, PlantTag.STACK), 25, 300, "0", null, 5f),

@@ -7,9 +7,13 @@ import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.GraveBeingEatenComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.entities.types.sun.SunInstance;
+import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+import com.cornkernels.game.map.Field;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +21,12 @@ import java.util.List;
 public class CombatSystem extends EntitySystem {
 
     public static void applyDamage(Entity target, int amount, boolean ignoresArmor) {
+        applyDamage(target, amount, ignoresArmor, null);
+    }
+
+    public static void applyDamage(Entity target, int amount, boolean ignoresArmor, Field field) {
         int remaining = amount;
+        int initialRemaining = remaining;
 
         if (!ignoresArmor) {
             for (ArmorComponent armor : target.getAll(ArmorComponent.class)) {
@@ -26,9 +35,11 @@ public class CombatSystem extends EntitySystem {
             }
         }
 
-        if (remaining > 0) {
-            HealthComponent health = target.get(HealthComponent.class);
-            if (health == null) return;
+        int healthDamage = 0;
+        HealthComponent health = target.get(HealthComponent.class);
+
+        if (remaining > 0 && health != null) {
+            healthDamage = Math.min(health.currentHealth, remaining);
             health.adjustHealth(-remaining);
 
             if (health.isDead()) {
@@ -37,12 +48,33 @@ public class CombatSystem extends EntitySystem {
                 if (state != null) state.state = ZombieStateComponent.State.DEAD;
             }
         }
+
+        if (field != null && target.has(SunInfectedComponent.class)) {
+            int totalDamageDealt = (initialRemaining - remaining) + healthDamage;
+
+            if (health != null && health.isDead()) {
+                for (ArmorComponent armor : target.getAll(ArmorComponent.class)) {
+                    totalDamageDealt += armor.currentArmorHealth;
+                }
+            }
+
+            if (totalDamageDealt > 0) {
+                for (SunInfectedComponent infection : target.getAll(SunInfectedComponent.class)) {
+                    infection.accumulatedDamage += totalDamageDealt;
+
+                    while (infection.accumulatedDamage >= 25) {
+                        infection.accumulatedDamage -= 25;
+
+                        Vec2d pos = target.get(PositionComponent.class).position;
+                        field.addSun(new SunInstance(SunType.SMALL, (int) pos.getY(), (int) pos.getX(), 0));
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public void update(float delta) {
-
-        // 1. Pre-filter potential targets ONCE outside the projectile loop
         List<Entity> validTargets = new ArrayList<>();
         for (Entity e : field.getEntities()) {
             if (!e.isMarkedForRemoval() && (e instanceof ZombieInstance || e instanceof Grave)) {
@@ -50,32 +82,24 @@ public class CombatSystem extends EntitySystem {
             }
         }
 
-        // 2. Iterate through active projectiles
         for (AbstractProjectile projectile : List.copyOf(field.getActiveProjectiles())) {
             if (projectile.isMarkedForRemoval()) continue;
 
             Vec2d pos = projectile.get(PositionComponent.class).position;
 
-            // Clean up out-of-bounds projectiles
             if (pos.getX() < 0 || pos.getX() > field.getTotalColumns()) {
                 projectile.markForRemoval();
                 continue;
             }
 
-            // 3. Test collisions against our pre-filtered targets
             for (Entity target : validTargets) {
-                // Must re-check removal here! A previous projectile in this exact same frame
-                // might have just killed this target, and we don't want to hit a corpse.
                 if (target.isMarkedForRemoval()) continue;
-                // graves that are being eaten shouldnt get hit
                 if (target.has(GraveBeingEatenComponent.class)) continue;
-                // Checking all projectiles since each one has a different hitbox logic
+
                 if (!projectile.hit(target, field)) {
                     continue;
                 }
 
-                // If hit() returns true, mark the projectile for removal and stop checking targets
-                // (Note: AreaOfDamage and LineOfDamage return false so they can pierce/hit multiple)
                 projectile.markForRemoval();
                 break;
             }

@@ -1,4 +1,4 @@
-package com.cornkernels.game.entities.types.projectile.projectiles;
+package com.cornkernels.game.entities.types.projectile.projectiles.specific;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
@@ -9,45 +9,41 @@ import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
 
-public class AreaOfDamage extends AbstractProjectile {
+public class AreaOfIceDamage extends AbstractProjectile {
 
     public float radius;
     public boolean used = false;
-    public boolean fiery;
-    public int chillDurationTicks;
+    public int freezeDurationTicks;
+    public int residualChillTicks;
 
-    // Overloaded to keep standard non-elemental explosions intact
-    public AreaOfDamage(Vec2d position, float radius, int damage) {
-        this(position, radius, damage, false, 0);
-    }
-
-    public AreaOfDamage(Vec2d position, float radius, int damage, boolean fiery, int chillDurationTicks) {
+    public AreaOfIceDamage(Vec2d position, float radius, int damage, int freezeDurationTicks, int residualChillTicks) {
         super(damage, new Vec2d(0, 0), position);
         this.radius = radius;
-        this.fiery = fiery;
-        this.chillDurationTicks = chillDurationTicks;
+        this.freezeDurationTicks = freezeDurationTicks;
+        this.residualChillTicks = residualChillTicks;
     }
 
     @Override
     public boolean hit(Entity target, Field field) {
-        this.used = true;
+        this.used = true; // Mark as used the moment collision is processed
 
         if (super.hit(target, field) && target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position) < radius) {
+
+            // Deal the standard Ice-shroom 20 damage
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
 
-            if (fiery && target.has(IceComponent.class)) {
-                target.get(IceComponent.class).melt();
-            }
-            if (chillDurationTicks > 0 && target.has(IceComponent.class)) {
-                target.get(IceComponent.class).applyChill(chillDurationTicks);
+            // Apply hard freeze and the lingering slow
+            if (target.has(IceComponent.class)) {
+                target.get(IceComponent.class).applyFreeze(freezeDurationTicks, residualChillTicks);
             }
         }
 
+        // Always return false so the AOE is not destroyed immediately upon hitting just one target
         return false;
     }
 
     @Override
     public AbstractProjectile clone(Vec2d newPosition) {
-        return new AreaOfDamage(newPosition, this.radius, this.get(DamageComponent.class).amount, this.fiery, this.chillDurationTicks);
+        return new AreaOfIceDamage(newPosition, this.radius, this.get(DamageComponent.class).amount, this.freezeDurationTicks, this.residualChillTicks);
     }
 }

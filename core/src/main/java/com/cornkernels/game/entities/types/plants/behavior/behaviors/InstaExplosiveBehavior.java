@@ -12,11 +12,13 @@ public class InstaExplosiveBehavior implements PlantAttackBehavior {
     private final float radius;
     private final int damage;
     private final float waitTimeSeconds;
+    private final boolean fiery;
 
-    public InstaExplosiveBehavior(float radius, int damage, float waitTimeSeconds) {
+    public InstaExplosiveBehavior(float radius, int damage, float waitTimeSeconds, boolean fiery) {
         this.radius = radius;
         this.damage = damage;
         this.waitTimeSeconds = waitTimeSeconds;
+        this.fiery = fiery;
     }
 
     @Override
@@ -34,8 +36,8 @@ public class InstaExplosiveBehavior implements PlantAttackBehavior {
         timer.timeElapsed += (1.0f / 20.0f);
 
         if (timer.timeElapsed >= waitTimeSeconds) {
-            // Spawn the radial explosion
-            field.addProjectile(new AreaOfDamage(self.get(PositionComponent.class).position, radius, damage));
+            // Spawn the radial explosion with the fiery property and 0 chill duration
+            field.addProjectile(new AreaOfDamage(self.get(PositionComponent.class).position, radius, damage, fiery, 0));
 
             // Snap health exactly to 0 so the standard entity removal system destroys the plant
             hc.currentHealth = 0;

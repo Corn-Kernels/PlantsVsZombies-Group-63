@@ -48,9 +48,9 @@ public class GameManager extends Game {
 
         setScreen(new GameplayScreen(this, new GameAttributes(
             List.of(new SeedSlot(PlantDef.APPEASE_MINT),
+                new SeedSlot(PlantDef.SUNFLOWER1),
+                new SeedSlot(PlantDef.TORCH_WOOD1),
                 new SeedSlot(PlantDef.PEASHOOTER1),
-                new SeedSlot(PlantDef.CABBAGE_PULT1),
-                new SeedSlot(PlantDef.BOWLING_BULB1),
                 new SeedSlot(PlantDef.SQUASH1),
                 new SeedSlot(PlantDef.ENFORCE_MINT),
                 new SeedSlot(PlantDef.CHOMPER1)), List.of(

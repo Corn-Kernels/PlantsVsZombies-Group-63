@@ -1,26 +1,26 @@
-package com.cornkernels.game.entities.types.plants.behavior.behaviors;
+package com.cornkernels.game.entities.types.plants.behavior.behaviors.specific;
 
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.ExplosionTimerComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
-import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
+import com.cornkernels.game.entities.types.projectile.projectiles.specific.AreaOfIceDamage;
 import com.cornkernels.game.map.Field;
 
-public class LineExplosiveBehavior implements PlantAttackBehavior {
-    private final float length;
-    private final float width;
+public class IceExplosiveBehavior implements PlantAttackBehavior {
+    private final float radius;
     private final int damage;
     private final float waitTimeSeconds;
-    private final boolean fiery;
+    private final int freezeDurationTicks;
+    private final int residualChillTicks;
 
-    public LineExplosiveBehavior(float length, float width, int damage, float waitTimeSeconds, boolean fiery) {
-        this.length = length;
-        this.width = width;
+    public IceExplosiveBehavior(float radius, int damage, float waitTimeSeconds, int freezeDurationTicks, int residualChillTicks) {
+        this.radius = radius;
         this.damage = damage;
         this.waitTimeSeconds = waitTimeSeconds;
-        this.fiery = fiery;
+        this.freezeDurationTicks = freezeDurationTicks;
+        this.residualChillTicks = residualChillTicks;
     }
 
     @Override
@@ -38,10 +38,10 @@ public class LineExplosiveBehavior implements PlantAttackBehavior {
         timer.timeElapsed += (1.0f / 20.0f);
 
         if (timer.timeElapsed >= waitTimeSeconds) {
-            // Spawn the piercing line explosion with the fiery property
-            field.addProjectile(new LineOfDamage(self.get(PositionComponent.class).position, length, width, damage, fiery));
+            // Spawn the radial ice explosion
+            field.addProjectile(new AreaOfIceDamage(self.get(PositionComponent.class).position, radius, damage, freezeDurationTicks, residualChillTicks));
 
-            // Snap health exactly to 0
+            // Snap health exactly to 0 so the standard entity removal system destroys the plant
             hc.currentHealth = 0;
         }
     }

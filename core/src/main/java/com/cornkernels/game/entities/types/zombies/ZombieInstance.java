@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.*;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,9 @@ public class ZombieInstance extends Entity {
         add(new VelocityComponent(new Vec2d(-def.baseSpeed, 0f)));
         add(new ZombieStateComponent());
         add(new PamAnimationComponent());
+
+        // Pre-loaded singleton debuff component (Defaults to freezeLevel = 0)
+        add(new IceComponent());
 
         HealthComponent health = new HealthComponent();
         health.maxHealth = def.baseHp;

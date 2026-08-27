@@ -4,42 +4,50 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
-import org.jspecify.annotations.NonNull;
 
 public class LobProjectile extends AbstractProjectile {
 
     private final static float LOB_SPEED = 1f;
     public Entity target;
-    public Vec2d startPosition;
     public float areaOfEffect;
     public int aoeDamage;
+    public boolean fiery;
+    public int chillDurationTicks;
+    public int stunDurationTicks;
 
     public LobProjectile(int damage, Vec2d startPosition, Entity target, float radius, int aoeDamage) {
+        this(damage, startPosition, target, radius, aoeDamage, false, 0, 0);
+    }
+
+    public LobProjectile(int damage, Vec2d startPosition, Entity target, float radius, int aoeDamage, boolean fiery, int chillDurationTicks, int stunDurationTicks) {
         super(damage, new Vec2d(LOB_SPEED, 0), startPosition);
         this.target = target;
-        this.startPosition = startPosition;
         this.areaOfEffect = radius;
         this.aoeDamage = aoeDamage;
+        this.fiery = fiery;
+        this.chillDurationTicks = chillDurationTicks;
+        this.stunDurationTicks = stunDurationTicks;
     }
 
     @Override
-    public boolean hit(@NonNull Entity target, Field field) {
+    public boolean hit(Entity target, Field field) {
         if (target == this.target && super.hit(target, field)) {
-
             int directDamage = this.get(DamageComponent.class).amount;
 
-            if (areaOfEffect > 0) {
-                // AoE Lobber (e.g., Melon-pult)
-                // We subtract the AoE damage from the direct hit to prevent the primary target
-                // from taking massive double damage when the AreaOfDamage resolves next tick.
-                CombatSystem.applyDamage(target, directDamage - aoeDamage, false);
+            // Apply direct impact debuffs
+            if (fiery && target.has(IceComponent.class)) target.get(IceComponent.class).melt();
+            if (chillDurationTicks > 0 && target.has(IceComponent.class)) target.get(IceComponent.class).applyChill(chillDurationTicks);
+            if (stunDurationTicks > 0) target.add(new ButterComponent(stunDurationTicks));
 
-                field.addProjectile(new AreaOfDamage(this.get(PositionComponent.class).position, areaOfEffect, aoeDamage));
+            if (areaOfEffect > 0) {
+                CombatSystem.applyDamage(target, directDamage - aoeDamage, false);
+                field.addProjectile(new AreaOfDamage(this.get(PositionComponent.class).position, areaOfEffect, aoeDamage, fiery, chillDurationTicks));
             } else {
-                // Standard Lobber (e.g., Cabbage-pult)
                 CombatSystem.applyDamage(target, directDamage, false);
             }
 
@@ -51,6 +59,6 @@ public class LobProjectile extends AbstractProjectile {
     @Override
     public AbstractProjectile clone(Vec2d newPosition) {
         int damage = this.get(DamageComponent.class).amount;
-        return new LobProjectile(damage, newPosition, this.target, this.areaOfEffect, this.aoeDamage);
+        return new LobProjectile(damage, newPosition, this.target, this.areaOfEffect, this.aoeDamage, this.fiery, this.chillDurationTicks, this.stunDurationTicks);
     }
 }
