@@ -122,15 +122,20 @@ public class MovementSystem extends EntitySystem {
             // 4. Standard Movement Logic
             float vx = velComp.velocityPerTick.getX();
             float vy = velComp.velocityPerTick.getY();
+
             if (e instanceof ZombieInstance) {
-                vx *= delta;
-                vy *= delta;
+                // Scales speed by -1/20 while maintaining delta timing (remove '* delta' if frame-rate scaling isn't desired)
+                vx *= (1/3f) * delta;
+            } else {
+                // 1/10th speed for all standard projectiles falling through to step 4 (e.g. Grapeshot)
+                vx *= 0.1f;
+                vy *= 0.1f;
             }
+
             posComp.position = new Vec2d(
                 posComp.position.getX() + vx,
                 posComp.position.getY() + vy
             );
-
         }
     }
 }
