@@ -41,6 +41,9 @@ public class PlantAttackSystem extends EntitySystem {
 
             attack.behavior.execute(plant, field);
             attack.cooldownRemaining = attack.actionInterval;
+
+            PlantAnimationLocator.tryPlayOneShotClip(pamPlayer, plant.get(PamAnimationComponent.class),
+                plant.get(PlantDefComponent.class).def(), "attack", "special");
         }
     }
 
@@ -54,8 +57,10 @@ public class PlantAttackSystem extends EntitySystem {
         if (stateComp.state == desired) return;
 
         stateComp.state = desired;
-        PlantAnimationLocator.applyClip(pamPlayer, plant.get(PamAnimationComponent.class),
-            plant.get(PlantDefComponent.class).def(),
-            desired == PlantStateComponent.State.SHOOTING ? "attack" : "idle");
+
+        if (desired == PlantStateComponent.State.IDLE) {
+            PlantAnimationLocator.applyClip(pamPlayer, plant.get(PamAnimationComponent.class),
+                plant.get(PlantDefComponent.class).def(), "idle");
+        }
     }
 }

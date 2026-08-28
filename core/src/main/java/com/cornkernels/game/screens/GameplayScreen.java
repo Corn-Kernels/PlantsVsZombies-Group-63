@@ -27,6 +27,7 @@ import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.map.data.MapDefinition;
 import com.cornkernels.game.map.data.MapLoader;
 import com.cornkernels.game.map.data.MapSkin;
+import com.cornkernels.game.menus.screens.AdventureMenuScreen;
 import com.cornkernels.game.systems.controller.plants.SeedBank;
 import com.cornkernels.game.systems.controller.plants.SeedSlot;
 import org.jetbrains.annotations.Contract;
@@ -84,7 +85,10 @@ public class GameplayScreen implements Screen {
         hudStage = new Stage(new FitViewport(hudWidth, hudHeight), batch);
         Gdx.input.setInputProcessor(hudStage);
 
-        gameSession = new GameSession(new Field(5, 10, mapData.lawnMowerSlots), gameAttributes, batch, pamPlayer, mapData, camera);
+        int totalLanes = mapData.cellBounds.length;
+        int totalColumns = mapData.cellBounds[0].length;
+        gameSession = new GameSession(new Field(totalLanes, totalColumns, mapData.lawnMowerSlots),
+            gameAttributes, batch, pamPlayer, mapData, camera);
 
         hudFactory = new HudFactory(pamPlayer, gameSession.getPlantingController(),
             gameSession.getPauseController(), hudWidth, hudHeight);
@@ -105,11 +109,11 @@ public class GameplayScreen implements Screen {
             () -> gameSession.getPhase() == GameSession.LevelPhase.PLAYING));
         hudStage.addActor(hudFactory.createPauseButton());
 
-        PauseMenu pauseMenu = hudFactory.createPauseMenu(this::restartLevel);
+        PauseMenu pauseMenu = hudFactory.createPauseMenu(this::restartLevel, this::exitLevel);
         pauseMenu.setPosition((hudWidth - pauseMenu.getWidth()) / 2f, (hudHeight - pauseMenu.getHeight()) / 2f);
         hudStage.addActor(pauseMenu);
 
-        EndGameMenu endGameMenu = hudFactory.createEndGameMenu(this::restartLevel,
+        EndGameMenu endGameMenu = hudFactory.createEndGameMenu(this::restartLevel, this::exitLevel,
             () -> gameSession.getPhase() == GameSession.LevelPhase.ENDED);
         endGameMenu.setPosition((hudWidth - endGameMenu.getWidth()) / 2f, (hudHeight - endGameMenu.getHeight()) / 2f);
         hudStage.addActor(endGameMenu);
@@ -180,6 +184,10 @@ public class GameplayScreen implements Screen {
             slot.setCooldown(0f);
         }
         gameManager.setScreen(new GameplayScreen(gameManager, gameAttributes));
+    }
+
+    private void exitLevel() {
+        gameManager.setScreen(new AdventureMenuScreen(gameManager, gameManager.getCurrentUser()));
     }
 
     private boolean isPointerOverHud(@NonNull InputSnapshot input) {

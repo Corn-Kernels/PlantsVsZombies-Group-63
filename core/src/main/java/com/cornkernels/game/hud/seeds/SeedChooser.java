@@ -72,12 +72,27 @@ public class SeedChooser {
 
     private void onTrayClicked(@NonNull SeedSlotContainer container) {
         if (container.isEmpty()) return;
-        SeedSlot slot = container.getPacket().getSeedSlot();
+        SeedPacket packet = container.getPacket();
+        SeedSlot slot = packet.getSeedSlot();
+
         if (placementMode.getAsBoolean()) {
-            seedBank.select(slot, thumbnailFactory.apply(slot), null);
+            if (packet.isSelected()) {
+                seedBank.cancelSelection();
+                packet.setSelected(false);
+            } else if (seedBank.canSelect(slot)) {
+                clearTraySelection();
+                seedBank.select(slot, thumbnailFactory.apply(slot), null, () -> packet.setSelected(false));
+                packet.setSelected(true);
+            }
         } else {
             container.setPacket(null);
             markMenuChosen(slot, false);
+        }
+    }
+
+    private void clearTraySelection() {
+        for (SeedSlotContainer container : tray.getContainers()) {
+            if (!container.isEmpty()) container.getPacket().setSelected(false);
         }
     }
 

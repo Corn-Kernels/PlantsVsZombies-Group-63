@@ -74,6 +74,38 @@ public final class PlantAnimationLocator {
         anim.upcomingClips.clear();
     }
 
+    public static void tryPlayOneShotClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
+                                          @NonNull PlantDef plantDef, @NonNull String... candidateClipNames) {
+        String path = findPamPath(plantDef);
+        if (path == null) return;
+        pamPlayer.loadSync(path);
+
+        List<String> available = pamPlayer.clips(path);
+        if (available == null || available.isEmpty()) return;
+
+        String clipName = null;
+        for (String candidate : candidateClipNames) {
+            if (available.contains(candidate)) {
+                clipName = candidate;
+                break;
+            }
+        }
+        if (clipName == null) return;
+
+        ClipRef oneShot = pamPlayer.getClip(path, clipName);
+        if (oneShot == null) return;
+
+        ClipRef followUp = null;
+        if (available.contains("idle")) followUp = pamPlayer.getClip(path, "idle");
+        else if (available.contains("loop")) followUp = pamPlayer.getClip(path, "loop");
+
+        anim.currentClip = oneShot;
+        anim.stateTime = 0f;
+        anim.isLooping = false;
+        anim.upcomingClips.clear();
+        if (followUp != null) anim.upcomingClips.add(followUp);
+    }
+
     private static @NonNull List<String> resolveSpawnSequence(@Nullable List<String> availableClips) {
         List<String> sequence = new ArrayList<>();
         if (availableClips == null || availableClips.isEmpty()) return sequence;

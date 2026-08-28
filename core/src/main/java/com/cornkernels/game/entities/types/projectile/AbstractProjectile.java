@@ -8,7 +8,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
-import com.cornkernels.game.map.Field; // Added import
+import com.cornkernels.game.map.Field;
 import org.jspecify.annotations.NonNull;
 
 public class AbstractProjectile extends Entity {
@@ -23,13 +23,32 @@ public class AbstractProjectile extends Entity {
         add(new PamAnimationComponent());
     }
 
+    private static double distancePointToSegment(@NonNull Vec2d point, @NonNull Vec2d segStart, @NonNull Vec2d segEnd) {
+        Vec2d segment = segEnd.subtract(segStart);
+        float lengthSquared = segment.magnitudeSquared();
+        if (lengthSquared <= 1e-6f) {
+            return point.distance(segEnd);
+        }
+
+        float t = point.subtract(segStart).dot(segment) / lengthSquared;
+        t = Math.clamp(t, 0f, 1f);
+        Vec2d closest = segStart.add(segment.multiply(t));
+        return point.distance(closest);
+    }
+
     public AbstractProjectile clone(Vec2d newPosition) {
         return null;
     }
 
     public boolean hit(@NonNull Entity target, Field field) {
-        double distance = Math.abs(target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position));
+        if (!(target instanceof ZombieInstance || target instanceof Grave)) return false;
 
-        return (target instanceof ZombieInstance || target instanceof Grave) && distance <= HIT_DISTANCE;
+        Vec2d targetPos = target.get(PositionComponent.class).position;
+        Vec2d currentPos = this.get(PositionComponent.class).position;
+
+        VelocityComponent velComp = this.get(VelocityComponent.class);
+        Vec2d previousPos = velComp != null ? currentPos.subtract(velComp.velocityPerTick) : currentPos;
+
+        return distancePointToSegment(targetPos, previousPos, currentPos) <= HIT_DISTANCE;
     }
 }

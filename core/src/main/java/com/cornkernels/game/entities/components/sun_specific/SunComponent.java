@@ -15,6 +15,7 @@ public class SunComponent {
     }
 
     public float fallProgress() {
+        if (fallDuration <= 0f) return 1f;
         return Math.clamp(fallElapsed / fallDuration, 0f, 1f);
     }
 

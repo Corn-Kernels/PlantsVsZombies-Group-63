@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
@@ -66,6 +67,7 @@ public class MovementSystem extends EntitySystem {
                         posComp.position.getY() + velComp.velocityPerTick.getY()
                     );
 
+                    removeIfOffBoard(homingProj);
                     continue;
                 }
 
@@ -92,6 +94,7 @@ public class MovementSystem extends EntitySystem {
                         posComp.position.getY() + velComp.velocityPerTick.getY()
                     );
 
+                    removeIfOffBoard(cloudProj);
                     continue;
                 }
                 case GrapeshotProjectile grapeshotProjectile ->
@@ -131,6 +134,18 @@ public class MovementSystem extends EntitySystem {
                 posComp.position.getY() + vy
             );
 
+            removeIfOffBoard(e);
+        }
+    }
+
+    private void removeIfOffBoard(Entity e) {
+        if (!(e instanceof AbstractProjectile projectile) || projectile instanceof GrapeshotProjectile) return;
+
+        Vec2d pos = projectile.get(PositionComponent.class).position;
+        boolean offBoard = pos.getX() < 0f || pos.getX() > field.getTotalColumns()
+            || pos.getY() < 0f || pos.getY() > field.getTotalLanes() - 1;
+        if (offBoard) {
+            projectile.markForRemoval();
         }
     }
 }

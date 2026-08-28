@@ -12,6 +12,7 @@ import com.cornkernels.game.hud.cursor.CursorToolController;
 import com.cornkernels.game.hud.cursor.CursorToolState;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.data.MapData;
+import com.cornkernels.game.map.grid.GridObject;
 import com.cornkernels.game.utility.PlantAnimationLocator;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
@@ -55,8 +56,10 @@ public class PlantingController {
         toolState.active = true;
         toolState.attachment = thumbnail;
         toolState.highlightSet = highlightSet;
-        toolState.eligibility =
-            cell -> cell.getPlant() == null && cell.getObstacle() == null;
+        toolState.eligibility = cell -> {
+            GridObject fieldCell = field.getGridObjectAt(cell.getPosition().lane(), cell.getPosition().column());
+            return fieldCell.getPlant() == null && fieldCell.getObstacle() == null;
+        };
         toolState.onConfirm = gridPosition -> {
             if (field.getPlantAt(gridPosition.lane(), gridPosition.column()) == null) {
                 PlantDef plantDef = PlantDef.getPlantTypeOfId(String.valueOf(plantTypeId));
@@ -94,7 +97,8 @@ public class PlantingController {
             toolState.active = true;
             toolState.attachment = shovelIcon;
             toolState.highlightSet = null;
-            toolState.eligibility = cell -> cell.getPlant() != null;
+            toolState.eligibility = cell ->
+                field.getPlantAt(cell.getPosition().lane(), cell.getPosition().column()) != null;
             toolState.onConfirm = field::removePlantAt;
         }
 

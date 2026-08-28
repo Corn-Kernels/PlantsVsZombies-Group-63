@@ -1,5 +1,6 @@
 package com.cornkernels.game.systems.controller;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.cornkernels.engine.renderer.camera.GameplayCamera;
 import com.cornkernels.engine.utility.InputSnapshot;
@@ -31,16 +32,33 @@ public class SunHarvestController {
         if (!snapshot.confirmPressed()) return false;
 
         Vector2 worldPoint = camera.screenToWorld(snapshot.cursorScreenX(), snapshot.cursorScreenY());
-        GridPosition clicked = mapData.getGridPositionAt(worldPoint.x, worldPoint.y);
-        if (clicked == null) return false;
 
         for (SunInstance sun : field.getActiveSuns()) {
             if (sun.isMarkedForRemoval()) continue;
-            GridPosition sunPosition = GridPosition.fromContinuous(sun.get(PositionComponent.class).position);
-            if (sunPosition.equals(clicked)) {
+            if (containsPoint(sun, worldPoint.x, worldPoint.y)) {
                 return SunSystem.tryHarvest(sun, field, plantingController);
             }
         }
         return false;
+    }
+
+    private boolean containsPoint(@NonNull SunInstance sun, float worldX, float worldY) {
+        GridPosition landingPosition = GridPosition.fromContinuous(sun.get(PositionComponent.class).position);
+        int lane = landingPosition.lane();
+        int column = landingPosition.column();
+        if (lane < 0 || lane >= mapData.cellBounds.length) return false;
+        Rectangle[] row = mapData.cellBounds[lane];
+        if (column < 0 || column >= row.length) return false;
+
+        Rectangle landedBounds = row[column];
+        float landedY = landedBounds.y + landedBounds.height / 2f;
+        float currentY = SunSystem.currentDrawY(sun, landedY, landedBounds.height, mapData);
+
+        float halfWidth = landedBounds.width / 2f;
+        float halfHeight = landedBounds.height / 2f;
+        float centerX = landedBounds.x + halfWidth;
+
+        return worldX >= centerX - halfWidth && worldX <= centerX + halfWidth
+            && worldY >= currentY - halfHeight && worldY <= currentY + halfHeight;
     }
 }

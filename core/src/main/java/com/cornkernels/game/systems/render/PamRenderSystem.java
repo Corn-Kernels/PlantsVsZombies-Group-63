@@ -8,11 +8,12 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
-import com.cornkernels.game.entities.components.sun_specific.SunComponent;
 import com.cornkernels.game.entities.types.lawnmower.LawnMower;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
+import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.data.MapData;
+import com.cornkernels.game.systems.entity.SunSystem;
 import com.cornkernels.game.utility.LawnMowerAnimationLocator;
 import com.cornkernels.game.utility.ProjectileAnimationLocator;
 import com.cornkernels.game.utility.SunAnimationLocator;
@@ -59,12 +60,14 @@ public class PamRenderSystem extends RenderSystem {
 
             Rectangle bounds = entity instanceof LawnMower mower
                 ? mower.getWorldBounds()
+                : entity instanceof AbstractProjectile || entity instanceof ZombieInstance
+                ? continuousWorldPositionOf(positionComponent.position)
                 : worldCellOf(positionComponent.position);
             float x = bounds.x + bounds.width / 2f;
             float y = bounds.y + bounds.height / 2f;
 
             if (entity instanceof SunInstance sun) {
-                y = fallingSunDrawY(sun, y, bounds.height);
+                y = SunSystem.currentDrawY(sun, y, bounds.height, mapData);
             }
 
             if (scale == 1.0f) {
@@ -82,15 +85,6 @@ public class PamRenderSystem extends RenderSystem {
             pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
             batch.setTransformMatrix(original);
         }
-    }
-
-    private float fallingSunDrawY(@NonNull SunInstance sun, float landedY, float cellHeight) {
-        SunComponent comp = sun.get(SunComponent.class);
-        if (comp.state != SunComponent.State.FALLING) return landedY;
-
-        Rectangle worldBounds = mapData.getWorldBounds();
-        float skyY = worldBounds.y + worldBounds.height + cellHeight;
-        return MathUtils.lerp(skyY, landedY, comp.fallProgress());
     }
 
     private void assignSunClip(@NonNull PamAnimationComponent anim) {
@@ -132,6 +126,20 @@ public class PamRenderSystem extends RenderSystem {
         float width = MathUtils.lerp(from.width, to.width, t);
 
         return new Rectangle(centerX - width / 2f, from.y, width, from.height);
+    }
+
+    private @NonNull Rectangle continuousWorldPositionOf(@NonNull Vec2d gridPosition) {
+        Rectangle origin = mapData.cellBounds[0][0];
+        float columnStep = mapData.cellBounds[0].length > 1
+            ? mapData.cellBounds[0][1].x - origin.x
+            : origin.width;
+        float laneStep = mapData.cellBounds.length > 1
+            ? mapData.cellBounds[1][0].y - origin.y
+            : origin.height;
+
+        float centerX = origin.x + origin.width / 2f + gridPosition.getX() * columnStep;
+        float centerY = origin.y + origin.height / 2f + gridPosition.getY() * laneStep;
+        return new Rectangle(centerX, centerY, 0f, 0f);
     }
 
     public float getScale() {

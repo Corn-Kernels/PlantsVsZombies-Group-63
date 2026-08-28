@@ -28,14 +28,26 @@ public class SeedBank {
         return slot.isReady() && plantingController.canAfford(slot.getPlantDef().getCost());
     }
 
+    public void cancelSelection() {
+        plantingController.cancelActiveTool();
+    }
+
     public void select(SeedSlot slot, CursorAttachment thumbnail, HighlightAnimationSet highlightSet) {
+        select(slot, thumbnail, highlightSet, null);
+    }
+
+    public void select(SeedSlot slot, CursorAttachment thumbnail, HighlightAnimationSet highlightSet,
+                       Runnable onPlaced) {
         if (!canSelect(slot)) return;
         plantingController.beginPlantPlacement(
             slot.getPlantDef().getId(),
             slot.getPlantDef().getCost(),
             thumbnail,
             highlightSet,
-            slot::startCooldown
+            () -> {
+                slot.startCooldown();
+                if (onPlaced != null) onPlaced.run();
+            }
         );
     }
 }
