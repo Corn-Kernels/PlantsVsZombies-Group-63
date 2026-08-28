@@ -1,10 +1,7 @@
 package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.game.entities.components.PamAnimationComponent;
-import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
-import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
-import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
-import com.cornkernels.game.entities.components.plant_specific.PlantStateComponent;
+import com.cornkernels.game.entities.components.plant_specific.*;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.utility.PlantAnimationLocator;
 import org.jspecify.annotations.NonNull;
@@ -22,6 +19,9 @@ public class PlantAttackSystem extends EntitySystem {
     public void update(float deltaTick) {
         for (PlantInstance plant : field.getActivePlants()) {
             if (plant.isMarkedForRemoval()) continue;
+
+            // If the plant is covered in an octopus, it cannot attack!
+            if (plant.has(OctoedComponent.class)) {continue;}
 
             PlantFreezeComponent freezeComp = plant.get(PlantFreezeComponent.class);
             if (freezeComp != null && freezeComp.frozenHp > 0) {

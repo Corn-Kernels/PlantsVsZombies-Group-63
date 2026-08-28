@@ -361,6 +361,7 @@ public class PlantAttackBehaviors {
         // Processes everything without a custom registry
         // ==========================================
 
+
         for (PlantDef def : PlantDef.values()) {
             if (!REGISTRY.containsKey(def)) {
                 register(def, NO_ATTACK);

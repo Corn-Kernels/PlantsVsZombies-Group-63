@@ -48,17 +48,13 @@ public class GameManager extends Game {
 
         setScreen(new GameplayScreen(this, new GameAttributes(
             List.of(new SeedSlot(PlantDef.APPEASE_MINT),
-                new SeedSlot(PlantDef.SUNFLOWER1),
-                new SeedSlot(PlantDef.TORCH_WOOD1),
-                new SeedSlot(PlantDef.PEASHOOTER1),
-                new SeedSlot(PlantDef.SQUASH1),
-                new SeedSlot(PlantDef.ENFORCE_MINT),
-                new SeedSlot(PlantDef.CHOMPER1)), List.of(
-            ZombieDef.DEFAULT,
-            ZombieDef.ARCADE,
-            ZombieDef.PIANO,
-            ZombieDef.PROSPECTOR,
-            ZombieDef.GARGANTUAR)))); // Temporary
+                new SeedSlot(PlantDef.CHERRY_BOMB1),
+                new SeedSlot(PlantDef.DOOM_SHROOM1),
+                new SeedSlot(PlantDef.SNOW_PEA1),
+                new SeedSlot(PlantDef.TALL_NUT4),
+                new SeedSlot(PlantDef.TALL_NUT1),
+                new SeedSlot(PlantDef.ICE_SHROOM1)), List.of(
+            ZombieDef.ICE_AGE_DODO)))); // Temporary
     }
 
     @Override

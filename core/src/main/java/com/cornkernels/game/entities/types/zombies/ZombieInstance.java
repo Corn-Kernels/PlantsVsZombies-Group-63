@@ -3,10 +3,13 @@ package com.cornkernels.game.entities.types.zombies;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.*;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieBehaviorComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
+import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehavior;
+import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehaviors;
 import org.jetbrains.annotations.NotNull;
 
 public class ZombieInstance extends Entity {
@@ -31,5 +34,11 @@ public class ZombieInstance extends Entity {
         for (ArmorType armorType : def.armors) {
             add(new ArmorComponent(armorType));
         }
+        //adds custom behavior to zombies with custom behavior
+        ZombieBehavior behavior = ZombieBehaviors.get(def);
+        if (behavior != null) {
+            add(new ZombieBehaviorComponent(behavior));
+        }
+
     }
 }

@@ -2,6 +2,7 @@ package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.plant_specific.OctoedComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieBehaviorComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
@@ -45,6 +46,9 @@ public class ZombieSystem extends EntitySystem {
 
             GridPosition pos = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position);
             PlantInstance plant = field.getPlantAt(pos.lane(), pos.column());
+            if(plant.has(OctoedComponent.class)){
+                plant=null;
+            }
 
             if (plant == null) {
                 if (state.state == ZombieStateComponent.State.EATING) {

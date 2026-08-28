@@ -15,7 +15,7 @@ public enum ZombieDef {
     GARGANTUAR("ZombieGargantuar", "ZombieGargantuarProps", 3600, 0.24f, 0, 150, 1500, 3000, false, 7, 3, List.of()),
     IMP("ZombieImp", "ZombiePropertySheet", 190, 0.22f, 100, 150, 100, 1000, false, 1, 3, List.of()),
     RA("ZombieRa", "ZombieRaProps", 190, 0.2f, 100, 150, 100, 700, true, 1, 2, List.of()),
-    EXPLORER("ZombieExplorer", "ZombieExplorerProps", 250, 0.25f, 100, 150, 250, 3000, true, 2, 3, List.of()),
+    EXPLORER("ZombieExplorer", "ZombieExplorerProps", 250, 0.25f, 1000000, 150, 250, 3000, true, 2, 3, List.of()),
     TOMB_RAISER("ZombieTombRaiser", "ZombieTombRaiserProps", 380, 0.185f, 100, 150, 300, 2000, true, 4, 2, List.of()),
     ICE_AGE_DODO("ZombieIceAgeDodo", "ZombieIceAgeDodoProps", 490, 0.3f, 100, 150, 600, 3500, true, 3, 4, List.of()),
     ICE_AGE_HUNTER("ZombieIceAgeHunter", "ZombieIceAgeHunterProps", 700, 0.12f, 100, 150, 500, 3500, true, 4, 0, List.of()),

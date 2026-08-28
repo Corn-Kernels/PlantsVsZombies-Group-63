@@ -5,6 +5,10 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.types.obstacles.Grave;
+import com.cornkernels.game.entities.types.plants.PlantInstance;
+import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.BoneProjectile;
+import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.OctopusProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
@@ -126,13 +130,68 @@ public class MovementSystem extends EntitySystem {
                 continue;
             }
 
+            // 3. Bone Projectile Tracking & Arrival
+            if (e instanceof BoneProjectile boneProj) {
+                Vec2d pos = posComp.position;
+                double targetX = boneProj.getTargetTile().column();
+                double targetY = boneProj.getTargetTile().lane();
+
+                double dist = Math.hypot(targetX - pos.getX(), targetY - pos.getY());
+
+                // Dynamic Tracking (Adjust speedMag as needed for throw speed)
+                double desiredAngle = Math.atan2(targetY - pos.getY(), targetX - pos.getX());
+                double speedMag = 0.15;
+
+                velComp.velocityPerTick = new Vec2d(
+                    (float) (Math.cos(desiredAngle) * speedMag),
+                    (float) (Math.sin(desiredAngle) * speedMag)
+                );
+
+                posComp.position = new Vec2d(
+                    posComp.position.getX() + velComp.velocityPerTick.getX(),
+                    posComp.position.getY() + velComp.velocityPerTick.getY()
+                );
+                continue;
+            }
+            // 4. Octopus Projectile Tracking
+            if (e instanceof OctopusProjectile octoProj) {
+                PlantInstance targetPlant = octoProj.getTargetPlant();
+
+                // Drop out of the sky if the plant was dug up or destroyed early
+                if (targetPlant == null || targetPlant.isMarkedForRemoval()) {
+                    octoProj.markForRemoval();
+                    continue;
+                }
+
+                Vec2d pos = posComp.position;
+                Vec2d targetPos = targetPlant.get(PositionComponent.class).position;
+
+                double targetX = targetPos.getX();
+                double targetY = targetPos.getY();
+
+                // Dynamic Tracking
+                double desiredAngle = Math.atan2(targetY - pos.getY(), targetX - pos.getX());
+                double speedMag = 0.15;
+
+                velComp.velocityPerTick = new Vec2d(
+                    (float) (Math.cos(desiredAngle) * speedMag),
+                    (float) (Math.sin(desiredAngle) * speedMag)
+                );
+
+                posComp.position = new Vec2d(
+                    posComp.position.getX() + velComp.velocityPerTick.getX(),
+                    posComp.position.getY() + velComp.velocityPerTick.getY()
+                );
+                continue;
+            }
+
             // 4. Standard Movement Logic
             float vx = velComp.velocityPerTick.getX();
             float vy = velComp.velocityPerTick.getY();
 
             if (e instanceof ZombieInstance) {
                 // Scales speed by -1/20 while maintaining delta timing
-                vx *= (1/3f) * delta;
+                vx *= (1/20f);
             } else {
                 // 1/10th speed for standard projectiles falling through
                 vx *= 0.1f;

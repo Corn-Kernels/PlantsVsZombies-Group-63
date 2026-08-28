@@ -24,13 +24,15 @@ public class GameSimulation {
         this.random = new Random();
         this.lawnMowersSystem = new LawnMowersSystem();
 
-        addSystem(new MovementSystem());
         addSystem(new CombatSystem());
         addSystem(new PlantAttackSystem(pamPlayer));
         addSystem(new SunSystem(random));
         addSystem(new ZombieSystem(pamPlayer));
         addSystem(lawnMowersSystem);
         addSystem(new WaveSystem(1, random, gameAttributes.eligibleZombies, pamPlayer));
+        addSystem(new DebuffSystem());
+        addSystem(new MovementSystem());
+
     }
 
     public void update(float deltaTick) {
