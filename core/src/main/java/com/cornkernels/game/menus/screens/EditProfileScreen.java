@@ -100,6 +100,7 @@ public class EditProfileScreen extends BaseScreen {
             }
         });
     }
+
     private void saveChanges() {
         String newUsername = usernameField.getText().trim();
         String newNickname = nicknameField.getText().trim();
@@ -171,6 +172,7 @@ public class EditProfileScreen extends BaseScreen {
         confirmPasswordField.setText("");
         game.setScreen(new ProfileScreen(game, user));
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);

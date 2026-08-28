@@ -18,25 +18,6 @@ import com.cornkernels.game.menus.model.User;
 
 public class GreenhouseScreen extends BaseScreen {
 
-    private User user;
-    private Garden garden;
-
-    private Label statusLabel;
-    private Table potsTable;
-    private Table infoTable;
-
-    private GardenPot selectedPot;
-    private int selectedRow = -1;
-    private int selectedCol = -1;
-
-    private Drawable lockedDrawable;
-    private Drawable emptyDrawable;
-    private Drawable growingDrawable;
-    private Drawable readyDrawable;
-
-    private Texture potEmptyTexture;
-    private Texture potLockedTexture;
-
     // ===== لیست ۵ گیاه ثابت =====
     private static final String[] AVAILABLE_PLANTS = {
         "SUNFLOWER",
@@ -45,6 +26,20 @@ public class GreenhouseScreen extends BaseScreen {
         "SNOW_PEA",
         "REPEATER"
     };
+    private User user;
+    private Garden garden;
+    private Label statusLabel;
+    private Table potsTable;
+    private Table infoTable;
+    private GardenPot selectedPot;
+    private int selectedRow = -1;
+    private int selectedCol = -1;
+    private Drawable lockedDrawable;
+    private Drawable emptyDrawable;
+    private Drawable growingDrawable;
+    private Drawable readyDrawable;
+    private Texture potEmptyTexture;
+    private Texture potLockedTexture;
 
     public GreenhouseScreen(GameManager game, User user) {
         super(game);
@@ -327,7 +322,7 @@ public class GreenhouseScreen extends BaseScreen {
 
         // ===== جایزه =====
         if (pot.isReady()) {
-            int reward = 5 + (int)(Math.random() * 15);
+            int reward = 5 + (int) (Math.random() * 15);
             Label rewardLabel = new Label("💎" + reward, skin);
             rewardLabel.setFontScale(0.9f);
             rewardLabel.setColor(1, 0.8f, 0, 1);
@@ -384,7 +379,7 @@ public class GreenhouseScreen extends BaseScreen {
         if (Math.random() < 0.5) {
             plantType = "MARIGOLD";
         } else {
-            int randomIndex = (int)(Math.random() * AVAILABLE_PLANTS.length);
+            int randomIndex = (int) (Math.random() * AVAILABLE_PLANTS.length);
             plantType = AVAILABLE_PLANTS[randomIndex];
         }
 
@@ -439,7 +434,7 @@ public class GreenhouseScreen extends BaseScreen {
         }
 
         // ===== ۱ الماس به ازای هر ۵ ثانیه =====
-        int diamondsNeeded = (int)Math.ceil(seconds / 5.0);
+        int diamondsNeeded = (int) Math.ceil(seconds / 5.0);
         if (diamondsNeeded < 1) diamondsNeeded = 1;
 
         if (progress.getDiamonds() < diamondsNeeded) {

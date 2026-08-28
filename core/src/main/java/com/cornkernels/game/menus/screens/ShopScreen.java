@@ -64,10 +64,10 @@ public class ShopScreen extends BaseScreen {
             // گرادینت آبی تیره تا آبی روشن
             for (int y = 0; y < 600; y++) {
                 float ratio = y / 600f;
-                int r = (int)(20 + 30 * ratio);
-                int g = (int)(40 + 80 * ratio);
-                int b = (int)(120 + 80 * ratio);
-                pixmap.setColor(r/255f, g/255f, b/255f, 1);
+                int r = (int) (20 + 30 * ratio);
+                int g = (int) (40 + 80 * ratio);
+                int b = (int) (120 + 80 * ratio);
+                pixmap.setColor(r / 255f, g / 255f, b / 255f, 1);
                 pixmap.drawLine(0, y, 800, y);
             }
 
@@ -75,7 +75,7 @@ public class ShopScreen extends BaseScreen {
             pixmap.setColor(0.2f, 0.3f, 0.5f, 0.3f);
             for (int x = 0; x < 800; x += 80) {
                 for (int y = 0; y < 600; y += 80) {
-                    if ((x/80 + y/80) % 2 == 0) {
+                    if ((x / 80 + y / 80) % 2 == 0) {
                         pixmap.fillRectangle(x, y, 80, 80);
                     }
                 }
@@ -93,7 +93,7 @@ public class ShopScreen extends BaseScreen {
     private void initializeShopItems() {
         shopItems = new ArrayList<>();
 
-        int randomIndex = (int)(Math.random() * dailyPlants.length);
+        int randomIndex = (int) (Math.random() * dailyPlants.length);
         String dailyPlant = dailyPlants[randomIndex];
         int originalPrice = getPlantCost(dailyPlant);
         int discountPrice = originalPrice / 2;
@@ -391,7 +391,7 @@ public class ShopScreen extends BaseScreen {
                 case "RANDOM SEED":
                     String[] plants = {"SUNFLOWER", "PEASHOOTER", "WALL_NUT", "POTATO_MINE",
                         "CHERRY_BOMB", "SNOW_PEA", "REPEATER", "CACTUS"};
-                    String randomPlant = plants[(int)(Math.random() * plants.length)];
+                    String randomPlant = plants[(int) (Math.random() * plants.length)];
                     progress.addSeedPacket(randomPlant);
                     showToast("✅ Random seed: " + randomPlant + " added!", 2f, false);
                     break;
@@ -451,6 +451,19 @@ public class ShopScreen extends BaseScreen {
         plantDialog.show(stage);
     }
 
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(delta);
+        stage.draw();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
+
     private static class ShopItem {
         String name;
         String description;
@@ -470,18 +483,5 @@ public class ShopScreen extends BaseScreen {
             this.isDaily = isDaily;
             this.timeRemaining = timeRemaining;
         }
-    }
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
-        stage.draw();
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
     }
 }

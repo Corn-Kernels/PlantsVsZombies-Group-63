@@ -13,101 +13,171 @@ public class DataLoader {
         // همه گیاهان با اسم فایل‌هایی که در پوشه داری
         switch (plantName) {
             // Sun Producers
-            case "Sunflower": return "sunflower.png";
-            case "Twin Sunflower": return "twin_sunflower.png";
-            case "Sun-shroom": return "sun_shroom.png";
-            case "Primal Sunflower": return "primal_sunflower.png";
-            case "Gold Bloom": return "gold_bloom.png";
+            case "Sunflower":
+                return "sunflower.png";
+            case "Twin Sunflower":
+                return "twin_sunflower.png";
+            case "Sun-shroom":
+                return "sun_shroom.png";
+            case "Primal Sunflower":
+                return "primal_sunflower.png";
+            case "Gold Bloom":
+                return "gold_bloom.png";
 
             // Shooters
-            case "Peashooter": return "peashooter.png";
-            case "Repeater": return "repeater.png";
-            case "Threepeater": return "threepeater.png";
-            case "Snow Pea": return "snow_pea.png";
-            case "Rotobaga": return "rotobaga.png";
-            case "Pea Pod": return "pea_pod.png";
-            case "Split Pea": return "split_pea.png";
-            case "Citron": return "citron.png";
-            case "Caulipower": return "caulipower.png";
+            case "Peashooter":
+                return "peashooter.png";
+            case "Repeater":
+                return "repeater.png";
+            case "Threepeater":
+                return "threepeater.png";
+            case "Snow Pea":
+                return "snow_pea.png";
+            case "Rotobaga":
+                return "rotobaga.png";
+            case "Pea Pod":
+                return "pea_pod.png";
+            case "Split Pea":
+                return "split_pea.png";
+            case "Citron":
+                return "citron.png";
+            case "Caulipower":
+                return "caulipower.png";
 
             // Homing
-            case "Electric Blueberry": return "electric_blueberry.png";
-            case "Bowling Bulb": return "bowling_bulb.png";
+            case "Electric Blueberry":
+                return "electric_blueberry.png";
+            case "Bowling Bulb":
+                return "bowling_bulb.png";
 
             // Strike-through & Special
-            case "Cactus": return "cactus.png";
-            case "Fire Peashooter": return "fire_peashooter.png";
-            case "Starfruit": return "starfruit.png";
-            case "Goo Peashooter": return "goo_peashooter.png";
-            case "Mega Gatling Pea": return "mega_gatling_pea.png";
+            case "Cactus":
+                return "cactus.png";
+            case "Fire Peashooter":
+                return "fire_peashooter.png";
+            case "Starfruit":
+                return "starfruit.png";
+            case "Goo Peashooter":
+                return "goo_peashooter.png";
+            case "Mega Gatling Pea":
+                return "mega_gatling_pea.png";
 
             // Shroom Shooters
-            case "Sea-shroom": return "sea_shroom.png";
-            case "Puff-shroom": return "puff_shroom.png";
-            case "Fume-shroom": return "fume_shroom.png";
+            case "Sea-shroom":
+                return "sea_shroom.png";
+            case "Puff-shroom":
+                return "puff_shroom.png";
+            case "Fume-shroom":
+                return "fume_shroom.png";
 
             // Lobbers
-            case "Cabbage-pult": return "cabbage_pult.png";
-            case "Kernel-pult": return "kernel_pult.png";
-            case "Melon-pult": return "melon_pult.png";
-            case "Winter Melon": return "winter_melon.png";
-            case "Pepper-pult": return "pepper_pult.png";
+            case "Cabbage-pult":
+                return "cabbage_pult.png";
+            case "Kernel-pult":
+                return "kernel_pult.png";
+            case "Melon-pult":
+                return "melon_pult.png";
+            case "Winter Melon":
+                return "winter_melon.png";
+            case "Pepper-pult":
+                return "pepper_pult.png";
 
             // Explosives & Traps
-            case "Potato Mine": return "potato_mine.png";
-            case "Primal Potato Mine": return "primal_potato_mine.png";
-            case "Cherry Bomb": return "cherry_bomb.png";
-            case "Squash": return "squash.png";
-            case "Grapeshot": return "grapeshot.png";
-            case "Jalapeno": return "jalapeno.png";
-            case "Doom-shroom": return "doom_shroom.png";
-            case "Tangle Kelp": return "tangle_kelp.png";
-            case "Iceberg Lettuce": return "iceberg_lettuce.png";
+            case "Potato Mine":
+                return "potato_mine.png";
+            case "Primal Potato Mine":
+                return "primal_potato_mine.png";
+            case "Cherry Bomb":
+                return "cherry_bomb.png";
+            case "Squash":
+                return "squash.png";
+            case "Grapeshot":
+                return "grapeshot.png";
+            case "Jalapeno":
+                return "jalapeno.png";
+            case "Doom-shroom":
+                return "doom_shroom.png";
+            case "Tangle Kelp":
+                return "tangle_kelp.png";
+            case "Iceberg Lettuce":
+                return "iceberg_lettuce.png";
 
             // Melee
-            case "Bonk Choy": return "bonk_choy.png";
-            case "Phat Beet": return "phet_beet.png";
-            case "Chomper": return "chomper.png";
-            case "Wasabi Whip": return "wasabi_whip.png";
-            case "Kiwibeast": return "kiwibeast.png";
+            case "Bonk Choy":
+                return "bonk_choy.png";
+            case "Phat Beet":
+                return "phet_beet.png";
+            case "Chomper":
+                return "chomper.png";
+            case "Wasabi Whip":
+                return "wasabi_whip.png";
+            case "Kiwibeast":
+                return "kiwibeast.png";
 
             // Wall-nuts & Defensive
-            case "Wall-nut": return "wall_nut.png";
-            case "Tall-nut": return "tall_nut.png";
-            case "Endurian": return "endurian.png";
-            case "Garlic": return "garlic.png";
-            case "Sweet Potato": return "sweet_potato.png";
-            case "Explode-o-nut": return "explode_o_nut.png";
-            case "Pumpkin": return "pumpkin.png";
-            case "Sun Bean": return "sun_bean.png";
+            case "Wall-nut":
+                return "wall_nut.png";
+            case "Tall-nut":
+                return "tall_nut.png";
+            case "Endurian":
+                return "endurian.png";
+            case "Garlic":
+                return "garlic.png";
+            case "Sweet Potato":
+                return "sweet_potato.png";
+            case "Explode-o-nut":
+                return "explode_o_nut.png";
+            case "Pumpkin":
+                return "pumpkin.png";
+            case "Sun Bean":
+                return "sun_bean.png";
 
             // Modifiers & Support
-            case "Torchwood": return "torchwood.png";
-            case "Magnet-shroom": return "magnet_shroom.png";
-            case "Hypno-shroom": return "hypno_shroom.png";
-            case "Cat-tail": return "cat_tail.png";
+            case "Torchwood":
+                return "torchwood.png";
+            case "Magnet-shroom":
+                return "magnet_shroom.png";
+            case "Hypno-shroom":
+                return "hypno_shroom.png";
+            case "Cat-tail":
+                return "cat_tail.png";
 
             // Special Modifiers
-            case "Imitater": return "imitater.png";
-            case "Ice-shroom": return "ice_shroom.png";
-            case "Lily Pad": return "lily_pad.png";
+            case "Imitater":
+                return "imitater.png";
+            case "Ice-shroom":
+                return "ice_shroom.png";
+            case "Lily Pad":
+                return "lily_pad.png";
 
             // Utility
-            case "Hot Potato": return "hot_potato.png";
-            case "Grave Buster": return "grave_buster.png";
-            case "Enlighten-mint": return "enlighten_mint.png";
+            case "Hot Potato":
+                return "hot_potato.png";
+            case "Grave Buster":
+                return "grave_buster.png";
+            case "Enlighten-mint":
+                return "enlighten_mint.png";
 
             // Mint Family
-            case "Appease-mint": return "appease_mint.png";
-            case "Arma-mint": return "armamint.png";
-            case "Bombard-mint": return "bombard_mint.png";
-            case "Enforce-mint": return "enforce_mint.png";
-            case "Reinforce-mint": return "reinforce_mint.png";
-            case "Enchant-mint": return "enchant_mint.png";
-            case "Pierce-mint": return "pierce_mint.png";
-            case "CatTail-mint": return "cattail_mint.png";
+            case "Appease-mint":
+                return "appease_mint.png";
+            case "Arma-mint":
+                return "armamint.png";
+            case "Bombard-mint":
+                return "bombard_mint.png";
+            case "Enforce-mint":
+                return "enforce_mint.png";
+            case "Reinforce-mint":
+                return "reinforce_mint.png";
+            case "Enchant-mint":
+                return "enchant_mint.png";
+            case "Pierce-mint":
+                return "pierce_mint.png";
+            case "CatTail-mint":
+                return "cattail_mint.png";
 
-            default: return plantName.toLowerCase().replace(" ", "_").replace("-", "_") + ".png";
+            default:
+                return plantName.toLowerCase().replace(" ", "_").replace("-", "_") + ".png";
         }
     }
 

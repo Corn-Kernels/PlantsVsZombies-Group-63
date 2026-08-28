@@ -43,6 +43,10 @@ public class AdventureMenuScreen extends BaseScreen {
         buildUI();
     }
 
+    private static String normalizePlantKey(String name) {
+        return name == null ? "" : name.toUpperCase().replaceAll("[^A-Z0-9]", "");
+    }
+
     private void loadBackground() {
         try {
             Texture bgTexture = new Texture(Gdx.files.internal("IMAGES/adventure_background.jpg"));
@@ -196,13 +200,6 @@ public class AdventureMenuScreen extends BaseScreen {
         }
 
         return new GameAttributes(seedSlots, DEFAULT_ELIGIBLE_ZOMBIES);
-    }
-
-    // Plant names are written inconsistently across the app ("Wall-nut", "WALL_NUT", ...);
-    // matches PlayerProgress's own normalization so ownership lines up with PlantDef regardless
-    // of which spelling a given screen used to grant the plant.
-    private static String normalizePlantKey(String name) {
-        return name == null ? "" : name.toUpperCase().replaceAll("[^A-Z0-9]", "");
     }
 
     @Override

@@ -79,11 +79,11 @@ public class GameManager extends Game {
         return currentUser;
     }
 
-    public StorageService getStorageService() {
-        return storageService;
-    }
-
     public void setCurrentUser(User user) {
         this.currentUser = user;
+    }
+
+    public StorageService getStorageService() {
+        return storageService;
     }
 }

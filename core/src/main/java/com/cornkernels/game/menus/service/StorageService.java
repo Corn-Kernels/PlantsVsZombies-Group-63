@@ -25,7 +25,8 @@ public class StorageService {
 
         try (Reader reader = new FileReader(USER_FILE)) {
             Gson gson = new Gson();
-            Type type = new TypeToken<Map<String, User>>() {}.getType();
+            Type type = new TypeToken<Map<String, User>>() {
+            }.getType();
             Map<String, User> loaded = gson.fromJson(reader, type);
             if (loaded != null) users = loaded;
         } catch (IOException e) {

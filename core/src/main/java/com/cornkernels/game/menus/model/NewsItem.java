@@ -17,11 +17,31 @@ public class NewsItem {
         this.isRead = false;
     }
 
-    public String getId() { return id; }
-    public String getTitle() { return title; }
-    public String getDate() { return date; }
-    public String getBody() { return body; }
-    public String getType() { return type; }
-    public boolean isRead() { return isRead; }
-    public void setRead(boolean read) { isRead = read; }
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
 }

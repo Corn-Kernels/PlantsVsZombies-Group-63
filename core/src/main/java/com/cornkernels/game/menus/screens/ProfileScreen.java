@@ -14,11 +14,13 @@ import com.cornkernels.game.menus.model.User;
 public class ProfileScreen extends BaseScreen {
 
     private User user;
+
     public ProfileScreen(GameManager game, User user) {
         super(game);
         this.user = user;
         buildUI();
     }
+
     private void buildUI() {
         PlayerProgress progress = user.getProgress();
         Table mainTable = new Table();
@@ -64,6 +66,7 @@ public class ProfileScreen extends BaseScreen {
             }
         });
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);

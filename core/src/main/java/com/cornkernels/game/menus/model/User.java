@@ -26,26 +26,77 @@ public class User {
         this.securityAnswer = "";
     }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-    public String getNickname() { return nickname; }
-    public void setNickname(String nickname) { this.nickname = nickname; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getGender() { return gender; }
-    public boolean isLoggedIn() { return isLoggedIn; }
-    public void setLoggedIn(boolean loggedIn) { isLoggedIn = loggedIn; }
-    public boolean isStayLoggedIn() { return stayLoggedIn; }
-    public void setStayLoggedIn(boolean stayLoggedIn) { this.stayLoggedIn = stayLoggedIn; }
-    public PlayerProgress getProgress() { return progress; }
+    public String getUsername() {
+        return username;
+    }
 
-    public int getSecurityQuestionIndex() { return securityQuestionIndex; }
-    public void setSecurityQuestionIndex(int index) { this.securityQuestionIndex = index; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    public String getSecurityAnswer() { return securityAnswer; }
-    public void setSecurityAnswer(String answer) { this.securityAnswer = answer;}
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
+    }
+
+    public boolean isStayLoggedIn() {
+        return stayLoggedIn;
+    }
+
+    public void setStayLoggedIn(boolean stayLoggedIn) {
+        this.stayLoggedIn = stayLoggedIn;
+    }
+
+    public PlayerProgress getProgress() {
+        return progress;
+    }
+
+    public int getSecurityQuestionIndex() {
+        return securityQuestionIndex;
+    }
+
+    public void setSecurityQuestionIndex(int index) {
+        this.securityQuestionIndex = index;
+    }
+
+    public String getSecurityAnswer() {
+        return securityAnswer;
+    }
+
+    public void setSecurityAnswer(String answer) {
+        this.securityAnswer = answer;
+    }
 
     public void logout() {
         this.isLoggedIn = false;

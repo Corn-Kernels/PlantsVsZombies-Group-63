@@ -18,6 +18,7 @@ public class LoginScreen extends BaseScreen {
         super(game);
         buildUI();
     }
+
     private void buildUI() {
         Table table = new Table();
         table.setFillParent(true);
@@ -66,6 +67,7 @@ public class LoginScreen extends BaseScreen {
             }
         });
     }
+
     private void handleLogin() {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
@@ -94,6 +96,7 @@ public class LoginScreen extends BaseScreen {
         showToast(" Welcome " + user.getNickname() + "!", 2f, false);
         game.setScreen(new MainMenuScreen(game, user));
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);

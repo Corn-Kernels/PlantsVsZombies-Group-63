@@ -1,6 +1,9 @@
 package com.cornkernels.game.menus.model;
 
 public class GardenPot {
+    // ===== زمان رشد بر حسب ثانیه (برای تست سریع) =====
+    private static final int MARIGOLD_GROWTH_SECONDS = 5;
+    private static final int OTHER_PLANT_GROWTH_SECONDS = 8;
     private int row;
     private int col;
     private boolean isLocked;
@@ -8,10 +11,6 @@ public class GardenPot {
     private long plantedAt;
     private long readyAt;
     private boolean isReady;
-
-    // ===== زمان رشد بر حسب ثانیه (برای تست سریع) =====
-    private static final int MARIGOLD_GROWTH_SECONDS = 5;
-    private static final int OTHER_PLANT_GROWTH_SECONDS = 8;
 
     public GardenPot(int row, int col, boolean isLocked) {
         this.row = row;
@@ -23,16 +22,41 @@ public class GardenPot {
         this.isReady = false;
     }
 
-    public int getRow() { return row; }
-    public int getCol() { return col; }
-    public boolean isLocked() { return isLocked; }
-    public String getPlantType() { return plantType; }
-    public long getPlantedAt() { return plantedAt; }
-    public long getReadyAt() { return readyAt; }
-    public boolean isReady() { return isReady; }
-    public boolean isEmpty() { return plantType == null; }
+    public int getRow() {
+        return row;
+    }
 
-    public void setLocked(boolean locked) { isLocked = locked; }
+    public int getCol() {
+        return col;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    public String getPlantType() {
+        return plantType;
+    }
+
+    public long getPlantedAt() {
+        return plantedAt;
+    }
+
+    public long getReadyAt() {
+        return readyAt;
+    }
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public boolean isEmpty() {
+        return plantType == null;
+    }
 
     public void plant(String plantType) {
         this.plantType = plantType;

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Garden {
-    private List<GardenPot> pots;
     private static final int ROWS = 3;      // 3 ردیف
     private static final int COLS = 4;      // 4 ستون
     private static final int MAX_POTS = 12; // 12 گلدان
+    private List<GardenPot> pots;
 
     public Garden() {
         this.pots = new ArrayList<>();
@@ -24,7 +24,9 @@ public class Garden {
         }
     }
 
-    public List<GardenPot> getPots() { return pots; }
+    public List<GardenPot> getPots() {
+        return pots;
+    }
 
     public GardenPot getPot(int row, int col) {
         for (GardenPot pot : pots) {

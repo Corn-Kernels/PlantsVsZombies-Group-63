@@ -108,6 +108,7 @@ public class NewsScreen extends BaseScreen {
             }
         });
     }
+
     private void updateNewsList() {
         newsTable.clear();
         PlayerProgress progress = user.getProgress();
@@ -184,13 +185,19 @@ public class NewsScreen extends BaseScreen {
 
     private String getTypeIcon(String type) {
         switch (type) {
-            case "ZOMBIE": return "🧟";
-            case "PLANT": return "🌱";
-            case "LEVEL": return "📖";
-            case "MINIGAME": return "🎮";
-            default: return "📌";
+            case "ZOMBIE":
+                return "🧟";
+            case "PLANT":
+                return "🌱";
+            case "LEVEL":
+                return "📖";
+            case "MINIGAME":
+                return "🎮";
+            default:
+                return "📌";
         }
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);

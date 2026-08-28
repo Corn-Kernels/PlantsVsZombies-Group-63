@@ -29,17 +29,25 @@ public class SettingsScreen extends BaseScreen {
         buildUI();
         loadCurrentSettings();
     }
+
     @Contract(pure = true)
     private @NonNull String getDifficultyLabel(int level) {
-        switch(level) {
-            case 1: return "Very Easy";
-            case 2: return "Easy";
-            case 3: return "Normal";
-            case 4: return "Hard";
-            case 5: return "Very Hard";
-            default: return "Normal";
+        switch (level) {
+            case 1:
+                return "Very Easy";
+            case 2:
+                return "Easy";
+            case 3:
+                return "Normal";
+            case 4:
+                return "Hard";
+            case 5:
+                return "Very Hard";
+            default:
+                return "Normal";
         }
     }
+
     private void loadCurrentSettings() {
         PlayerProgress progress = user.getProgress();
         int level = progress.getDifficultyLevel();

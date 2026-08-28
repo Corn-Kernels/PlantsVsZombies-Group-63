@@ -56,6 +56,7 @@ public class LeaderboardScreen extends BaseScreen {
             entries.add(entry);
         }
     }
+
     private @NonNull String getLastLevel(@NonNull PlayerProgress progress) {
         List<String> unlocked = progress.getUnlockedChapters();
         if (unlocked.isEmpty()) return "None";
@@ -63,6 +64,7 @@ public class LeaderboardScreen extends BaseScreen {
         int levels = progress.getCompletedLevels();
         return lastChapter + " - Level " + (levels % 4 + 1);
     }
+
     private void displayLeaderboard() {
         leaderboardTable.clear();
 
@@ -123,6 +125,7 @@ public class LeaderboardScreen extends BaseScreen {
             }
         });
     }
+
     private void sortAndDisplay() {
         Comparator<LeaderboardEntry> comparator = switch (sortBy) {
             case "username" -> Comparator.comparing(LeaderboardEntry::getUsername);
@@ -139,6 +142,7 @@ public class LeaderboardScreen extends BaseScreen {
         Collections.sort(entries, comparator);
         displayLeaderboard();
     }
+
     private void buildUI() {
         Table mainTable = new Table();
         mainTable.setFillParent(true);
@@ -151,6 +155,7 @@ public class LeaderboardScreen extends BaseScreen {
 
         mainTable.add(scrollPane).width(800).height(500).padBottom(20).row();
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -158,6 +163,7 @@ public class LeaderboardScreen extends BaseScreen {
         stage.act(delta);
         stage.draw();
     }
+
     @Override
     public void dispose() {
         super.dispose();

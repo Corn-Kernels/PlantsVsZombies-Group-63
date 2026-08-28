@@ -28,18 +28,52 @@ public class Zombie {
     }
 
     // ===== Getters =====
-    public String getAlias() { return alias; }
-    public String getName() { return name; }
-    public int getHitpoints() { return hitpoints; }
-    public float getSpeed() { return speed; }
-    public int getEatDPS() { return eatDPS; }
-    public String[] getArmorTypes() { return armorTypes; }
-    public String getDescription() { return description; }
-    public String getImagePath() { return imagePath; }
-    public boolean isSeen() { return isSeen; }
-    public String getChapter() { return chapter; }
+    public String getAlias() {
+        return alias;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getHitpoints() {
+        return hitpoints;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public int getEatDPS() {
+        return eatDPS;
+    }
+
+    public String[] getArmorTypes() {
+        return armorTypes;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public boolean isSeen() {
+        return isSeen;
+    }
 
     // ===== Setters =====
-    public void setSeen(boolean seen) { isSeen = seen; }
-    public void setDescription(String description) { this.description = description; }
+    public void setSeen(boolean seen) {
+        isSeen = seen;
+    }
+
+    public String getChapter() {
+        return chapter;
+    }
 }

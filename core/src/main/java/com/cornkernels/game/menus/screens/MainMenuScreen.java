@@ -88,9 +88,11 @@ public class MainMenuScreen extends BaseScreen {
             }
         });
     }
+
     private int getUnreadNewsCount() {
         return user.getProgress().getUnreadNewsCount();
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);

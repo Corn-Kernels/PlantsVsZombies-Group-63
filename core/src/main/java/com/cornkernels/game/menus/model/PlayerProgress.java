@@ -58,10 +58,23 @@ public class PlayerProgress {
         this.garden = new Garden();
     }
 
+    private static String normalizePlantKey(String plant) {
+        return plant == null ? "" : plant.toUpperCase().replaceAll("[^A-Z0-9]", "");
+    }
+
     // ===== Getters and Setters =====
-    public int getCoins() { return coins; }
-    public void setCoins(int coins) { this.coins = coins; }
-    public void addCoins(int amount) { this.coins += amount; }
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
+
+    public void addCoins(int amount) {
+        this.coins += amount;
+    }
+
     public boolean deductCoins(int amount) {
         if (coins >= amount) {
             coins -= amount;
@@ -70,9 +83,18 @@ public class PlayerProgress {
         return false;
     }
 
-    public int getDiamonds() { return diamonds; }
-    public void setDiamonds(int diamonds) { this.diamonds = diamonds; }
-    public void addDiamonds(int amount) { this.diamonds += amount; }
+    public int getDiamonds() {
+        return diamonds;
+    }
+
+    public void setDiamonds(int diamonds) {
+        this.diamonds = diamonds;
+    }
+
+    public void addDiamonds(int amount) {
+        this.diamonds += amount;
+    }
+
     public boolean deductDiamonds(int amount) {
         if (diamonds >= amount) {
             diamonds -= amount;
@@ -81,11 +103,22 @@ public class PlayerProgress {
         return false;
     }
 
-    public int getHighScore() { return highScore; }
-    public void setHighScore(int highScore) { this.highScore = highScore; }
+    public int getHighScore() {
+        return highScore;
+    }
 
-    public List<String> getUnlockedChapters() { return unlockedChapters; }
-    public void setUnlockedChapters(List<String> unlockedChapters) { this.unlockedChapters = unlockedChapters; }
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
+    }
+
+    public List<String> getUnlockedChapters() {
+        return unlockedChapters;
+    }
+
+    public void setUnlockedChapters(List<String> unlockedChapters) {
+        this.unlockedChapters = unlockedChapters;
+    }
+
     public void addUnlockedChapter(String chapter) {
         if (!unlockedChapters.contains(chapter)) {
             unlockedChapters.add(chapter);
@@ -93,8 +126,13 @@ public class PlayerProgress {
     }
 
     // ===== متدهای مربوط به گیاهان =====
-    public List<String> getOwnedPlants() { return ownedPlants; }
-    public void setOwnedPlants(List<String> ownedPlants) { this.ownedPlants = ownedPlants; }
+    public List<String> getOwnedPlants() {
+        return ownedPlants;
+    }
+
+    public void setOwnedPlants(List<String> ownedPlants) {
+        this.ownedPlants = ownedPlants;
+    }
 
     // ===== متد کمکی برای سازگاری با GreenhouseScreen =====
     public List<String> getUnlockedPlants() {
@@ -118,76 +156,160 @@ public class PlayerProgress {
         }
     }
 
-    private static String normalizePlantKey(String plant) {
-        return plant == null ? "" : plant.toUpperCase().replaceAll("[^A-Z0-9]", "");
+    // ===== زامبی‌ها =====
+    public List<String> getSeenZombies() {
+        return seenZombies;
     }
 
-    // ===== زامبی‌ها =====
-    public List<String> getSeenZombies() { return seenZombies; }
-    public void setSeenZombies(List<String> seenZombies) { this.seenZombies = seenZombies; }
+    public void setSeenZombies(List<String> seenZombies) {
+        this.seenZombies = seenZombies;
+    }
+
     public void addSeenZombie(String zombie) {
         if (!seenZombies.contains(zombie)) {
             seenZombies.add(zombie);
         }
     }
 
-    public int getCompletedLevels() { return completedLevels; }
-    public void setCompletedLevels(int completedLevels) { this.completedLevels = completedLevels; }
-    public void incrementCompletedLevels() { this.completedLevels++; }
+    public int getCompletedLevels() {
+        return completedLevels;
+    }
 
-    public int getGamesPlayed() { return gamesPlayed; }
-    public void setGamesPlayed(int gamesPlayed) { this.gamesPlayed = gamesPlayed; }
-    public void incrementGamesPlayed() { this.gamesPlayed++; }
+    public void setCompletedLevels(int completedLevels) {
+        this.completedLevels = completedLevels;
+    }
+
+    public void incrementCompletedLevels() {
+        this.completedLevels++;
+    }
+
+    public int getGamesPlayed() {
+        return gamesPlayed;
+    }
+
+    public void setGamesPlayed(int gamesPlayed) {
+        this.gamesPlayed = gamesPlayed;
+    }
+
+    public void incrementGamesPlayed() {
+        this.gamesPlayed++;
+    }
 
     // ===== گلخانه =====
-    public int getPots() { return pots; }
-    public void setPots(int pots) { this.pots = pots; }
+    public int getPots() {
+        return pots;
+    }
 
-    public int getPlantFood() { return plantFood; }
-    public void setPlantFood(int plantFood) { this.plantFood = plantFood; }
+    public void setPots(int pots) {
+        this.pots = pots;
+    }
 
-    public List<String> getSeedPackets() { return seedPackets; }
-    public void setSeedPackets(List<String> seedPackets) { this.seedPackets = seedPackets; }
+    public int getPlantFood() {
+        return plantFood;
+    }
+
+    public void setPlantFood(int plantFood) {
+        this.plantFood = plantFood;
+    }
+
+    public List<String> getSeedPackets() {
+        return seedPackets;
+    }
+
+    public void setSeedPackets(List<String> seedPackets) {
+        this.seedPackets = seedPackets;
+    }
+
     public void addSeedPacket(String seed) {
         seedPackets.add(seed);
     }
 
-    public Garden getGarden() { return garden; }
-    public void setGarden(Garden garden) { this.garden = garden; }
+    public Garden getGarden() {
+        return garden;
+    }
+
+    public void setGarden(Garden garden) {
+        this.garden = garden;
+    }
 
     // ===== تنظیمات =====
-    public int getDifficultyLevel() { return difficultyLevel; }
+    public int getDifficultyLevel() {
+        return difficultyLevel;
+    }
+
     public void setDifficultyLevel(int difficultyLevel) {
         this.difficultyLevel = Math.max(1, Math.min(5, difficultyLevel));
     }
 
-    public float getGameSpeed() { return gameSpeed; }
+    public float getGameSpeed() {
+        return gameSpeed;
+    }
+
     public void setGameSpeed(float gameSpeed) {
         this.gameSpeed = Math.max(0.5f, Math.min(3.0f, gameSpeed));
     }
 
-    public boolean isShowGrid() { return showGrid; }
-    public void setShowGrid(boolean showGrid) { this.showGrid = showGrid; }
+    public boolean isShowGrid() {
+        return showGrid;
+    }
 
-    public boolean isDebugMode() { return debugMode; }
-    public void setDebugMode(boolean debugMode) { this.debugMode = debugMode; }
+    public void setShowGrid(boolean showGrid) {
+        this.showGrid = showGrid;
+    }
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
 
     // ===== کوئست‌ها =====
-    public int getMinigamesCompleted() { return minigamesCompleted; }
-    public void setMinigamesCompleted(int minigamesCompleted) { this.minigamesCompleted = minigamesCompleted; }
-    public void incrementMinigamesCompleted() { this.minigamesCompleted++; }
+    public int getMinigamesCompleted() {
+        return minigamesCompleted;
+    }
 
-    public int getDailyQuestsCompleted() { return dailyQuestsCompleted; }
-    public void setDailyQuestsCompleted(int dailyQuestsCompleted) { this.dailyQuestsCompleted = dailyQuestsCompleted; }
-    public void incrementDailyQuestsCompleted() { this.dailyQuestsCompleted++; }
+    public void setMinigamesCompleted(int minigamesCompleted) {
+        this.minigamesCompleted = minigamesCompleted;
+    }
 
-    public int getNonDailyQuestsCompleted() { return nonDailyQuestsCompleted; }
-    public void setNonDailyQuestsCompleted(int nonDailyQuestsCompleted) { this.nonDailyQuestsCompleted = nonDailyQuestsCompleted; }
-    public void incrementNonDailyQuestsCompleted() { this.nonDailyQuestsCompleted++; }
+    public void incrementMinigamesCompleted() {
+        this.minigamesCompleted++;
+    }
+
+    public int getDailyQuestsCompleted() {
+        return dailyQuestsCompleted;
+    }
+
+    public void setDailyQuestsCompleted(int dailyQuestsCompleted) {
+        this.dailyQuestsCompleted = dailyQuestsCompleted;
+    }
+
+    public void incrementDailyQuestsCompleted() {
+        this.dailyQuestsCompleted++;
+    }
+
+    public int getNonDailyQuestsCompleted() {
+        return nonDailyQuestsCompleted;
+    }
+
+    public void setNonDailyQuestsCompleted(int nonDailyQuestsCompleted) {
+        this.nonDailyQuestsCompleted = nonDailyQuestsCompleted;
+    }
+
+    public void incrementNonDailyQuestsCompleted() {
+        this.nonDailyQuestsCompleted++;
+    }
 
     // ===== اخبار =====
-    public List<NewsItem> getNewsList() { return newsList; }
-    public void setNewsList(List<NewsItem> newsList) { this.newsList = newsList; }
+    public List<NewsItem> getNewsList() {
+        return newsList;
+    }
+
+    public void setNewsList(List<NewsItem> newsList) {
+        this.newsList = newsList;
+    }
 
     public void addNews(NewsItem news) {
         newsList.add(news);

@@ -56,39 +56,130 @@ public class Plant {
     }
 
     // ===== Getters =====
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public String getCategory() { return category; }
-    public String[] getTags() { return tags; }
-    public int getCost() { return cost; }
-    public int getBaseHp() { return baseHp; }
-    public int getDamage() { return damage; }
-    public String getBaseAbility() { return baseAbility; }
-    public String getPlantFoodEffect() { return plantFoodEffect; }
-    public int getLevel2() { return level2; }
-    public int getLevel3() { return level3; }
-    public int getLevel4() { return level4; }
-    public float getActionInterval() { return actionInterval; }
-    public float getRecharge() { return recharge; }
-    public String getImagePath() { return imagePath; }
-    public int getLevel() { return level; }
-    public int getSeedPackets() { return seedPackets; }
-    public int getSeedPacketsNeeded() { return seedPacketsNeeded + (level - 1) * 2; }
-    public boolean isUnlocked() { return isUnlocked; }
-    public String getDescription() { return description; }
-    public boolean isBoosted() { return isBoosted; }
-    public boolean isUpgradable() { return isUpgradable; }
-    public int getMaxLevel() { return maxLevel; }
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public int getBaseHp() {
+        return baseHp;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public String getBaseAbility() {
+        return baseAbility;
+    }
+
+    public String getPlantFoodEffect() {
+        return plantFoodEffect;
+    }
+
+    public int getLevel2() {
+        return level2;
+    }
+
+    public int getLevel3() {
+        return level3;
+    }
+
+    public int getLevel4() {
+        return level4;
+    }
+
+    public float getActionInterval() {
+        return actionInterval;
+    }
+
+    public float getRecharge() {
+        return recharge;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public int getLevel() {
+        return level;
+    }
 
     // ===== Setters =====
-    public void setLevel(int level) { this.level = level; }
-    public void setSeedPackets(int seedPackets) { this.seedPackets = seedPackets; }
-    public void setUnlocked(boolean unlocked) { isUnlocked = unlocked; }
-    public void addSeedPacket() { this.seedPackets++; }
-    public void setDescription(String description) { this.description = description; }
-    public void setBoosted(boolean boosted) { isBoosted = boosted; }
-    public void setUpgradable(boolean upgradable) { isUpgradable = upgradable; }
-    public void setMaxLevel(int maxLevel) { this.maxLevel = maxLevel; }
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getSeedPackets() {
+        return seedPackets;
+    }
+
+    public void setSeedPackets(int seedPackets) {
+        this.seedPackets = seedPackets;
+    }
+
+    public int getSeedPacketsNeeded() {
+        return seedPacketsNeeded + (level - 1) * 2;
+    }
+
+    public boolean isUnlocked() {
+        return isUnlocked;
+    }
+
+    public void setUnlocked(boolean unlocked) {
+        isUnlocked = unlocked;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isBoosted() {
+        return isBoosted;
+    }
+
+    public void setBoosted(boolean boosted) {
+        isBoosted = boosted;
+    }
+
+    public boolean isUpgradable() {
+        return isUpgradable;
+    }
+
+    public void setUpgradable(boolean upgradable) {
+        isUpgradable = upgradable;
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+    public void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+
+    public void addSeedPacket() {
+        this.seedPackets++;
+    }
 
     // ===== متدهای ارتقا =====
     public boolean canUpgrade() {

@@ -234,7 +234,7 @@ public class HudFactory implements Disposable {
         return createTextButton("Let's Go!", "GreenButton", "GreenButton_Down", onConfirm);
     }
 
-    public @NonNull PauseMenu createPauseMenu(@NonNull Runnable onRestart) {
+    public @NonNull PauseMenu createPauseMenu(@NonNull Runnable onRestart, @NonNull Runnable onExit) {
         NinePatch patch = new NinePatch(alwaysLoadedAtlas.findRegion("reward1_bg"),
             PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET);
         Image background = new Image(new NinePatchDrawable(patch));
@@ -246,14 +246,14 @@ public class HudFactory implements Disposable {
 
         TextButton resumeButton = createTextButton("Resume", "GreenButton", "GreenButton_Down", pauseController::resume);
         TextButton restartButton = createTextButton("Restart", "BlueButton", "BlueButton_Down", onRestart);
-        TextButton exitButton = createTextButton("Exit Level", "BrownButton", "BrownButton_Down", () -> {
-        });
+        TextButton exitButton = createTextButton("Exit Level", "BrownButton", "BrownButton_Down", onExit);
 
         return new PauseMenu(background, windowTopper, title,
             List.of(resumeButton, restartButton, exitButton), pauseController);
     }
 
-    public @NonNull EndGameMenu createEndGameMenu(@NonNull Runnable onRestart, @NonNull BooleanSupplier visibleWhen) {
+    public @NonNull EndGameMenu createEndGameMenu(@NonNull Runnable onRestart, @NonNull Runnable onExit,
+                                                  @NonNull BooleanSupplier visibleWhen) {
         NinePatch patch = new NinePatch(alwaysLoadedAtlas.findRegion("reward1_bg"),
             PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET);
         Image background = new Image(new NinePatchDrawable(patch));
@@ -262,8 +262,7 @@ public class HudFactory implements Disposable {
         title.setAlignment(Align.center);
 
         TextButton restartButton = createTextButton("Play Level Again", "GreenButton", "GreenButton_Down", onRestart);
-        TextButton exitButton = createTextButton("Exit Level", "BrownButton", "BrownButton_Down", () -> {
-        });
+        TextButton exitButton = createTextButton("Exit Level", "BrownButton", "BrownButton_Down", onExit);
 
         return new EndGameMenu(background, title, List.of(restartButton, exitButton), visibleWhen);
     }

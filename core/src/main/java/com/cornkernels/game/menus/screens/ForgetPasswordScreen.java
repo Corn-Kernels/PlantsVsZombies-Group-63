@@ -13,6 +13,12 @@ import com.cornkernels.game.menus.model.User;
 
 public class ForgetPasswordScreen extends BaseScreen {
 
+    private static final String[] SECURITY_QUESTIONS = {
+        "What is your sister's name?",
+        "What was your first pet?",
+        "Where was your hometown?",
+        "What was your best friend's name?"
+    };
     private GameManager game;
     private TextField usernameField;
     private TextField emailField;
@@ -20,16 +26,8 @@ public class ForgetPasswordScreen extends BaseScreen {
     private TextField newPasswordField;
     private TextField confirmPasswordField;
     private Label statusLabel;
-
     private User targetUser;
     private boolean step1Complete = false;
-
-    private static final String[] SECURITY_QUESTIONS = {
-        "What is your sister's name?",
-        "What was your first pet?",
-        "Where was your hometown?",
-        "What was your best friend's name?"
-    };
 
     public ForgetPasswordScreen(GameManager game) {
         super(game);
@@ -114,6 +112,7 @@ public class ForgetPasswordScreen extends BaseScreen {
             }
         });
     }
+
     private void handleVerify(Table step2Table, Label questionLabel) {
         String username = usernameField.getText().trim();
         String email = emailField.getText().trim();
@@ -199,6 +198,7 @@ public class ForgetPasswordScreen extends BaseScreen {
             }
         }, 2);
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);

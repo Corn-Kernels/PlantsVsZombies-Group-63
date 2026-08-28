@@ -10,6 +10,12 @@ import com.cornkernels.game.menus.model.User;
 
 public class RegisterScreen extends BaseScreen {
 
+    private static final String[] SECURITY_QUESTIONS = {
+        "What is your sister's name?",
+        "What was your first pet?",
+        "Where was your hometown?",
+        "What was your best friend's name?"
+    };
     private TextField usernameField;
     private TextField passwordField;
     private TextField confirmPasswordField;
@@ -19,17 +25,11 @@ public class RegisterScreen extends BaseScreen {
     private SelectBox<String> questionSelectBox;
     private TextField answerField;
 
-    private static final String[] SECURITY_QUESTIONS = {
-        "What is your sister's name?",
-        "What was your first pet?",
-        "Where was your hometown?",
-        "What was your best friend's name?"
-    };
-
     public RegisterScreen(GameManager game) {
         super(game);
         buildUI();
     }
+
     private void buildUI() {
         Table table = new Table();
         table.setFillParent(true);
@@ -95,6 +95,7 @@ public class RegisterScreen extends BaseScreen {
             }
         });
     }
+
     private void handleRegister() {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
@@ -155,6 +156,7 @@ public class RegisterScreen extends BaseScreen {
         answerField.setText("");
         updateCurrencyDisplay();
     }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
