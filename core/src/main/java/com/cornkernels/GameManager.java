@@ -51,10 +51,12 @@ public class GameManager extends Game {
                 new SeedSlot(PlantDef.CHERRY_BOMB1),
                 new SeedSlot(PlantDef.DOOM_SHROOM1),
                 new SeedSlot(PlantDef.SNOW_PEA1),
-                new SeedSlot(PlantDef.TALL_NUT4),
+                new SeedSlot(PlantDef.MEGA_GATLING_PEA1),
                 new SeedSlot(PlantDef.TALL_NUT1),
-                new SeedSlot(PlantDef.ICE_SHROOM1)), List.of(
-            ZombieDef.ICE_AGE_DODO)))); // Temporary
+                new SeedSlot(PlantDef.ICE_SHROOM1),
+                new SeedSlot(PlantDef.CABBAGE_PULT1)),
+            List.of(
+            ZombieDef.NEWSPAPER)))); // Temporary
     }
 
     @Override

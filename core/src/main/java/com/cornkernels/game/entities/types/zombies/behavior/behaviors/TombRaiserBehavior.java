@@ -1,3 +1,4 @@
+// TombRaiserBehavior.java
 package com.cornkernels.game.entities.types.zombies.behavior.behaviors;
 
 import com.cornkernels.engine.utility.math.Vec2d;
@@ -6,6 +7,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.specific_specific.TombRaiserComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.BoneProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
@@ -22,9 +24,6 @@ public class TombRaiserBehavior implements ZombieBehavior {
     private final int cooldownTicks;
     private final int windupTicks;
     private final int recoveryTicks;
-    private int tickCounter = 0;
-
-    private GridPosition currentTargetTile = null;
 
     public TombRaiserBehavior(float cooldownSeconds, float windupSeconds, float recoverySeconds) {
         this.cooldownTicks = (int) (cooldownSeconds * 20);
@@ -40,24 +39,29 @@ public class TombRaiserBehavior implements ZombieBehavior {
         VelocityComponent vel = zombie.get(VelocityComponent.class);
         ZombieDef def = zombie.get(ZombieDefComponent.class).def();
 
+        TombRaiserComponent comp = zombie.get(TombRaiserComponent.class);
+        if (comp == null) {
+            comp = new TombRaiserComponent();
+            zombie.add(comp);
+        }
+
         if (state.state == ZombieStateComponent.State.ACTION) {
-            // Continuously force velocity to 0 to prevent DebuffSystem overrides
             vel.velocityPerTick = new Vec2d(0, 0);
 
-            if (state.stateTicks == windupTicks && currentTargetTile != null) {
+            if (state.stateTicks == windupTicks && comp.currentTargetTile != null) {
                 Vec2d spawnPos = zombie.get(PositionComponent.class).position;
-                field.addZombieProjectile(new BoneProjectile(spawnPos, currentTargetTile));
+                field.addZombieProjectile(new BoneProjectile(spawnPos, comp.currentTargetTile));
             } else if (state.stateTicks > windupTicks + recoveryTicks) {
                 state.changeState(ZombieStateComponent.State.WALKING);
                 vel.velocityPerTick = new Vec2d(-def.baseSpeed, 0f);
-                currentTargetTile = null;
+                comp.currentTargetTile = null;
             }
             return;
         }
 
-        tickCounter++;
+        comp.tickCounter++;
 
-        if (tickCounter >= cooldownTicks && state.state == ZombieStateComponent.State.WALKING) {
+        if (comp.tickCounter >= cooldownTicks && state.state == ZombieStateComponent.State.WALKING) {
             int rightMostCol = field.getTotalColumns() - 1;
             int secondRightCol = field.getTotalColumns() - 2;
 
@@ -79,10 +83,10 @@ public class TombRaiserBehavior implements ZombieBehavior {
             }
 
             if (chosenTarget != null) {
-                currentTargetTile = chosenTarget;
+                comp.currentTargetTile = chosenTarget;
                 state.changeState(ZombieStateComponent.State.ACTION);
                 vel.velocityPerTick = new Vec2d(0, 0);
-                tickCounter = 0;
+                comp.tickCounter = 0;
             }
         }
     }

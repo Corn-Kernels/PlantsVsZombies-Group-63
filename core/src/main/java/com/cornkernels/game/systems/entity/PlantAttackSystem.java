@@ -22,6 +22,7 @@ public class PlantAttackSystem extends EntitySystem {
 
             // If the plant is covered in an octopus, it cannot attack!
             if (plant.has(OctoedComponent.class)) {continue;}
+            if (plant.get(PlantFreezeComponent.class).freezeLayers>=3){continue;}
 
             PlantFreezeComponent freezeComp = plant.get(PlantFreezeComponent.class);
             if (freezeComp != null && freezeComp.frozenHp > 0) {

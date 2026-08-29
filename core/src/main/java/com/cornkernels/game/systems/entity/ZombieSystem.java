@@ -4,10 +4,13 @@ import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.OctoedComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
+import com.cornkernels.game.entities.components.plant_specific.SheepedComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieBehaviorComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
+import com.cornkernels.game.entities.components.zombie_specific.specific_specific.EnragedComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -46,8 +49,20 @@ public class ZombieSystem extends EntitySystem {
 
             GridPosition pos = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position);
             PlantInstance plant = field.getPlantAt(pos.lane(), pos.column());
-            if(plant.has(OctoedComponent.class)){
-                plant=null;
+            if (plant != null) {
+                // Ignore plants that have an octopus on them
+                if (plant.has(OctoedComponent.class)) {
+                    plant = null;
+                } else if (plant.has(SheepedComponent.class)) {
+                    plant = null;
+                }
+                // Ignore fully frozen plants
+                else {
+                    PlantFreezeComponent freezeComp = plant.get(PlantFreezeComponent.class);
+                    if (freezeComp != null && freezeComp.frozenHp > 0) {
+                        plant = null;
+                    }
+                }
             }
 
             if (plant == null) {
@@ -74,6 +89,16 @@ public class ZombieSystem extends EntitySystem {
                 if (plantDefComp != null && plantDefComp.def().getId()%1000==51) {
                     zombie.add(new SunInfectedComponent());
                 }
+
+                int currentDamage = def.eatDps;
+
+                // Check if the zombie is enraged to apply the damage buff
+                EnragedComponent enraged = zombie.get(EnragedComponent.class);
+                if (enraged != null) {
+                    currentDamage = (int) (currentDamage * enraged.damageMultiplier);
+                }
+
+                // ... apply damage to plant
 
                 CombatSystem.applyDamage(plant, def.eatDps, true);
                 state.ticksUntilNextBite = BITE_INTERVAL_TICKS;

@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.specific_specific.CustomMeleeComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -35,14 +36,19 @@ public class CustomMeleeBehavior implements ZombieBehavior {
         VelocityComponent vel = zombie.get(VelocityComponent.class);
         ZombieDef def = zombie.get(ZombieDefComponent.class).def();
 
+        CustomMeleeComponent comp = zombie.get(CustomMeleeComponent.class);
+        if (comp == null) {
+            comp = new CustomMeleeComponent();
+            zombie.add(comp);
+        }
+
         if (plant != null) {
             if (state.state != ZombieStateComponent.State.ACTION) {
                 state.changeState(ZombieStateComponent.State.ACTION);
-                state.targetPlant = plant;
+                comp.targetPlant = plant;
             }
 
-            if (state.state == ZombieStateComponent.State.ACTION && state.targetPlant == plant) {
-                // Continuously force velocity to 0 to prevent DebuffSystem overrides
+            if (state.state == ZombieStateComponent.State.ACTION && comp.targetPlant == plant) {
                 vel.velocityPerTick = new Vec2d(0, 0);
 
                 if (state.stateTicks == windupTicks) {
@@ -50,12 +56,14 @@ public class CustomMeleeBehavior implements ZombieBehavior {
                 } else if (state.stateTicks > windupTicks + recoveryTicks) {
                     state.changeState(ZombieStateComponent.State.WALKING);
                     vel.velocityPerTick = new Vec2d(-def.baseSpeed, 0f);
+                    comp.targetPlant = null;
                 }
             }
         } else {
             if (state.state == ZombieStateComponent.State.ACTION) {
                 state.changeState(ZombieStateComponent.State.WALKING);
                 vel.velocityPerTick = new Vec2d(-def.baseSpeed, 0f);
+                comp.targetPlant = null;
             }
         }
     }

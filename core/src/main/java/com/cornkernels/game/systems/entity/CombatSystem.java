@@ -6,6 +6,7 @@ import com.cornkernels.game.entities.components.ArmorComponent;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.OctoedComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.GraveBeingEatenComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
@@ -92,7 +93,7 @@ public class CombatSystem extends EntitySystem {
             if (!e.isMarkedForRemoval() && (e instanceof ZombieInstance || e instanceof Grave)) {
                 validTargets.add(e);
             }
-            if (!e.isMarkedForRemoval() && e instanceof PlantInstance && e.has(OctoedComponent.class)){
+            if (!e.isMarkedForRemoval() && e instanceof PlantInstance && (e.has(OctoedComponent.class)||e.get(PlantFreezeComponent.class).freezeLayers>=3)){
                 validTargets.add(e);
             }
         }
@@ -119,10 +120,13 @@ public class CombatSystem extends EntitySystem {
                 break;
             }
         }
-        validTargets=new ArrayList<>();
+        validTargets = new ArrayList<>();
         for (Entity e : field.getEntities()) {
             if (!e.isMarkedForRemoval() && (e instanceof PlantInstance)) {
-                validTargets.add(e);
+                PlantFreezeComponent freezeComp = e.get(PlantFreezeComponent.class);
+                if (freezeComp == null || freezeComp.frozenHp <= 0) {
+                    validTargets.add(e);
+                }
             }
         }
 

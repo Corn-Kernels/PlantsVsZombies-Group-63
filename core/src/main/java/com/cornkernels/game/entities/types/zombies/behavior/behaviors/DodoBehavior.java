@@ -1,3 +1,4 @@
+// DodoBehavior.java
 package com.cornkernels.game.entities.types.zombies.behavior.behaviors;
 
 import com.cornkernels.engine.utility.math.Vec2d;
@@ -5,6 +6,7 @@ import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
+import com.cornkernels.game.entities.components.zombie_specific.specific_specific.DodoComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehavior;
@@ -15,7 +17,6 @@ public class DodoBehavior implements ZombieBehavior {
     private final int walkDurationTicks;
     private final int flyDurationTicks;
     private final float flightSpeedMultiplier;
-    private int tickCounter = 0;
 
     public DodoBehavior(float walkDurationSeconds, float flyDurationSeconds, float flightSpeedMultiplier) {
         this.walkDurationTicks = (int) (walkDurationSeconds * 20);
@@ -31,28 +32,38 @@ public class DodoBehavior implements ZombieBehavior {
         VelocityComponent vel = zombie.get(VelocityComponent.class);
         ZombieDef def = zombie.get(ZombieDefComponent.class).def();
 
-        tickCounter++;
+        DodoComponent comp = zombie.get(DodoComponent.class);
+        if (comp == null) {
+            comp = new DodoComponent();
+            zombie.add(comp);
+        }
+
+        comp.tickCounter++;
 
         if (state.state != ZombieStateComponent.State.ACTION) {
-            // Currently walking (or eating). Check if it is time to take off.
-            if (tickCounter >= walkDurationTicks) {
+            if (comp.tickCounter >= walkDurationTicks) {
                 state.changeState(ZombieStateComponent.State.ACTION);
-                tickCounter = 0;
+                comp.tickCounter = 0;
             }
         } else {
-            // Currently flying. Continuously enforce the modified flight speed.
             float currentSpeed = def.baseSpeed * flightSpeedMultiplier;
+
+            IceComponent ice = zombie.get(IceComponent.class);
+            if (ice != null) {
+                if (ice.freezeLevel == 2) currentSpeed = 0f;
+                else if (ice.freezeLevel == 1) currentSpeed *= 0.5f;
+            }
 
             vel.velocityPerTick = new Vec2d(-currentSpeed, 0f);
 
-            // Check if it is time to land.
-            if (tickCounter >= flyDurationTicks) {
+            if (comp.tickCounter >= flyDurationTicks) {
                 state.changeState(ZombieStateComponent.State.WALKING);
 
                 float walkSpeed = def.baseSpeed;
+                if (ice != null && ice.freezeLevel == 1) walkSpeed *= 0.5f;
                 vel.velocityPerTick = new Vec2d(-walkSpeed, 0f);
 
-                tickCounter = 0;
+                comp.tickCounter = 0;
             }
         }
     }

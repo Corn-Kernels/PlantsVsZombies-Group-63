@@ -4,6 +4,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
@@ -20,6 +21,9 @@ public class LobProjectile extends AbstractProjectile {
     public int chillDurationTicks;
     public int stunDurationTicks;
 
+    // Store the spawn location so the visual arc can recalculate upon bouncing
+    public Vec2d startPosition;
+
     public LobProjectile(int damage, Vec2d startPosition, Entity target, float radius, int aoeDamage) {
         this(damage, startPosition, target, radius, aoeDamage, false, 0, 0);
     }
@@ -32,11 +36,26 @@ public class LobProjectile extends AbstractProjectile {
         this.fiery = fiery;
         this.chillDurationTicks = chillDurationTicks;
         this.stunDurationTicks = stunDurationTicks;
+        this.startPosition = startPosition;
     }
 
     @Override
     public boolean hit(Entity target, Field field) {
-        if (target == this.target && super.hit(target, field)) {
+        if (this.target != null && target == this.target && super.hit(target, field)) {
+
+            // Umbrella Zombie Deflection Logic
+            if (target.get(ZombieDefComponent.class).def().id.equals("ZombieLostCityJane")) {
+                Vec2d currentPos = this.get(PositionComponent.class).position;
+
+                // Switch spawn location to the exact location of the hit
+                this.startPosition = new Vec2d(currentPos.getX(), currentPos.getY());
+
+                // Clear the target so the projectile ignores all future collisions and flies right forever
+                this.target = null;
+
+                return false; // Return false so CombatSystem does NOT destroy the projectile
+            }
+
             int directDamage = this.get(DamageComponent.class).amount;
 
             // Apply direct impact debuffs

@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.specific_specific.EnragedComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.BoneProjectile;
@@ -197,7 +198,9 @@ public class MovementSystem extends EntitySystem {
                 vx *= 0.1f;
                 vy *= 0.1f;
             }
-
+            if(e.has(EnragedComponent.class)){
+                vx*=e.get(EnragedComponent.class).speedMultiplier;
+            }
             posComp.position = new Vec2d(
                 posComp.position.getX() + vx,
                 posComp.position.getY() + vy
