@@ -56,7 +56,9 @@ public class GameManager extends Game {
                 new SeedSlot(PlantDef.ICE_SHROOM1),
                 new SeedSlot(PlantDef.CABBAGE_PULT1)),
             List.of(
-            ZombieDef.NEWSPAPER)))); // Temporary
+                ZombieDef.DEFAULT,
+                ZombieDef.PIANO)))); // Temporary
+
     }
 
     @Override

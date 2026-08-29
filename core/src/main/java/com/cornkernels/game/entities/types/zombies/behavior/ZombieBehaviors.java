@@ -31,6 +31,23 @@ public class ZombieBehaviors {
         register(ZombieDef.CRYSTAL_SKULL, new TurquoiseSkullBehavior(8.0f, 8.5f, 1.0f));
         // Newspaper Zombie: Enrages when armor breaks
         register(ZombieDef.NEWSPAPER, new NewspaperBehavior());
+        // Juggler Zombie: Reflects PeaProjectiles within 1.5 tiles, pauses 0.25s per juggle
+        register(ZombieDef.DARK_JUGGLER, new JugglerBehavior(0.5,0.25f));
+        // All-Star Zombie: Sprints at 3.5x speed, 1s recovery after impact
+        register(ZombieDef.MODERN_ALL_STAR, new AllStarBehavior(3.5f, 1.0f));
+        // Bully Zombies: Pushes stack of obstacles, 1.5s push time, 0.5s pause
+        register(ZombieDef.ICE_AGE_TROGLOBITE, new BullyBehavior(1.5f, 0.5f));
+        register(ZombieDef.ARCADE, new BullyBehavior(1.5f, 0.5f));
+
+        // Piano Zombie: 1-second windup, 1-second recovery, insta-kill damage
+        register(ZombieDef.PIANO, new CustomMeleeBehavior(20, 20, 9999));
+
+        // Basic Zombies (Add to any zombie that should dance when the piano plays)
+        DefaultZombieBehavior defaultBehavior = new DefaultZombieBehavior();
+        register(ZombieDef.DEFAULT, defaultBehavior);
+        register(ZombieDef.ARMOR1, defaultBehavior);
+        register(ZombieDef.ARMOR2, defaultBehavior);
+        register(ZombieDef.ARMOR4, defaultBehavior);
     }
 
 
