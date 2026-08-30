@@ -10,10 +10,10 @@ import com.cornkernels.game.map.grid.GridPosition;
 
 public class Glacier extends PushableObstacle {
 
-    private boolean hasSpawnedZombie = false;
     private final ZombieDef containedZombie;
+    private boolean hasSpawnedZombie = false;
 
-    public Glacier(Vec2d position,ZombieDef containedZombie) {
+    public Glacier(Vec2d position, ZombieDef containedZombie) {
         super(position, 600);
         this.containedZombie = containedZombie;
     }

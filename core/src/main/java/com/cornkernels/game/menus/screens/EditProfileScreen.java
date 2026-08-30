@@ -164,7 +164,7 @@ public class EditProfileScreen extends BaseScreen {
             user.setPassword(newPass);
         }
         game.getStorageService().saveUsers();
-        statusLabel.setText("Profile updated successfully!");
+        statusLabel.setText(" Profile updated successfully!");
         statusLabel.setColor(0, 1, 0, 1);
 
         oldPasswordField.setText("");

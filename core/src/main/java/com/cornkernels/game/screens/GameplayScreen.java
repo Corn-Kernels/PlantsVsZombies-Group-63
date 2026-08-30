@@ -22,11 +22,13 @@ import com.cornkernels.game.hud.PauseMenu;
 import com.cornkernels.game.hud.seeds.PlantSelectionMenu;
 import com.cornkernels.game.hud.seeds.SeedChooser;
 import com.cornkernels.game.hud.seeds.SeedSelectionBar;
+import com.cornkernels.game.levels.LevelDef;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.map.data.MapDefinition;
 import com.cornkernels.game.map.data.MapLoader;
 import com.cornkernels.game.map.data.MapSkin;
+import com.cornkernels.game.menus.model.PlayerProgress;
 import com.cornkernels.game.menus.screens.AdventureMenuScreen;
 import com.cornkernels.game.systems.controller.plants.SeedBank;
 import com.cornkernels.game.systems.controller.plants.SeedSlot;
@@ -94,6 +96,8 @@ public class GameplayScreen implements Screen {
             gameSession.getPauseController(), hudWidth, hudHeight);
 
         hudStage.addActor(hudFactory.createSunCounter());
+        hudStage.addActor(hudFactory.createLevelProgressBar(gameSession.getWaveSystem(),
+            () -> gameSession.getPhase() == GameSession.LevelPhase.PLAYING));
 
         SeedBank seedBank = new SeedBank(gameAttributes.seedSlots, gameSession.getPlantingController());
         seedChooser = hudFactory.createSeedChooser(gameAttributes.seedSlots, seedBank,
@@ -108,13 +112,15 @@ public class GameplayScreen implements Screen {
         hudStage.addActor(hudFactory.createShovelButton(
             () -> gameSession.getPhase() == GameSession.LevelPhase.PLAYING));
         hudStage.addActor(hudFactory.createPauseButton());
+        hudStage.addActor(hudFactory.createSpeedToggleButton(gameSession.getSpeedController(),
+            () -> gameSession.getPhase() == GameSession.LevelPhase.PLAYING));
 
         PauseMenu pauseMenu = hudFactory.createPauseMenu(this::restartLevel, this::exitLevel);
         pauseMenu.setPosition((hudWidth - pauseMenu.getWidth()) / 2f, (hudHeight - pauseMenu.getHeight()) / 2f);
         hudStage.addActor(pauseMenu);
 
         EndGameMenu endGameMenu = hudFactory.createEndGameMenu(this::restartLevel, this::exitLevel,
-            () -> gameSession.getPhase() == GameSession.LevelPhase.ENDED);
+            () -> gameSession.getPhase() == GameSession.LevelPhase.ENDED, gameSession::hasWon);
         endGameMenu.setPosition((hudWidth - endGameMenu.getWidth()) / 2f, (hudHeight - endGameMenu.getHeight()) / 2f);
         hudStage.addActor(endGameMenu);
 
@@ -142,12 +148,28 @@ public class GameplayScreen implements Screen {
             if (phase == GameSession.LevelPhase.INTRO_PAN_LEFT) {
                 camera.panToLeftEdge(RETURN_PAN_DURATION, () -> gameSession.changeLevelPhase(GameSession.LevelPhase.PLAYING));
             }
+            if (phase == GameSession.LevelPhase.ENDED && gameSession.hasWon()) {
+                onLevelWon();
+            }
             boolean choosing = phase == GameSession.LevelPhase.SEED_SELECTION;
             boolean playing = phase == GameSession.LevelPhase.PLAYING;
             seedTray.setVisible(choosing || playing);
             plantMenu.setVisible(choosing);
             confirmButton.setVisible(choosing);
         });
+    }
+
+    private void onLevelWon() {
+        PlayerProgress progress = gameManager.getCurrentUser().getProgress();
+        progress.incrementCompletedLevels();
+
+        LevelDef levelDef = gameAttributes.levelDef;
+        LevelDef nextChapterFirstLevel = LevelDef.of(levelDef.chapter + 1, 1);
+        if (levelDef.isLastLevelInChapter() && nextChapterFirstLevel != null) {
+            progress.addUnlockedChapter("Chapter " + (levelDef.chapter + 1));
+        }
+
+        gameManager.getStorageService().saveUsers();
     }
 
     @Override
@@ -161,19 +183,22 @@ public class GameplayScreen implements Screen {
         boolean hudConsumedClick = rawInput.confirmPressed() && isPointerOverHud(rawInput);
         InputSnapshot worldInput = hudConsumedClick ? rawInput.withoutConfirm() : rawInput;
 
-        if (!gameSession.getPauseController().isPaused() || gameSession.getPhase() == GameSession.LevelPhase.ENDED) {
+        boolean worldShouldRun = gameSession.getPhase() != GameSession.LevelPhase.ENDED
+            && !gameSession.getPauseController().isPaused();
+        if (worldShouldRun) {
             camera.update(delta);
             gameSession.updateInput(delta, worldInput);
 
+            float speedMultiplier = gameSession.getSpeedController().getSpeedMultiplier();
+
             // Logic Tick Based Update
-            accumulator += delta;
+            accumulator += delta * speedMultiplier;
             while (accumulator >= TICK_RATE) {
                 gameSession.update(TICK_RATE);
                 accumulator -= TICK_RATE;
             }
 
-            // Render deltaTime Based Update
-            renderGame(delta);
+            renderGame(delta * speedMultiplier);
         } else {
             renderGame(0f);
         }

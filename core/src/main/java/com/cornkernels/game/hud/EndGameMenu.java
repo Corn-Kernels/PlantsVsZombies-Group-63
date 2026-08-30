@@ -20,19 +20,24 @@ public class EndGameMenu extends WidgetGroup {
     private static final float TITLE_GAP = 14f;
     private static final float TITLE_HEIGHT = 50f;
 
+    private static final String LOSE_TITLE = "Zombies ate your brain!";
+    private static final String WIN_TITLE = "Level Complete!";
+
     private final Image background;
     private final Label titleLabel;
     private final List<TextButton> buttons;
     private final BooleanSupplier visibleWhen;
+    private final BooleanSupplier wonWhen;
 
     private final float panelHeight;
 
     public EndGameMenu(Image background, Label titleLabel, @NonNull List<TextButton> buttons,
-                       BooleanSupplier visibleWhen) {
+                       BooleanSupplier visibleWhen, BooleanSupplier wonWhen) {
         this.background = background;
         this.titleLabel = titleLabel;
         this.buttons = buttons;
         this.visibleWhen = visibleWhen;
+        this.wonWhen = wonWhen;
         this.panelHeight = TOP_INSET + buttons.size() * BUTTON_HEIGHT
             + Math.max(buttons.size() - 1, 0) * BUTTON_GAP + BOTTOM_INSET;
 
@@ -50,6 +55,7 @@ public class EndGameMenu extends WidgetGroup {
     public void act(float delta) {
         super.act(delta);
         setVisible(visibleWhen.getAsBoolean());
+        titleLabel.setText(wonWhen.getAsBoolean() ? WIN_TITLE : LOSE_TITLE);
     }
 
     @Override

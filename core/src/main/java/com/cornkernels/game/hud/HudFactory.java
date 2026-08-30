@@ -30,10 +30,12 @@ import com.cornkernels.game.hud.seeds.PlantSelectionMenu;
 import com.cornkernels.game.hud.seeds.SeedChooser;
 import com.cornkernels.game.hud.seeds.SeedPacket;
 import com.cornkernels.game.hud.seeds.SeedSelectionBar;
+import com.cornkernels.game.systems.controller.GameSpeedController;
 import com.cornkernels.game.systems.controller.PauseController;
 import com.cornkernels.game.systems.controller.plants.PlantingController;
 import com.cornkernels.game.systems.controller.plants.SeedBank;
 import com.cornkernels.game.systems.controller.plants.SeedSlot;
+import com.cornkernels.game.systems.entity.WaveSystem;
 import com.cornkernels.game.utility.UIEntityTextureFinder;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
@@ -58,6 +60,7 @@ public class HudFactory implements Disposable {
     private final TextureAtlas alwaysLoadedAtlas;
     private final TextureAtlas seedPacketsAtlas;
     private final TextureAtlas pauseMenuAtlas;
+    private final TextureAtlas ingameSkinAtlas;
     private final UIEntityTextureFinder plantTextureFinder;
     private final BitmapFont counterFont;
     private final BitmapFont priceFont;
@@ -80,6 +83,7 @@ public class HudFactory implements Disposable {
         this.alwaysLoadedAtlas = new TextureAtlas(Gdx.files.internal("ui/atlases/UI_AlwaysLoaded.atlas"));
         this.seedPacketsAtlas = new TextureAtlas(Gdx.files.internal("ui/atlases/ui_seedpackets.atlas"));
         this.pauseMenuAtlas = new TextureAtlas(Gdx.files.internal("ui/atlases/pause_menu.atlas"));
+        this.ingameSkinAtlas = new TextureAtlas(Gdx.files.internal("ui/pvz2_skin.atlas"));
         this.plantTextureFinder = new UIEntityTextureFinder(seedPacketsAtlas);
         this.counterFont = FontLoader.generate(Gdx.files.internal("ui/FBUSV8C5EI.TTF"), 45, Color.WHITE);
         this.priceFont = FontLoader.generate(Gdx.files.internal("ui/FBUSV8C5EI.TTF"), 45, Color.WHITE);
@@ -121,7 +125,14 @@ public class HudFactory implements Disposable {
             @Override
             public void act(float delta) {
                 super.act(delta);
-                style.imageUp = pauseController.isPaused() ? down : up;
+                // Set both imageUp AND imageOver to the same drawable — ImageButton renders
+                // imageOver whenever the cursor is hovering the button, regardless of imageUp, so
+                // leaving imageOver fixed on "down" made the icon look permanently paused while
+                // hovered (which is right where the cursor sits immediately after clicking it),
+                // masking the real state until the mouse moved away.
+                Drawable current = pauseController.isPaused() ? down : up;
+                style.imageUp = current;
+                style.imageOver = current;
             }
         };
         button.addListener(new ChangeListener() {
@@ -131,6 +142,36 @@ public class HudFactory implements Disposable {
             }
         });
         placeButton(button, hudWidth - 20f - BUTTON_SIZE, hudHeight - 20f - BUTTON_SIZE);
+        return button;
+    }
+
+    public @NonNull ImageButton createSpeedToggleButton(@NonNull GameSpeedController speedController,
+                                                        BooleanSupplier visibleWhen) {
+        Drawable up = drawable(ingameSkinAtlas, "image_ui_hud_ingame_2x");
+        Drawable selected = drawable(ingameSkinAtlas, "image_ui_hud_ingame_2x_selected");
+
+        ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
+        style.imageUp = up;
+        style.imageOver = up;
+
+        ImageButton button = new ImageButton(style) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                setVisible(visibleWhen.getAsBoolean());
+                Drawable current = speedController.isFastForward() ? selected : up;
+                style.imageUp = current;
+                style.imageOver = current;
+            }
+        };
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                speedController.toggleFastForward();
+            }
+        });
+        // Directly left of the pause button, same row.
+        placeButton(button, hudWidth - 20f - BUTTON_SIZE - 10f - BUTTON_SIZE, hudHeight - 20f - BUTTON_SIZE);
         return button;
     }
 
@@ -253,18 +294,106 @@ public class HudFactory implements Disposable {
     }
 
     public @NonNull EndGameMenu createEndGameMenu(@NonNull Runnable onRestart, @NonNull Runnable onExit,
-                                                  @NonNull BooleanSupplier visibleWhen) {
+                                                  @NonNull BooleanSupplier visibleWhen,
+                                                  @NonNull BooleanSupplier wonWhen) {
         NinePatch patch = new NinePatch(alwaysLoadedAtlas.findRegion("reward1_bg"),
             PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET, PAUSE_BG_INSET);
         Image background = new Image(new NinePatchDrawable(patch));
 
-        Label title = new Label("Zombies ate you brain!", new Label.LabelStyle(counterFont, Color.WHITE));
+        Label title = new Label("", new Label.LabelStyle(counterFont, Color.WHITE));
         title.setAlignment(Align.center);
 
         TextButton restartButton = createTextButton("Play Level Again", "GreenButton", "GreenButton_Down", onRestart);
-        TextButton exitButton = createTextButton("Exit Level", "BrownButton", "BrownButton_Down", onExit);
 
-        return new EndGameMenu(background, title, List.of(restartButton, exitButton), visibleWhen);
+        TextButton.TextButtonStyle exitStyle = new TextButton.TextButtonStyle();
+        exitStyle.up = drawable(alwaysLoadedAtlas, "BrownButton");
+        exitStyle.down = drawable(alwaysLoadedAtlas, "BrownButton_Down");
+        exitStyle.font = confirmButtonFont;
+        TextButton exitButton = new TextButton("Exit Level", exitStyle) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                setText(wonWhen.getAsBoolean() ? "Back to Levels" : "Exit Level");
+            }
+        };
+        exitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                onExit.run();
+            }
+        });
+
+        return new EndGameMenu(background, title, List.of(restartButton, exitButton), visibleWhen, wonWhen);
+    }
+
+    // Classic PvZ flag-meter: a track that fills as the level's zombie budget is spawned in, a
+    // zombie-head icon riding the leading edge of the fill, and a flag marking the final wave.
+    public @NonNull Group createLevelProgressBar(@NonNull WaveSystem waveSystem, BooleanSupplier visibleWhen) {
+        float barWidth = 273f;
+        float barHeight = 33f;
+        float trackInset = 10f;
+        float trackWidth = barWidth - trackInset * 2f;
+        float margin = 20f;
+
+        float barX = hudWidth - margin - barWidth;
+        float barY = margin;
+
+        Image track = new Image(drawable(alwaysLoadedAtlas, "progress_meter"));
+        track.setBounds(barX, barY, barWidth, barHeight);
+
+        Image fill = new Image(drawable(alwaysLoadedAtlas, "progress_meter_fill")) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                float progress = waveSystem.getProgress();
+                setBounds(barX + trackInset, barY + trackInset / 2f, trackWidth * progress, barHeight - trackInset);
+            }
+        };
+        fill.setScaling(Scaling.stretch);
+
+        float flagWidth = 29f;
+        float flagHeight = 38f;
+        Image flag = new Image(drawable(alwaysLoadedAtlas, "progress_meter_flag_pole"));
+        flag.setBounds(barX + barWidth - trackInset - flagWidth, barY + (barHeight - flagHeight) / 2f,
+            flagWidth, flagHeight);
+
+        float headWidth = 42f;
+        float headHeight = 45f;
+        Image zombieHead = new Image(drawable(alwaysLoadedAtlas, "progress_meter_zombiehead")) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                float progress = waveSystem.getProgress();
+                float centerX = barX + trackInset + trackWidth * progress;
+                float x = Math.max(barX - headWidth / 2f, Math.min(centerX - headWidth / 2f, barX + barWidth - headWidth / 2f));
+                setBounds(x, barY + (barHeight - headHeight) / 2f, headWidth, headHeight);
+            }
+        };
+
+        Label waveLabel = new Label("", new Label.LabelStyle(confirmButtonFont, Color.WHITE)) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                setText("Wave " + Math.max(1, waveSystem.getWaveNumber()) + "/" + waveSystem.getTotalWaves());
+            }
+        };
+        waveLabel.setAlignment(Align.center);
+        waveLabel.setBounds(barX, barY + barHeight + 4f, barWidth, 24f);
+
+        Group group = new Group() {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                setVisible(visibleWhen.getAsBoolean());
+            }
+        };
+        group.setTouchable(Touchable.disabled);
+        group.addActor(track);
+        group.addActor(fill);
+        group.addActor(flag);
+        group.addActor(zombieHead);
+        group.addActor(waveLabel);
+        return group;
     }
 
     private @NonNull TextButton createTextButton(String text, String upRegion, String downRegion, Runnable onClick) {
@@ -293,6 +422,7 @@ public class HudFactory implements Disposable {
     public void dispose() {
         alwaysLoadedAtlas.dispose();
         seedPacketsAtlas.dispose();
+        ingameSkinAtlas.dispose();
         counterFont.dispose();
         priceFont.dispose();
         whitePixel.dispose();

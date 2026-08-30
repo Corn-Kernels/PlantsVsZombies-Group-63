@@ -1,7 +1,7 @@
 package com.cornkernels.game;
 
 import com.cornkernels.game.entities.types.plants.PlantDef;
-import com.cornkernels.game.entities.types.zombies.ZombieDef;
+import com.cornkernels.game.levels.LevelDef;
 import com.cornkernels.game.systems.controller.plants.SeedSlot;
 
 import java.util.List;
@@ -9,11 +9,11 @@ import java.util.List;
 public class GameAttributes {
 
     public final List<SeedSlot> seedSlots;
-    public final List<ZombieDef> eligibleZombies;
+    public final LevelDef levelDef;
 
-    public GameAttributes(List<SeedSlot> seedSlots, List<ZombieDef> eligibleZombies) {
+    public GameAttributes(List<SeedSlot> seedSlots, LevelDef levelDef) {
         this.seedSlots = seedSlots;
-        this.eligibleZombies = eligibleZombies;
+        this.levelDef = levelDef;
     }
 
     public void update(float deltaTick) {

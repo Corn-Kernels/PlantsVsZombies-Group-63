@@ -61,9 +61,11 @@ public class NewsScreen extends BaseScreen {
         stage.addActor(mainTable);
 
         Label titleLabel = new Label(" NEWS", skin);
+        titleLabel.setFontScale(1.5f);
         mainTable.add(titleLabel).padBottom(10).row();
 
         countLabel = new Label("", skin);
+        countLabel.setFontScale(1.1f);
         mainTable.add(countLabel).padBottom(20).row();
 
         newsTable = new Table();
@@ -112,6 +114,7 @@ public class NewsScreen extends BaseScreen {
     private void updateNewsList() {
         newsTable.clear();
         PlayerProgress progress = user.getProgress();
+        allNews = progress.getNewsList();
         int unreadCount = progress.getUnreadNewsCount();
         countLabel.setText(" Unread: " + unreadCount);
 
@@ -127,16 +130,18 @@ public class NewsScreen extends BaseScreen {
             newsBtn.setWidth(400);
             newsBtn.setHeight(35);
             newsTable.add(newsBtn).left().padBottom(5).row();
-
+            final NewsItem currentNews = news;
             newsBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if (!news.isRead()) {
-                        news.setRead(true);
+                    if (!currentNews.isRead()) {
+                        currentNews.setRead(true);
                         game.getStorageService().saveUsers();
                         updateNewsList();
+                        //game.setScreen(new NewsScreen(game, user));
+                        return;
                     }
-                    showNewsDetail(news);
+                    showNewsDetail(currentNews);
                 }
             });
         }

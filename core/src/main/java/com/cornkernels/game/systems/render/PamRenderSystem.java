@@ -8,6 +8,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieDeathComponent;
 import com.cornkernels.game.entities.types.lawnmower.LawnMower;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
@@ -70,8 +71,16 @@ public class PamRenderSystem extends RenderSystem {
                 y = SunSystem.currentDrawY(sun, y, bounds.height, mapData);
             }
 
+            float alpha = 1f;
+            if (entity instanceof ZombieInstance zombie) {
+                ZombieDeathComponent death = zombie.get(ZombieDeathComponent.class);
+                if (death != null) alpha = death.getAlpha();
+            }
+
             if (scale == 1.0f) {
+                batch.setColor(1f, 1f, 1f, alpha);
                 pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
+                batch.setColor(1f, 1f, 1f, 1f);
                 continue;
             }
 
@@ -82,7 +91,9 @@ public class PamRenderSystem extends RenderSystem {
                 .translate(-x, -y, 0);
 
             batch.setTransformMatrix(scaled);
+            batch.setColor(1f, 1f, 1f, alpha);
             pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
+            batch.setColor(1f, 1f, 1f, 1f);
             batch.setTransformMatrix(original);
         }
     }

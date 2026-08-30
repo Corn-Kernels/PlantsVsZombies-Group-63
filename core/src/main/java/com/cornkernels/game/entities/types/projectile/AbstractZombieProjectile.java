@@ -6,11 +6,8 @@ import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
-import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
-import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
-import org.jspecify.annotations.NonNull;
 
 public class AbstractZombieProjectile extends Entity {
 

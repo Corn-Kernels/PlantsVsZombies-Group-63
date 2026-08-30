@@ -1,7 +1,9 @@
 package com.cornkernels.game.menus.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlayerProgress {
     private int coins;
@@ -15,7 +17,7 @@ public class PlayerProgress {
 
     private int pots;
     private int plantFood;
-    private List<String> seedPackets;
+    private Map<String, Integer> plantSeedPackets;
 
     private int difficultyLevel;
     private float gameSpeed;
@@ -44,7 +46,7 @@ public class PlayerProgress {
 
         this.pots = 0;
         this.plantFood = 0;
-        this.seedPackets = new ArrayList<>();
+        this.plantSeedPackets = new HashMap<>();
 
         this.difficultyLevel = 3;
         this.gameSpeed = 1.0f;
@@ -139,9 +141,6 @@ public class PlayerProgress {
         return ownedPlants;  // همان ownedPlants رو برمی‌گردونه
     }
 
-    // Plant names are written inconsistently across the app ("Wall-nut", "WALL_NUT", "wall nut", ...),
-    // so ownership is matched on a normalized (letters/digits only, uppercase) key rather than exact
-    // string equality — otherwise plants added under one spelling silently fail to match another.
     public boolean hasPlant(String plant) {
         String key = normalizePlantKey(plant);
         for (String owned : ownedPlants) {
@@ -154,6 +153,29 @@ public class PlayerProgress {
         if (!hasPlant(plant)) {
             ownedPlants.add(plant);
         }
+    }
+
+    public int getPlantSeedCount(String plantName) {
+        return plantSeedPackets.getOrDefault(plantName.toUpperCase(), 0);
+    }
+
+    public void addPlantSeed(String plantName, int count) {
+        String key = plantName.toUpperCase();
+        plantSeedPackets.put(key, plantSeedPackets.getOrDefault(key, 0) + count);
+    }
+
+    public boolean removePlantSeed(String plantName, int count) {
+        String key = plantName.toUpperCase();
+        int current = plantSeedPackets.getOrDefault(key, 0);
+        if (current >= count) {
+            plantSeedPackets.put(key, current - count);
+            return true;
+        }
+        return false;
+    }
+
+    public Map<String, Integer> getPlantSeedPackets() {
+        return plantSeedPackets;
     }
 
     // ===== زامبی‌ها =====
@@ -210,18 +232,6 @@ public class PlayerProgress {
 
     public void setPlantFood(int plantFood) {
         this.plantFood = plantFood;
-    }
-
-    public List<String> getSeedPackets() {
-        return seedPackets;
-    }
-
-    public void setSeedPackets(List<String> seedPackets) {
-        this.seedPackets = seedPackets;
-    }
-
-    public void addSeedPacket(String seed) {
-        seedPackets.add(seed);
     }
 
     public Garden getGarden() {

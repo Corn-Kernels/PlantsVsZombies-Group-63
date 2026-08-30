@@ -5,7 +5,6 @@ import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.ExplosionTimerComponent;
 import com.cornkernels.game.entities.types.plants.PlantDef;
-import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
@@ -36,11 +35,7 @@ public class ImitatorBehavior implements PlantAttackBehavior {
         if (timer.timeElapsed >= transformationTimeSeconds) {
             GridPosition pos = GridPosition.fromContinuous(self.get(PositionComponent.class).position);
 
-            //TODO LOVES SORROW: fix this so it spawns the correct plant
-            //PlantInstance transformedPlant = new PlantInstance(targetDef);
-            //field.addPlant(transformedPlant);
-
-            hc.currentHealth = 0; // Destroy the imitator entity
+            hc.currentHealth = 0;
         }
     }
 

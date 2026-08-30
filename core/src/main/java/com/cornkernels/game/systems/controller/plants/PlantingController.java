@@ -99,7 +99,10 @@ public class PlantingController {
             toolState.highlightSet = null;
             toolState.eligibility = cell ->
                 field.getPlantAt(cell.getPosition().lane(), cell.getPosition().column()) != null;
-            toolState.onConfirm = field::removePlantAt;
+            toolState.onConfirm = gridPosition -> {
+                field.removePlantAt(gridPosition);
+                toolState.active = false;
+            };
         }
 
     }

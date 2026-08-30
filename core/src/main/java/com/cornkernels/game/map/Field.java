@@ -50,7 +50,7 @@ public class Field {
         this.activeObstacles = new ArrayList<>();
         this.activeProjectiles = new ArrayList<>();
         this.activeLawnMowers = new ArrayList<>(5);
-        this.activeZombieProjectiles=new ArrayList<>();
+        this.activeZombieProjectiles = new ArrayList<>();
         initializeLawnMowers(lawnMowerSlots);
     }
 

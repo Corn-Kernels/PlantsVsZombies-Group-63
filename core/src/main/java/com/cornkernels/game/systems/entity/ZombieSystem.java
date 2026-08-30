@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent
 import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
 import com.cornkernels.game.entities.components.plant_specific.SheepedComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieBehaviorComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieDeathComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
@@ -34,7 +35,10 @@ public class ZombieSystem extends EntitySystem {
             if (zombie.isMarkedForRemoval()) continue;
 
             ZombieStateComponent state = zombie.get(ZombieStateComponent.class);
-            if (state.state == ZombieStateComponent.State.DEAD) continue;
+            if (state.state == ZombieStateComponent.State.DEAD) {
+                updateDying(zombie, deltaTick);
+                continue;
+            }
 
             state.stateTicks++;
 
@@ -86,7 +90,7 @@ public class ZombieSystem extends EntitySystem {
                 ZombieDef def = zombie.get(ZombieDefComponent.class).def();
 
                 PlantDefComponent plantDefComp = plant.get(PlantDefComponent.class);
-                if (plantDefComp != null && plantDefComp.def().getId()%1000==51) {
+                if (plantDefComp != null && plantDefComp.def().getId() % 1000 == 51) {
                     zombie.add(new SunInfectedComponent());
                 }
 
@@ -109,5 +113,25 @@ public class ZombieSystem extends EntitySystem {
     private void applyClip(@NonNull ZombieInstance zombie, String clipName) {
         ZombieDef def = zombie.get(ZombieDefComponent.class).def();
         ZombieAnimationLocator.applyClip(pamPlayer, zombie.get(PamAnimationComponent.class), def, clipName);
+    }
+
+    private void updateDying(@NonNull ZombieInstance zombie, float deltaTick) {
+        ZombieDeathComponent death = zombie.get(ZombieDeathComponent.class);
+        if (death == null) {
+            zombie.markForRemoval();
+            return;
+        }
+
+        if (!death.deathClipStarted) {
+            death.deathClipStarted = true;
+            ZombieDef def = zombie.get(ZombieDefComponent.class).def();
+            death.deathClipDuration = ZombieAnimationLocator.applyDeathClip(
+                pamPlayer, zombie.get(PamAnimationComponent.class), def);
+        }
+
+        death.elapsed += deltaTick;
+        if (death.isFadeComplete()) {
+            zombie.markForRemoval();
+        }
     }
 }

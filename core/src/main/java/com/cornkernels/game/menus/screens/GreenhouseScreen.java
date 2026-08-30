@@ -15,9 +15,11 @@ import com.cornkernels.game.menus.model.Garden;
 import com.cornkernels.game.menus.model.GardenPot;
 import com.cornkernels.game.menus.model.PlayerProgress;
 import com.cornkernels.game.menus.model.User;
+import org.jspecify.annotations.NonNull;
 
 public class GreenhouseScreen extends BaseScreen {
 
+    private static final int HARVEST_COIN_REWARD = 500;
     // ===== لیست ۵ گیاه ثابت =====
     private static final String[] AVAILABLE_PLANTS = {
         "SUNFLOWER",
@@ -41,7 +43,7 @@ public class GreenhouseScreen extends BaseScreen {
     private Texture potEmptyTexture;
     private Texture potLockedTexture;
 
-    public GreenhouseScreen(GameManager game, User user) {
+    public GreenhouseScreen(GameManager game, @NonNull User user) {
         super(game);
         this.user = user;
 
@@ -322,8 +324,7 @@ public class GreenhouseScreen extends BaseScreen {
 
         // ===== جایزه =====
         if (pot.isReady()) {
-            int reward = 5 + (int) (Math.random() * 15);
-            Label rewardLabel = new Label("💎" + reward, skin);
+            Label rewardLabel = new Label("🪙" + HARVEST_COIN_REWARD, skin);
             rewardLabel.setFontScale(0.9f);
             rewardLabel.setColor(1, 0.8f, 0, 1);
             card.add(rewardLabel).center().row();
@@ -401,11 +402,12 @@ public class GreenhouseScreen extends BaseScreen {
         PlayerProgress progress = user.getProgress();
         String plantType = selectedPot.getPlantType();
 
-        int coinsReward = 500;
+        int coinsReward = HARVEST_COIN_REWARD;
 
         if (!plantType.equals("MARIGOLD")) {
-            progress.addSeedPacket(plantType);
-            showToast("🌱 +1 " + plantType + " seed packet!", 2f, false);
+            progress.addPlantSeed(plantType, 1);
+            int totalSeeds = progress.getPlantSeedCount(plantType);
+            showToast("🌱 +1 " + plantType + " seed packet! (Total: " + totalSeeds + ")", 2f, false);
         }
 
         progress.addCoins(coinsReward);

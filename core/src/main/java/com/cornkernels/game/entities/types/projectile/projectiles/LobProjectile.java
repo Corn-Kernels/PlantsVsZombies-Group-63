@@ -60,7 +60,8 @@ public class LobProjectile extends AbstractProjectile {
 
             // Apply direct impact debuffs
             if (fiery && target.has(IceComponent.class)) target.get(IceComponent.class).melt();
-            if (chillDurationTicks > 0 && target.has(IceComponent.class)) target.get(IceComponent.class).applyChill(chillDurationTicks);
+            if (chillDurationTicks > 0 && target.has(IceComponent.class))
+                target.get(IceComponent.class).applyChill(chillDurationTicks);
             if (stunDurationTicks > 0) target.add(new ButterComponent(stunDurationTicks));
 
             if (areaOfEffect > 0) {

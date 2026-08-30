@@ -17,7 +17,6 @@ public class Plant {
     private float recharge;
     private String imagePath;
     private int level;
-    private int seedPackets;
     private int seedPacketsNeeded;
     private boolean isUnlocked;
     private String description;
@@ -46,7 +45,6 @@ public class Plant {
         this.recharge = recharge;
         this.imagePath = imagePath;
         this.level = 1;
-        this.seedPackets = 0;
         this.seedPacketsNeeded = 10;
         this.isUnlocked = false;
         this.description = baseAbility;
@@ -125,14 +123,6 @@ public class Plant {
         this.level = level;
     }
 
-    public int getSeedPackets() {
-        return seedPackets;
-    }
-
-    public void setSeedPackets(int seedPackets) {
-        this.seedPackets = seedPackets;
-    }
-
     public int getSeedPacketsNeeded() {
         return seedPacketsNeeded + (level - 1) * 2;
     }
@@ -177,23 +167,18 @@ public class Plant {
         this.maxLevel = maxLevel;
     }
 
-    public void addSeedPacket() {
-        this.seedPackets++;
-    }
-
     // ===== متدهای ارتقا =====
-    public boolean canUpgrade() {
-        return isUnlocked && level < maxLevel && seedPackets >= getSeedPacketsNeeded();
+    public boolean canUpgrade(int ownedSeedPackets) {
+        return isUnlocked && level < maxLevel && ownedSeedPackets >= getSeedPacketsNeeded();
     }
 
     public int getUpgradeCost() {
         return 50 + (level * 10);
     }
 
-    public void performUpgrade() {
-        if (canUpgrade()) {
+    public void performUpgrade(int ownedSeedPackets) {
+        if (canUpgrade(ownedSeedPackets)) {
             level++;
-            seedPackets -= getSeedPacketsNeeded();
             // افزایش قدرت
             baseHp += 50;
             damage += 5;

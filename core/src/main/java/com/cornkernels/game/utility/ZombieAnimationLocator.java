@@ -23,6 +23,12 @@ public final class ZombieAnimationLocator {
     };
 
     private static final Map<ZombieDef, String> PAM_PATH_OVERRIDES = Map.ofEntries(
+        Map.entry(ZombieDef.DEFAULT, "768/INITIAL/ZOMBIE/ZOMBIE_TUTORIAL/ZOMBIE_TUTORIAL.PAM"),
+        Map.entry(ZombieDef.ARMOR1, "768/INITIAL/ZOMBIE/ZOMBIE_TUTORIAL/ZOMBIE_TUTORIAL.PAM"),
+        Map.entry(ZombieDef.ARMOR2, "768/INITIAL/ZOMBIE/ZOMBIE_TUTORIAL/ZOMBIE_TUTORIAL.PAM"),
+        Map.entry(ZombieDef.ARMOR4, "768/INITIAL/ZOMBIE/ZOMBIE_TUTORIAL/ZOMBIE_TUTORIAL.PAM"),
+        Map.entry(ZombieDef.DARK_ARMOR3, "768/INITIAL/ZOMBIE/ZOMBIE_TUTORIAL/ZOMBIE_TUTORIAL.PAM"),
+        Map.entry(ZombieDef.IMP, "768/INITIAL/ZOMBIE/ZOMBIE_TUTORIAL_IMP/ZOMBIE_TUTORIAL_IMP.PAM"),
         Map.entry(ZombieDef.RA, "768/INITIAL/ZOMBIE/ZOMBIE_EGYPT_RA/ZOMBIE_EGYPT_RA.PAM"),
         Map.entry(ZombieDef.TOMB_RAISER, "768/INITIAL/ZOMBIE/ZOMBIE_EGYPT_TOMBRAISER/ZOMBIE_EGYPT_TOMBRAISER.PAM"),
         Map.entry(ZombieDef.ICE_AGE_DODO, "768/FULL/ZOMBIE/ZOMBIE_ICEAGE_DODORIDER/ZOMBIE_ICEAGE_DODORIDER.PAM"),
@@ -42,6 +48,7 @@ public final class ZombieAnimationLocator {
         Map.entry(ZombieDef.ARCADE, "768/FULL/ZOMBIE/ZOMBIE_80S_ARCADE/ZOMBIE_80S_ARCADE.PAM")
     );
     private static final String[] FALLBACK_CLIP_NAMES = {"idle", "loop"};
+    private static final String[] DEATH_CLIP_NAMES = {"death", "die", "dying", "Death", "Die", "Dying"};
 
     private ZombieAnimationLocator() {
     }
@@ -78,6 +85,31 @@ public final class ZombieAnimationLocator {
         anim.stateTime = clip.duration > 0f ? MathUtils.random(0f, clip.duration) : 0f;
         anim.isLooping = true;
         anim.upcomingClips.clear();
+    }
+
+    public static float applyDeathClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
+                                       @NonNull ZombieDef zombieDef) {
+        String path = findPamPath(zombieDef);
+        pamPlayer.loadSync(path);
+
+        List<String> available = pamPlayer.clips(path);
+        if (available != null) {
+            for (String candidate : DEATH_CLIP_NAMES) {
+                if (!available.contains(candidate)) continue;
+                ClipRef clip = pamPlayer.getClip(path, candidate);
+                if (clip == null) continue;
+
+                anim.currentClip = clip;
+                anim.stateTime = 0f;
+                anim.isLooping = false;
+                anim.upcomingClips.clear();
+                return clip.duration;
+            }
+        }
+
+        anim.isLooping = false;
+        anim.upcomingClips.clear();
+        return 0f;
     }
 
     private static @NonNull String resolveClipName(@NonNull List<String> available, @NonNull String preferredClip) {

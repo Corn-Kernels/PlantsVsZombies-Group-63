@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.OctoedComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.GraveBeingEatenComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieDeathComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
@@ -56,9 +57,15 @@ public class CombatSystem extends EntitySystem {
             health.adjustHealth(-remaining);
 
             if (health.isDead()) {
-                target.markForRemoval();
                 ZombieStateComponent state = target.get(ZombieStateComponent.class);
-                if (state != null) state.state = ZombieStateComponent.State.DEAD;
+                if (state != null) {
+                    if (state.state != ZombieStateComponent.State.DEAD) {
+                        state.changeState(ZombieStateComponent.State.DEAD);
+                        target.add(new ZombieDeathComponent());
+                    }
+                } else {
+                    target.markForRemoval();
+                }
             }
         }
 
@@ -90,10 +97,12 @@ public class CombatSystem extends EntitySystem {
     public void update(float delta) {
         List<Entity> validTargets = new ArrayList<>();
         for (Entity e : field.getEntities()) {
-            if (!e.isMarkedForRemoval() && (e instanceof ZombieInstance || e instanceof Grave)) {
+            boolean isLiveZombie = e instanceof ZombieInstance
+                && e.get(ZombieStateComponent.class).state != ZombieStateComponent.State.DEAD;
+            if (!e.isMarkedForRemoval() && (isLiveZombie || e instanceof Grave)) {
                 validTargets.add(e);
             }
-            if (!e.isMarkedForRemoval() && e instanceof PlantInstance && (e.has(OctoedComponent.class)||e.get(PlantFreezeComponent.class).freezeLayers>=3)){
+            if (!e.isMarkedForRemoval() && e instanceof PlantInstance && (e.has(OctoedComponent.class) || e.get(PlantFreezeComponent.class).freezeLayers >= 3)) {
                 validTargets.add(e);
             }
         }

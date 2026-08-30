@@ -5,9 +5,11 @@ import com.cornkernels.engine.renderer.camera.GameplayCamera;
 import com.cornkernels.engine.utility.InputSnapshot;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.data.MapData;
+import com.cornkernels.game.systems.controller.GameSpeedController;
 import com.cornkernels.game.systems.controller.PauseController;
 import com.cornkernels.game.systems.controller.SunHarvestController;
 import com.cornkernels.game.systems.controller.plants.PlantingController;
+import com.cornkernels.game.systems.entity.WaveSystem;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
@@ -22,10 +24,12 @@ public final class GameSession {
     private final GameRenderer renderer;
     private final GameAttributes gameAttributes;
     private final PauseController pauseController;
+    private final GameSpeedController speedController = new GameSpeedController();
     private final PlantingController plantingController;
     private final SunHarvestController sunHarvestController;
     private final Field field;
     private LevelPhase phase;
+    private boolean won = false;
 
     public GameSession(
         Field field,
@@ -52,7 +56,9 @@ public final class GameSession {
         if (!pauseController.isPaused()) {
             simulation.update(deltaTick);
             if (simulation.isGameLost()) {
-                end();
+                end(false);
+            } else if (simulation.isGameWon()) {
+                end(true);
             }
         }
     }
@@ -71,16 +77,25 @@ public final class GameSession {
         renderer.render(delta);
     }
 
-    public void end() {
+    public void end(boolean won) {
         if (phase == LevelPhase.ENDED) {
             return;
         }
+        this.won = won;
         phase = LevelPhase.ENDED;
         notifyPhaseChangeListeners();
     }
 
+    public boolean hasWon() {
+        return won;
+    }
+
     public GameAttributes getGameAttributes() {
         return gameAttributes;
+    }
+
+    public WaveSystem getWaveSystem() {
+        return simulation.getWaveSystem();
     }
 
     public void changeLevelPhase(LevelPhase phase) {
@@ -110,6 +125,10 @@ public final class GameSession {
 
     public PauseController getPauseController() {
         return pauseController;
+    }
+
+    public GameSpeedController getSpeedController() {
+        return speedController;
     }
 
     public PlantingController getPlantingController() {

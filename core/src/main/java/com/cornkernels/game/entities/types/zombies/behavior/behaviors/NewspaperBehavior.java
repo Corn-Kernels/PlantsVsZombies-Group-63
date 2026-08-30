@@ -1,8 +1,6 @@
 package com.cornkernels.game.entities.types.zombies.behavior.behaviors;
 
-import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.ArmorComponent;
-import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieBehaviorComponent;
 import com.cornkernels.game.entities.components.zombie_specific.specific_specific.EnragedComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;

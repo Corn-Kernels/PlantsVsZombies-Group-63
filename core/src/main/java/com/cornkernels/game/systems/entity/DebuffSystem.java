@@ -42,11 +42,11 @@ public class DebuffSystem extends EntitySystem {
             // 2. Process Ice (Freeze & Slow)
             IceComponent ice = zombie.get(IceComponent.class);
             if (ice != null && ice.freezeLevel > 0) {
-                if(ice.freezeLevel==2){
+                if (ice.freezeLevel == 2) {
                     zombie.get(VelocityComponent.class).velocityPerTick.setX(0);
                     zombie.get(VelocityComponent.class).velocityPerTick.setY(0);
                 }
-                if(ice.freezeLevel==1){
+                if (ice.freezeLevel == 1) {
                     zombie.get(VelocityComponent.class).velocityPerTick.setX(zombie.get(VelocityComponent.class).velocityPerTick.getX());
                     zombie.get(VelocityComponent.class).velocityPerTick.setY(zombie.get(VelocityComponent.class).velocityPerTick.getY());
                 }

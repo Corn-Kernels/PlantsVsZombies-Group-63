@@ -4,7 +4,6 @@ import com.cornkernels.game.menus.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.jspecify.annotations.NonNull;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -43,7 +42,7 @@ public class StorageService {
         }
     }
 
-    public boolean addUser(@NonNull User user) {
+    public boolean addUser(User user) {
         if (users.containsKey(user.getUsername())) return false;
         users.put(user.getUsername(), user);
         return true;

@@ -19,6 +19,7 @@ import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehavior;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class JugglerBehavior implements ZombieBehavior {
     }
 
     @Override
-    public void update(ZombieInstance zombie, Field field) {
+    public void update(@NonNull ZombieInstance zombie, Field field) {
         ZombieStateComponent state = zombie.get(ZombieStateComponent.class);
         if (state.state == ZombieStateComponent.State.DEAD) return;
 
@@ -48,7 +49,7 @@ public class JugglerBehavior implements ZombieBehavior {
 
         // 1. Handle the Deflection Spin Animation State
         if (state.state == ZombieStateComponent.State.ACTION) {
-            zVel.velocityPerTick = new Vec2d(zVel.velocityPerTick.getX()*1.5f, 0); // Stop moving while spinning
+            zVel.velocityPerTick = new Vec2d(zVel.velocityPerTick.getX() * 1.5f, 0); // Stop moving while spinning
 
             comp.reflectTimerTicks++;
             if (comp.reflectTimerTicks >= spinDurationTicks) {

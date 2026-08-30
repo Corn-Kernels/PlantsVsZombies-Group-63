@@ -12,7 +12,6 @@ import com.cornkernels.GameManager;
 import com.cornkernels.game.menus.model.LeaderboardEntry;
 import com.cornkernels.game.menus.model.PlayerProgress;
 import com.cornkernels.game.menus.model.User;
-import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
@@ -57,7 +56,7 @@ public class LeaderboardScreen extends BaseScreen {
         }
     }
 
-    private @NonNull String getLastLevel(@NonNull PlayerProgress progress) {
+    private String getLastLevel(PlayerProgress progress) {
         List<String> unlocked = progress.getUnlockedChapters();
         if (unlocked.isEmpty()) return "None";
         String lastChapter = unlocked.get(unlocked.size() - 1);
@@ -127,14 +126,28 @@ public class LeaderboardScreen extends BaseScreen {
     }
 
     private void sortAndDisplay() {
-        Comparator<LeaderboardEntry> comparator = switch (sortBy) {
-            case "username" -> Comparator.comparing(LeaderboardEntry::getUsername);
-            case "lastLevel" -> Comparator.comparing(LeaderboardEntry::getLastLevel);
-            case "minigamesCompleted" -> Comparator.comparingInt(LeaderboardEntry::getMinigamesCompleted);
-            case "dailyQuestsCompleted" -> Comparator.comparingInt(LeaderboardEntry::getDailyQuestsCompleted);
-            case "nonDailyQuestsCompleted" -> Comparator.comparingInt(LeaderboardEntry::getNonDailyQuestsCompleted);
-            default -> Comparator.comparingInt(LeaderboardEntry::getHighScore);
-        };
+        Comparator<LeaderboardEntry> comparator;
+        switch (sortBy) {
+            case "username":
+                comparator = Comparator.comparing(LeaderboardEntry::getUsername);
+                break;
+            case "lastLevel":
+                comparator = Comparator.comparing(LeaderboardEntry::getLastLevel);
+                break;
+            case "minigamesCompleted":
+                comparator = Comparator.comparingInt(LeaderboardEntry::getMinigamesCompleted);
+                break;
+            case "dailyQuestsCompleted":
+                comparator = Comparator.comparingInt(LeaderboardEntry::getDailyQuestsCompleted);
+                break;
+            case "nonDailyQuestsCompleted":
+                comparator = Comparator.comparingInt(LeaderboardEntry::getNonDailyQuestsCompleted);
+                break;
+            case "highScore":
+            default:
+                comparator = Comparator.comparingInt(LeaderboardEntry::getHighScore);
+                break;
+        }
 
         if (!ascending) {
             comparator = comparator.reversed();

@@ -4,7 +4,6 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
-// TODO: check this bit - Ensure import matches your project structure
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
@@ -17,8 +16,8 @@ import com.cornkernels.game.systems.entity.CombatSystem;
 public class TruePeaProjectile extends AbstractProjectile {
 
     private static final float PEA_SPEED = 1f;
-    public int heat; // Removed 'final' so Torchwood can ignite it
     public final int chillDurationTicks;
+    public int heat; // Removed 'final' so Torchwood can ignite it
 
     public TruePeaProjectile(int damage, Vec2d startPosition) {
         this(damage, startPosition, 0, 0);
@@ -42,7 +41,7 @@ public class TruePeaProjectile extends AbstractProjectile {
 
         if (plant != null) {
             PlantDefComponent defComp = plant.get(PlantDefComponent.class);
-            if (defComp != null && defComp.def().getId()%1000==52) {
+            if (defComp != null && defComp.def().getId() % 1000 == 52) {
                 this.heat = 1; // Instant transition to fiery!
             }
         }
@@ -60,7 +59,7 @@ public class TruePeaProjectile extends AbstractProjectile {
                 CombatSystem.applyDamage(target, finalDamage - splashDamage, false, field);
 
                 if (target.has(IceComponent.class)) target.get(IceComponent.class).melt();
-                field.addProjectile(new AreaOfDamage(this.get(PositionComponent.class).position, 0.3f, splashDamage, true,0));
+                field.addProjectile(new AreaOfDamage(this.get(PositionComponent.class).position, 0.3f, splashDamage, true, 0));
 
             } else if (heat == -1) {
                 CombatSystem.applyDamage(target, baseDamage, false, field);

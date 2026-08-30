@@ -5,11 +5,15 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.specific_specific.EnragedComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.BoneProjectile;
+import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.OctopusProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
+import com.cornkernels.game.entities.types.projectile.projectiles.specific.AreaOfIceDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.GrapeshotProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.LightningCloudProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -190,18 +194,22 @@ public class MovementSystem extends EntitySystem {
             if (e instanceof ZombieInstance) {
                 vx *= delta;
                 vy *= delta;
+            } else {
+                vx /= 5;
+                vy /= 5;
             }
 
-            if(e.has(EnragedComponent.class)){
-                vx*=e.get(EnragedComponent.class).speedMultiplier;
+            if (e.has(EnragedComponent.class)) {
+                vx *= e.get(EnragedComponent.class).speedMultiplier;
             }
-                posComp.position = new Vec2d(
+            posComp.position = new Vec2d(
                 posComp.position.getX() + vx,
                 posComp.position.getY() + vy
             );
 
         }
     }
+
     private void removeIfOffBoard(Entity e) {
         if (!(e instanceof AbstractProjectile projectile) || projectile instanceof GrapeshotProjectile) return;
 

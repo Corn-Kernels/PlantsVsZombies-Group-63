@@ -25,12 +25,12 @@ public class BoneProjectile extends AbstractZombieProjectile {
         Vec2d currentPos = get(PositionComponent.class).position;
 
         // Since it travels left, it hits when its X is less than or equal to the target X
-        if (currentPos.getX() <= targetX +0.2&& currentPos.getX()>=targetX-0.2 ) {
+        if (currentPos.getX() <= targetX + 0.2 && currentPos.getX() >= targetX - 0.2) {
 
             // Ensure the tile is still empty (no plant was placed while the bone was flying)
             if (field.getPlantAt(targetTile.lane(), targetTile.column()) == null) {
                 Grave grave = new Grave(new Vec2d(targetTile.column(), targetTile.lane()));
-                field.addObstacle(grave,targetTile.lane(),targetTile.column());
+                field.addObstacle(grave, targetTile.lane(), targetTile.column());
             }
 
             return true; // Mark for removal
