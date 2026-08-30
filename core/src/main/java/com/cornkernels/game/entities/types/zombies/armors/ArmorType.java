@@ -6,7 +6,13 @@ public enum ArmorType {
     BRICK(2200, false),
     SHOULDER(1600, true),
     CROWN(1600, true),
-    NEWSPAPER(800, false);
+    NEWSPAPER(800, false),
+
+    // Plant Food Armors
+    PLANT_ARMOR(8000, false),
+    TALL_PLANT_ARMOR(12000, false);
+
+
 
     private final int armorDamage;
     private final boolean isMetallic;

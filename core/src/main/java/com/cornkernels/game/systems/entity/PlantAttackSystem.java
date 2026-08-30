@@ -3,6 +3,7 @@ package com.cornkernels.game.systems.entity;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantFoodComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantStateComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
@@ -33,7 +34,19 @@ public class PlantAttackSystem extends EntitySystem {
 
             attack.cooldownRemaining = Math.max(0, attack.cooldownRemaining - deltaTick);
 
-            boolean hasTarget = attack.behavior.hasTarget(plant, field);
+            // --- PLANT FOOD BYPASS LOGIC ---
+            PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
+            boolean isPlantFoodActive = (pf != null && pf.timerTicks > 0);
+
+            boolean hasTarget;
+            if (isPlantFoodActive) {
+                pf.behavior.plantFood(plant,field);
+                updateAttackAnimation(plant, true);
+                continue;
+            } else {
+                hasTarget = attack.behavior.hasTarget(plant, field);
+            }
+
             updateAttackAnimation(plant, hasTarget);
 
             if (attack.cooldownRemaining > 0) continue;
