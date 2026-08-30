@@ -15,7 +15,7 @@ public class LawnMowersSystem extends EntitySystem {
             if (zombie.isMarkedForRemoval()) continue;
 
             GridPosition pos = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position);
-            if (pos.column() <= 0) {
+            if (pos.column() <= -1) {
                 LawnMower lawnMower = field.getLawnMowerAt(pos.lane());
                 if (lawnMower != null) {
                     lawnMower.markForRemoval();

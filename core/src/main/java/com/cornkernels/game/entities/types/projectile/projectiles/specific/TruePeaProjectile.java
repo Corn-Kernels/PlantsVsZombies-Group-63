@@ -4,54 +4,71 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
+// TODO: check this bit - Ensure import matches your project structure
+import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
+import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
-import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage; // Added import
-import com.cornkernels.game.map.Field; // Added import
+import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
+import com.cornkernels.game.map.Field;
+import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.systems.entity.CombatSystem;
-import org.jspecify.annotations.NonNull;
 
 public class TruePeaProjectile extends AbstractProjectile {
 
     private static final float PEA_SPEED = 1f;
-    public final int heat; // -1 for cold, 0 for normal, 1 for inflamed
+    public int heat; // Removed 'final' so Torchwood can ignite it
+    public final int chillDurationTicks;
 
     public TruePeaProjectile(int damage, Vec2d startPosition) {
-        this(damage, startPosition, 0);
+        this(damage, startPosition, 0, 0);
     }
 
     public TruePeaProjectile(int damage, Vec2d startPosition, int heat) {
+        this(damage, startPosition, heat, 200);
+    }
+
+    public TruePeaProjectile(int damage, Vec2d startPosition, int heat, int chillDurationTicks) {
         super(damage, new Vec2d(PEA_SPEED, 0), startPosition);
         this.heat = heat;
+        this.chillDurationTicks = chillDurationTicks;
+    }
+
+    public void checkTorchwood(Field field) {
+        if (this.heat == 1) return; // Already fiery, save CPU
+
+        GridPosition gridPos = GridPosition.fromContinuous(this.get(PositionComponent.class).position);
+        PlantInstance plant = field.getPlantAt(gridPos.lane(), gridPos.column());
+
+        if (plant != null) {
+            PlantDefComponent defComp = plant.get(PlantDefComponent.class);
+            if (defComp != null && defComp.def().getId()%1000==52) {
+                this.heat = 1; // Instant transition to fiery!
+            }
+        }
     }
 
     @Override
-    public boolean hit(@NonNull Entity target, Field field) {
+    public boolean hit(Entity target, Field field) {
         if (super.hit(target, field)) {
             int baseDamage = this.get(DamageComponent.class).amount;
 
             if (heat == 1) {
-                // Inflamed: Deal double damage.
                 int finalDamage = baseDamage * 2;
-
-                // Calculate splash damage (20% rounded up)
                 int splashDamage = (int) Math.ceil(baseDamage * 0.20);
 
-                // We subtract the splash damage from the direct hit so the primary target
-                // doesn't accidentally take double damage when the AoE hits it next tick!
-                CombatSystem.applyDamage(target, finalDamage - splashDamage, false);
+                CombatSystem.applyDamage(target, finalDamage - splashDamage, false, field);
 
-                // Spawn a small 0.3 radius AOE with 20% damage
-                field.addProjectile(new AreaOfDamage(this.get(PositionComponent.class).position, 0.3f, splashDamage));
+                if (target.has(IceComponent.class)) target.get(IceComponent.class).melt();
+                field.addProjectile(new AreaOfDamage(this.get(PositionComponent.class).position, 0.3f, splashDamage, true,0));
 
             } else if (heat == -1) {
-                // Cold: Deal normal damage + slow down effect
-                CombatSystem.applyDamage(target, baseDamage, false);
-                // TODO: Implement zombie slow-down effect here
-            } else {
-                // Normal pea
-                CombatSystem.applyDamage(target, baseDamage, false);
-            }
+                CombatSystem.applyDamage(target, baseDamage, false, field);
+                if (target.has(IceComponent.class)) target.get(IceComponent.class).applyChill(chillDurationTicks);
 
+            } else {
+                CombatSystem.applyDamage(target, baseDamage, false, field);
+            }
             return true;
         }
         return false;
@@ -59,7 +76,6 @@ public class TruePeaProjectile extends AbstractProjectile {
 
     @Override
     public AbstractProjectile clone(Vec2d newPosition) {
-        int damage = this.get(DamageComponent.class).amount;
-        return new TruePeaProjectile(damage, newPosition, this.heat);
+        return new TruePeaProjectile(this.get(DamageComponent.class).amount, newPosition, this.heat, this.chillDurationTicks);
     }
 }

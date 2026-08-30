@@ -3,6 +3,7 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -16,107 +17,73 @@ import java.util.List;
 public class MeleeAttackBehavior implements PlantAttackBehavior {
     private final float frontRange;
     private final float backRange;
-    private final int pierce;
+    private final int pierceCount;
     private final int damage;
+    private final boolean fiery;
 
-    public MeleeAttackBehavior(float frontRange, float backRange, int pierce, int damage) {
+    public MeleeAttackBehavior(float frontRange, float backRange, int pierceCount, int damage, boolean fiery) {
         this.frontRange = frontRange;
         this.backRange = backRange;
-        this.pierce = pierce;
+        this.pierceCount = pierceCount;
         this.damage = damage;
+        this.fiery = fiery;
     }
 
     @Override
     public void execute(Entity self, Field field) {
-        Vec2d origin = self.get(PositionComponent.class).position;
-        double originX = origin.getX() + 0.5; // Calculate from center of the plant
-        int lane = GridPosition.fromContinuous(origin).lane();
+        List<Entity> targets = findTargets(self, field);
 
-        List<Entity> laneTargets = new ArrayList<>();
+        for (Entity target : targets) {
+            // Apply standard damage
+            CombatSystem.applyDamage(target, damage, false);
 
-        // Get Zombies
-        for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval()) {
-                laneTargets.add(z);
-            }
-        }
-
-        // Get Graves
-        for (Entity e : field.getEntities()) {
-            if (e instanceof Grave && !e.isMarkedForRemoval()) {
-                if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
-                    laneTargets.add(e);
-                }
-            }
-        }
-
-        List<Entity> backTargets = new ArrayList<>();
-        List<Entity> frontTargets = new ArrayList<>();
-
-        // Split targets based on location
-        for (Entity target : laneTargets) {
-            double targetX = target.get(PositionComponent.class).position.getX() + 0.5;
-            if (targetX <= originX && originX - targetX <= backRange) {
-                backTargets.add(target);
-            } else if (targetX > originX && targetX - originX <= frontRange) {
-                frontTargets.add(target);
-            }
-        }
-
-        // PRIORITY 1: Back Targets (Sort rightmost to leftmost so we hit the closest one behind)
-        if (!backTargets.isEmpty()) {
-            backTargets.sort((a, b) -> Double.compare(
-                b.get(PositionComponent.class).position.getX(),
-                a.get(PositionComponent.class).position.getX()
-            ));
-
-            int hitCount = 0;
-            for (Entity target : backTargets) {
-                CombatSystem.applyDamage(target, damage, false);
-                hitCount++;
-                if (hitCount >= pierce) break;
-            }
-            return; // Since we attack back first, we exit after hitting them
-        }
-
-        // PRIORITY 2: Front Targets (Sort leftmost to rightmost so we hit the closest one in front)
-        if (!frontTargets.isEmpty()) {
-            frontTargets.sort((a, b) -> Double.compare(
-                a.get(PositionComponent.class).position.getX(),
-                b.get(PositionComponent.class).position.getX()
-            ));
-
-            int hitCount = 0;
-            for (Entity target : frontTargets) {
-                CombatSystem.applyDamage(target, damage, false);
-                hitCount++;
-                if (hitCount >= pierce) break;
+            // If it is a fiery attack (Wasabi Whip), immediately thaw the zombie
+            if (fiery && target.has(IceComponent.class)) {
+                target.get(IceComponent.class).melt();
             }
         }
     }
 
     @Override
     public boolean hasTarget(Entity self, Field field) {
+        return !findTargets(self, field).isEmpty();
+    }
+
+    /**
+     * Scans the lane for the closest valid targets within the front and back attack radii.
+     */
+    private List<Entity> findTargets(Entity self, Field field) {
+        List<Entity> validTargets = new ArrayList<>();
         Vec2d origin = self.get(PositionComponent.class).position;
-        double originX = origin.getX() + 0.5;
+        double plantX = origin.getX() + 0.5; // Center of the tile
         int lane = GridPosition.fromContinuous(origin).lane();
 
-        for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval()) {
-                double targetX = z.get(PositionComponent.class).position.getX() + 0.5;
-                if (targetX <= originX && originX - targetX <= backRange) return true;
-                if (targetX > originX && targetX - originX <= frontRange) return true;
-            }
-        }
         for (Entity e : field.getEntities()) {
-            if (e instanceof Grave && !e.isMarkedForRemoval()) {
+            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
                 if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
                     double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
-                    if (targetX <= originX && originX - targetX <= backRange) return true;
-                    if (targetX > originX && targetX - originX <= frontRange) return true;
+
+                    // Check if within front or back range
+                    if ((targetX >= plantX && targetX - plantX <= frontRange) ||
+                        (targetX < plantX && plantX - targetX <= backRange)) {
+                        validTargets.add(e);
+                    }
                 }
             }
         }
-        return false;
+
+        // Sort by proximity to the plant so it hits the closest entities first
+        validTargets.sort((e1, e2) -> {
+            double dist1 = Math.abs((e1.get(PositionComponent.class).position.getX() + 0.5) - plantX);
+            double dist2 = Math.abs((e2.get(PositionComponent.class).position.getX() + 0.5) - plantX);
+            return Double.compare(dist1, dist2);
+        });
+
+        // Limit the number of targets hit based on the plant's pierce count
+        if (validTargets.size() > pierceCount) {
+            return validTargets.subList(0, pierceCount);
+        }
+
+        return validTargets;
     }
 }

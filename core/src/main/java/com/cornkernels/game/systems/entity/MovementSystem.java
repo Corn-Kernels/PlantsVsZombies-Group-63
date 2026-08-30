@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
@@ -67,7 +68,6 @@ public class MovementSystem extends EntitySystem {
                         posComp.position.getY() + velComp.velocityPerTick.getY()
                     );
 
-                    removeIfOffBoard(homingProj);
                     continue;
                 }
 
@@ -113,6 +113,12 @@ public class MovementSystem extends EntitySystem {
                 continue;
             }
 
+            if (e instanceof AreaOfIceDamage) {
+                if (((AreaOfIceDamage) e).used) e.markForRemoval();
+                else ((AreaOfIceDamage) e).used = true;
+                continue;
+            }
+
             if (e instanceof LineOfDamage) {
                 if (((LineOfDamage) e).used) {
                     e.markForRemoval();
@@ -122,28 +128,86 @@ public class MovementSystem extends EntitySystem {
                 continue;
             }
 
+            // 3. Bone Projectile Tracking & Arrival
+            if (e instanceof BoneProjectile boneProj) {
+                Vec2d pos = posComp.position;
+                double targetX = boneProj.getTargetTile().column();
+                double targetY = boneProj.getTargetTile().lane();
+
+                double dist = Math.hypot(targetX - pos.getX(), targetY - pos.getY());
+
+                // Dynamic Tracking (Adjust speedMag as needed for throw speed)
+                double desiredAngle = Math.atan2(targetY - pos.getY(), targetX - pos.getX());
+                double speedMag = 0.15;
+
+                velComp.velocityPerTick = new Vec2d(
+                    (float) (Math.cos(desiredAngle) * speedMag),
+                    (float) (Math.sin(desiredAngle) * speedMag)
+                );
+
+                posComp.position = new Vec2d(
+                    posComp.position.getX() + velComp.velocityPerTick.getX(),
+                    posComp.position.getY() + velComp.velocityPerTick.getY()
+                );
+                continue;
+            }
+            // 4. Octopus Projectile Tracking
+            if (e instanceof OctopusProjectile octoProj) {
+                PlantInstance targetPlant = octoProj.getTargetPlant();
+
+                // Drop out of the sky if the plant was dug up or destroyed early
+                if (targetPlant == null || targetPlant.isMarkedForRemoval()) {
+                    octoProj.markForRemoval();
+                    continue;
+                }
+
+                Vec2d pos = posComp.position;
+                Vec2d targetPos = targetPlant.get(PositionComponent.class).position;
+
+                double targetX = targetPos.getX();
+                double targetY = targetPos.getY();
+
+                // Dynamic Tracking
+                double desiredAngle = Math.atan2(targetY - pos.getY(), targetX - pos.getX());
+                double speedMag = 0.15;
+
+                velComp.velocityPerTick = new Vec2d(
+                    (float) (Math.cos(desiredAngle) * speedMag),
+                    (float) (Math.sin(desiredAngle) * speedMag)
+                );
+
+                posComp.position = new Vec2d(
+                    posComp.position.getX() + velComp.velocityPerTick.getX(),
+                    posComp.position.getY() + velComp.velocityPerTick.getY()
+                );
+                continue;
+            }
+
             // 4. Standard Movement Logic
             float vx = velComp.velocityPerTick.getX();
             float vy = velComp.velocityPerTick.getY();
+
             if (e instanceof ZombieInstance) {
                 vx *= delta;
                 vy *= delta;
             }
-            posComp.position = new Vec2d(
+
+            if(e.has(EnragedComponent.class)){
+                vx*=e.get(EnragedComponent.class).speedMultiplier;
+            }
+                posComp.position = new Vec2d(
                 posComp.position.getX() + vx,
                 posComp.position.getY() + vy
             );
 
-            removeIfOffBoard(e);
         }
     }
-
     private void removeIfOffBoard(Entity e) {
         if (!(e instanceof AbstractProjectile projectile) || projectile instanceof GrapeshotProjectile) return;
 
         Vec2d pos = projectile.get(PositionComponent.class).position;
-        boolean offBoard = pos.getX() < 0f || pos.getX() > field.getTotalColumns()
-            || pos.getY() < 0f || pos.getY() > field.getTotalLanes() - 1;
+        boolean offBoard = pos.getX() < -2.0f || pos.getX() > field.getTotalColumns() + 2
+            || pos.getY() < -2f || pos.getY() > field.getTotalLanes() + 1;
         if (offBoard) {
             projectile.markForRemoval();
         }

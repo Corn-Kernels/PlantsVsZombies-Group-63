@@ -13,12 +13,14 @@ public class LineExplosiveBehavior implements PlantAttackBehavior {
     private final float width;
     private final int damage;
     private final float waitTimeSeconds;
+    private final boolean fiery;
 
-    public LineExplosiveBehavior(float length, float width, int damage, float waitTimeSeconds) {
+    public LineExplosiveBehavior(float length, float width, int damage, float waitTimeSeconds, boolean fiery) {
         this.length = length;
         this.width = width;
         this.damage = damage;
         this.waitTimeSeconds = waitTimeSeconds;
+        this.fiery = fiery;
     }
 
     @Override
@@ -36,8 +38,8 @@ public class LineExplosiveBehavior implements PlantAttackBehavior {
         timer.timeElapsed += (1.0f / 20.0f);
 
         if (timer.timeElapsed >= waitTimeSeconds) {
-            // Spawn the piercing line explosion
-            field.addProjectile(new LineOfDamage(self.get(PositionComponent.class).position, length, width, damage));
+            // Spawn the piercing line explosion with the fiery property
+            field.addProjectile(new LineOfDamage(self.get(PositionComponent.class).position, length, width, damage, fiery));
 
             // Snap health exactly to 0
             hc.currentHealth = 0;

@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.types.lawnmower.LawnMower;
 import com.cornkernels.game.entities.types.obstacles.AbstractObstacle;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.data.LawnMowerSlot;
@@ -26,6 +27,7 @@ public class Field {
     protected List<SunInstance> activeSuns;
     protected List<AbstractObstacle> activeObstacles;
     protected List<AbstractProjectile> activeProjectiles;
+    protected List<AbstractZombieProjectile> activeZombieProjectiles;
     protected List<LawnMower> activeLawnMowers;
 
     protected int totalLanes;
@@ -48,7 +50,7 @@ public class Field {
         this.activeObstacles = new ArrayList<>();
         this.activeProjectiles = new ArrayList<>();
         this.activeLawnMowers = new ArrayList<>(5);
-
+        this.activeZombieProjectiles=new ArrayList<>();
         initializeLawnMowers(lawnMowerSlots);
     }
 
@@ -117,6 +119,10 @@ public class Field {
         activeProjectiles.add(projectile);
     }
 
+    public void addZombieProjectile(AbstractZombieProjectile projectile) {
+        activeZombieProjectiles.add(projectile);
+    }
+
     public void addSun(SunInstance sun) {
         activeSuns.add(sun);
     }
@@ -176,6 +182,7 @@ public class Field {
         entities.addAll(activeSuns);
         entities.addAll(activeLawnMowers);
         entities.addAll(activeObstacles);
+        entities.addAll(activeZombieProjectiles);
         return entities;
     }
 
@@ -190,6 +197,11 @@ public class Field {
     public List<AbstractProjectile> getActiveProjectiles() {
         return this.activeProjectiles;
     }
+
+    public List<AbstractZombieProjectile> getActiveZombieProjectiles() {
+        return this.activeZombieProjectiles;
+    }
+
 
     public List<AbstractObstacle> getActiveObstacles() {
         return this.activeObstacles;
@@ -222,4 +234,5 @@ public class Field {
             slot.provideLawnMower(lawnMower);
         }
     }
+
 }

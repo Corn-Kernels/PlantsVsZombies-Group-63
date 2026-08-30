@@ -5,9 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.random.RandomGenerator;
 
 public enum SunType {
+    SMALL(0, 5),     // Spawned exclusively by Sun Bean infections
     NORMAL(80, 25),
-    BIG(0, 50),       // Added for Sunflower / Twin Sunflower
-    LARGE(0, 75),     // Added for Primal Sunflower
+    BIG(0, 50),
+    LARGE(0, 75),
     SPECIAL(15, 100),
     RADIOACTIVE(5, 25);
 

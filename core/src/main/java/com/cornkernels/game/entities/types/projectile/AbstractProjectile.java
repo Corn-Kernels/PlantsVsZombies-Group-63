@@ -6,9 +6,7 @@ import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
-import com.cornkernels.game.entities.types.obstacles.Grave;
-import com.cornkernels.game.entities.types.zombies.ZombieInstance;
-import com.cornkernels.game.map.Field;
+import com.cornkernels.game.map.Field; // Added import
 import org.jspecify.annotations.NonNull;
 
 public class AbstractProjectile extends Entity {
@@ -41,8 +39,6 @@ public class AbstractProjectile extends Entity {
     }
 
     public boolean hit(@NonNull Entity target, Field field) {
-        if (!(target instanceof ZombieInstance || target instanceof Grave)) return false;
-
         Vec2d targetPos = target.get(PositionComponent.class).position;
         Vec2d currentPos = this.get(PositionComponent.class).position;
 
