@@ -48,7 +48,6 @@ public abstract class BaseScreen implements Screen {
         whitePixmap.dispose();
         Drawable whiteDrawable = new TextureRegionDrawable(whiteTexture);
 
-        // ===== اضافه کردن "white_pixel" =====
         skin.add("white_pixel", whiteDrawable);
 
         // ===== ساخت Drawable خاکستری =====
@@ -121,9 +120,29 @@ public abstract class BaseScreen implements Screen {
         // ===== SliderStyle =====
         // ============================================
         Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
-        sliderStyle.background = grayDrawable;
-        sliderStyle.knob = whiteDrawable;
-        sliderStyle.knobBefore = whiteDrawable;
+        Pixmap sliderBgPixmap = new Pixmap(1, 12, Pixmap.Format.RGBA8888);
+        sliderBgPixmap.setColor(new Color(0.3f, 0.3f, 0.3f, 1));
+        sliderBgPixmap.fill();
+        Drawable sliderBgDrawable = new TextureRegionDrawable(new Texture(sliderBgPixmap));
+        sliderBgPixmap.dispose();
+        sliderStyle.background = sliderBgDrawable;
+
+        Pixmap sliderFilledPixmap = new Pixmap(1, 12, Pixmap.Format.RGBA8888);
+        sliderFilledPixmap.setColor(new Color(0.2f, 0.8f, 0.2f, 1));
+        sliderFilledPixmap.fill();
+        Drawable sliderFilledDrawable = new TextureRegionDrawable(new Texture(sliderFilledPixmap));
+        sliderFilledPixmap.dispose();
+        sliderStyle.knobBefore = sliderFilledDrawable;
+
+        Pixmap knobPixmap = new Pixmap(22, 22, Pixmap.Format.RGBA8888);
+        knobPixmap.setColor(Color.WHITE);
+        knobPixmap.fillCircle(11, 11, 10);
+        knobPixmap.setColor(new Color(0.2f, 0.2f, 0.2f, 1));
+        knobPixmap.drawCircle(11, 11, 10);
+        Drawable knobDrawable = new TextureRegionDrawable(new Texture(knobPixmap));
+        knobPixmap.dispose();
+        sliderStyle.knob = knobDrawable;
+
         skin.add("default-horizontal", sliderStyle);
 
         // ============================================
@@ -170,6 +189,8 @@ public abstract class BaseScreen implements Screen {
         currencyTable = new Table();
         currencyTable.top().right();
         currencyTable.setFillParent(true);
+        coinsLabel = new Label("Coins: 0", skin);
+        diamondsLabel = new Label("Diamonds: 0", skin);
         updateCurrencyDisplay();
         stage.addActor(currencyTable);
     }
@@ -178,26 +199,29 @@ public abstract class BaseScreen implements Screen {
         User currentUser = game.getCurrentUser();
         int coins = (currentUser != null) ? currentUser.getProgress().getCoins() : 0;
         int diamonds = (currentUser != null) ? currentUser.getProgress().getDiamonds() : 0;
-
         currencyTable.clear();
 
         Drawable bgDrawable = createColorDrawable(new Color(0, 0, 0, 0.5f));
 
-        coinsLabel = new Label("🪙 " + coins, skin);
-        diamondsLabel = new Label("💎 " + diamonds, skin);
+        coinsLabel.setText("Coins: " + coins);
+        diamondsLabel.setText("Diamonds: " + diamonds);
+
+
         coinsLabel.setFontScale(1.2f);
         diamondsLabel.setFontScale(1.2f);
+
+        coinsLabel.setColor(1, 1, 0.2f, 1);
+        diamondsLabel.setColor(0.3f, 0.8f, 1, 1);
 
         Label.LabelStyle style = new Label.LabelStyle(skin.get(Label.LabelStyle.class));
         style.background = bgDrawable;
         coinsLabel.setStyle(style);
         diamondsLabel.setStyle(style);
 
-        currencyTable.add(coinsLabel).padTop(10).padRight(10);
-        currencyTable.add(diamondsLabel).padTop(10).padRight(20);
+        currencyTable.add(coinsLabel).padTop(8).padRight(10).padLeft(8);
+        currencyTable.add(diamondsLabel).padTop(8).padRight(10);
         currencyTable.row();
     }
-
     protected void showToast(String message, float duration, boolean isError) {
         Label toast = new Label(message, skin);
         toast.setAlignment(Align.center);

@@ -101,8 +101,9 @@ public class Plant {
 
     public void performUpgrade() {
         if (canUpgrade()) {
+            int needed = getSeedPacketsNeeded();
             level++;
-            seedPackets -= getSeedPacketsNeeded();
+            seedPackets -= needed;
             // افزایش قدرت
             baseHp += 50;
             damage += 5;

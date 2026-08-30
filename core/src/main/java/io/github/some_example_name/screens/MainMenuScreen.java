@@ -24,6 +24,7 @@ public class MainMenuScreen extends BaseScreen {
         stage.addActor(table);
 
         Label titleLabel = new Label(" Main Menu", skin);
+        titleLabel.setFontScale(1.5f);
         table.add(titleLabel).padBottom(20).row();
 
 
@@ -33,9 +34,12 @@ public class MainMenuScreen extends BaseScreen {
         TextButton settingsBtn = new TextButton(" Settings", skin, "default");
 
         int unreadCount = getUnreadNewsCount();
-        String newsText = unreadCount > 0 ? "📰 News 🔴" : " News";
-        TextButton newsBtn = new TextButton(newsText, skin, "default");
-
+        TextButton newsBtn;
+        if (unreadCount > 0) {
+            newsBtn = new TextButton("* News *", skin, "default");
+        } else {
+            newsBtn = new TextButton(" News", skin, "default");
+        }
         TextButton profileBtn = new TextButton(" Profile", skin, "default");
         TextButton leaderboardBtn = new TextButton(" Leaderboard", skin, "default");
         TextButton logoutBtn = new TextButton(" Logout", skin, "default");

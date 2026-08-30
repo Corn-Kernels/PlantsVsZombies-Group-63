@@ -13,13 +13,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import io.github.some_example_name.Main;
+import io.github.some_example_name.model.NewsItem;
 import io.github.some_example_name.model.Plant;
 import io.github.some_example_name.model.PlayerProgress;
 import io.github.some_example_name.model.User;
 import io.github.some_example_name.model.Zombie;
 import io.github.some_example_name.utils.DataLoader;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CollectionScreen extends BaseScreen {
@@ -48,11 +51,32 @@ public class CollectionScreen extends BaseScreen {
         allPlants = DataLoader.loadAllPlants();
         allZombies = DataLoader.loadAllZombies();
 
-        // ===== زامبی‌های All Chapters رو دیده‌شده کن =====
-        for (Zombie z : allZombies) {
-            if (z.getChapter().equals("All Chapters")) {
-                z.setSeen(true);
+        PlayerProgress progress = user.getProgress();
+        List<String> ownedPlantNames = progress.getOwnedPlants();
+        for (Plant plant : allPlants) {
+            if (ownedPlantNames.contains(plant.getName().toUpperCase())) {
+                plant.setUnlocked(true);
             }
+        }
+        boolean newZombieFound = false;
+        for (Zombie z : allZombies) {
+            if (z.getChapter().equals("All Chapters") && !z.isSeen()) {
+                z.setSeen(true);
+                newZombieFound = true;
+
+                NewsItem news = new NewsItem(
+                    "zombie_" + System.currentTimeMillis(),
+                    "New Zombie Discovered: " + z.getName(),
+                    new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                    "You have encountered " + z.getName() + "! Study its weaknesses to defeat it.",
+                    "ZOMBIE"
+                );
+                progress.addNews(news);
+            }
+        }
+
+        if (newZombieFound) {
+            game.getStorageService().saveUsers();
         }
 
         filteredPlants = new ArrayList<>(allPlants);
@@ -61,6 +85,7 @@ public class CollectionScreen extends BaseScreen {
         loadBackground();
         buildUI();
         showPlantsTab();
+        updateCurrencyDisplay();
     }
 
     private void createDrawables() {
@@ -101,6 +126,7 @@ public class CollectionScreen extends BaseScreen {
         stage.addActor(mainTable);
 
         Label titleLabel = new Label(" COLLECTION", skin);
+        titleLabel.setFontScale(1.5f);
         mainTable.add(titleLabel).padBottom(10).row();
 
         ButtonGroup<TextButton> tabGroup = new ButtonGroup<>();
@@ -155,6 +181,7 @@ public class CollectionScreen extends BaseScreen {
         mainTable.add(detailTable).width(500).height(220).padBottom(10).row();
 
         TextButton backBtn = new TextButton(" Back", skin, "default");
+        backBtn.getLabel().setFontScale(1.2f);
         mainTable.add(backBtn).width(150).height(50).row();
 
         plantsTab.addListener(new ClickListener() {
@@ -300,6 +327,8 @@ public class CollectionScreen extends BaseScreen {
     }
 
     private Table createPlantCard(Plant plant) {
+        int plantSeeds = user.getProgress().getPlantSeedCount(plant.getName());
+        int neededSeeds = plant.getSeedPacketsNeeded();
         Table card = new Table();
         card.setBackground(cardDrawable);
         card.pad(5);
@@ -333,11 +362,12 @@ public class CollectionScreen extends BaseScreen {
         Label costLabel = new Label("☀ " + plant.getCost(), skin);
         costLabel.setFontScale(0.65f);
 
-        Label seedLabel = new Label("Seeds: " + plant.getSeedPackets() + "/" + plant.getSeedPacketsNeeded(), skin);
+        Label seedLabel = new Label("Seeds: " + plantSeeds + "/" + neededSeeds, skin);
         seedLabel.setFontScale(0.6f);
 
-        Label statusLabel = new Label(plant.isUnlocked() ? "✅" : "🔒", skin);
-        statusLabel.setFontScale(0.8f);
+        Label statusLabel = new Label(plant.isUnlocked() ? "Unlocked" : "Locked", skin);
+        statusLabel.setFontScale(0.7f);
+        statusLabel.setColor(plant.isUnlocked() ? 0.2f : 1, plant.isUnlocked() ? 1 : 0.2f, plant.isUnlocked() ? 0.2f : 0.2f, 1);
 
         Table buttonTable = new Table();
 
@@ -354,6 +384,7 @@ public class CollectionScreen extends BaseScreen {
             }
             upgradeBtn.setWidth(100);
             upgradeBtn.setHeight(25);
+            upgradeBtn.getLabel().setFontScale(0.7f);
 
             final Plant finalPlant = plant;
             upgradeBtn.addListener(new ClickListener() {
@@ -361,6 +392,8 @@ public class CollectionScreen extends BaseScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     if (canUpgrade) {
                         handleUpgrade(finalPlant);
+                    }else {
+                        showToast("❌ Not enough seeds! Need " + finalPlant.getSeedPacketsNeeded() + " seed packets.", 2f, true);
                     }
                 }
             });
@@ -368,15 +401,25 @@ public class CollectionScreen extends BaseScreen {
         }
 
         if (!plant.isUnlocked()) {
+            boolean isPurchasable = isPlantPurchasable(plant);
             TextButton buyBtn = new TextButton("Buy 100", skin, "default");
             buyBtn.setWidth(80);
             buyBtn.setHeight(25);
+            buyBtn.getLabel().setFontScale(0.7f);
+            if (!isPurchasable) {
+                buyBtn.setDisabled(true);
+                buyBtn.setText("Locked");
+            }
 
             final Plant finalPlant = plant;
             buyBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    buyPlant(finalPlant);
+                    if (isPurchasable) {
+                        buyPlant(finalPlant);
+                    } else {
+                        showToast("❌ This plant is locked until you progress further!", 2f, true);
+                    }
                 }
             });
             buttonTable.add(buyBtn);
@@ -402,6 +445,48 @@ public class CollectionScreen extends BaseScreen {
         });
 
         return card;
+    }
+    private boolean isPlantPurchasable(Plant plant) {
+        // ===== گیاهان خاص که باید در مراحل خاصی آنلاک بشن =====
+        String name = plant.getName().toUpperCase();
+
+        // Chapter 1: Sunflower, Peashooter, Wall-nut (قبلاً آنلاک هستن)
+        if (name.equals("SUNFLOWER") || name.equals("PEASHOOTER") || name.equals("WALL_NUT")) {
+            return true;
+        }
+
+        // Chapter 1: Potato Mine, Cherry Bomb, Snow Pea (بعد از مرحله ۲)
+        if (name.equals("POTATO_MINE") || name.equals("CHERRY_BOMB") || name.equals("SNOW_PEA")) {
+            return user.getProgress().getCompletedLevels() >= 2;
+        }
+
+        // Chapter 2: Repeater, Cactus, Starfruit (بعد از Chapter 1 کامل)
+        if (name.equals("REPEATER") || name.equals("CACTUS") || name.equals("STARFRUIT")) {
+            return user.getProgress().getCompletedLevels() >= 4;
+        }
+
+        // Chapter 2: Fire Peashooter, Bonk Choy (بعد از مرحله ۶)
+        if (name.equals("FIRE_PEASHOOTER") || name.equals("BONK_CHOY")) {
+            return user.getProgress().getCompletedLevels() >= 6;
+        }
+
+        // Chapter 3: Fume-shroom, Magnet-shroom, Hypno-shroom (بعد از Chapter 2 کامل)
+        if (name.equals("FUME_SHROOM") || name.equals("MAGNET_SHROOM") || name.equals("HYPNOSHROOM")) {
+            return user.getProgress().getCompletedLevels() >= 8;
+        }
+
+        // Chapter 3: Doom-shroom, Ice-shroom (بعد از مرحله ۱۰)
+        if (name.equals("DOOM_SHROOM") || name.equals("ICE_SHROOM")) {
+            return user.getProgress().getCompletedLevels() >= 10;
+        }
+
+        // Chapter 4: Melon-pult, Winter Melon, Cat-tail (بعد از Chapter 3 کامل)
+        if (name.equals("MELON_PULT") || name.equals("WINTER_MELON") || name.equals("CAT_TAIL")) {
+            return user.getProgress().getCompletedLevels() >= 12;
+        }
+
+        // بقیه گیاهان (اختیاری) - بعد از کامل کردن همه مراحل
+        return user.getProgress().getCompletedLevels() >= 16;
     }
 
     private Table createZombieCard(Zombie zombie) {
@@ -465,16 +550,18 @@ public class CollectionScreen extends BaseScreen {
     private void handleUpgrade(Plant plant) {
         PlayerProgress progress = user.getProgress();
         int cost = plant.getUpgradeCost();
+        int plantSeeds = progress.getPlantSeedCount(plant.getName());
+        int neededSeeds = plant.getSeedPacketsNeeded();
 
         if (progress.getCoins() < cost) {
             showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
             return;
         }
-
-        if (plant.getSeedPackets() < plant.getSeedPacketsNeeded()) {
-            showToast("❌ Not enough seeds! Need " + plant.getSeedPacketsNeeded() + " seeds.", 2f, true);
+        if (plantSeeds < neededSeeds) {
+            showToast("❌ Not enough seeds for " + plant.getName() + "! Need " + neededSeeds + ".", 2f, true);
             return;
         }
+
 
         if (plant.getLevel() >= plant.getMaxLevel()) {
             showToast("⭐ Already at max level!", 2f, false);
@@ -482,6 +569,7 @@ public class CollectionScreen extends BaseScreen {
         }
 
         progress.deductCoins(cost);
+        progress.removePlantSeed(plant.getName(), neededSeeds);
         plant.performUpgrade();
 
         game.getStorageService().saveUsers();
@@ -494,19 +582,33 @@ public class CollectionScreen extends BaseScreen {
     private void buyPlant(Plant plant) {
         PlayerProgress progress = user.getProgress();
         int cost = 100;
+        if (!isPlantPurchasable(plant)) {
+            showToast("❌ This plant is locked until you progress further!", 2f, true);
+            return;
+        }
+        if (progress.getCoins() < cost) {
+            showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
+            return;
+        }
 
-        if (progress.getCoins() >= cost) {
-            progress.deductCoins(cost);
-            plant.setUnlocked(true);
-            progress.addPlant(plant.getName().toUpperCase());
+        progress.deductCoins(cost);
+        plant.setUnlocked(true);
+        progress.addPlant(plant.getName().toUpperCase());
+
+            NewsItem news = new NewsItem(
+                "plant_" + System.currentTimeMillis(),
+                "New Plant Unlocked: " + plant.getName(),
+                new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                "You have unlocked " + plant.getName() + "! Add it to your collection and use it in battles.",
+                "PLANT"
+            );
+            progress.addNews(news);
             game.getStorageService().saveUsers();
             updateCurrencyDisplay();
 
             applyFilters();
             showToast("✅ " + plant.getName() + " purchased successfully!", 2f, false);
-        } else {
-            showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
-        }
+
     }
 
     private void showPlantDetail(Plant plant) {
@@ -518,6 +620,8 @@ public class CollectionScreen extends BaseScreen {
         } catch (Exception e) {
             detailImage.setColor(0.3f, 0.3f, 0.3f, 1);
         }
+        int plantSeeds = user.getProgress().getPlantSeedCount(plant.getName());
+        int neededSeeds = plant.getSeedPacketsNeeded();
 
         StringBuilder sb = new StringBuilder();
         sb.append("🌱 ").append(plant.getName()).append("\n");
@@ -527,7 +631,7 @@ public class CollectionScreen extends BaseScreen {
         sb.append("Damage: ").append(plant.getDamage()).append("\n");
         sb.append("Recharge: ").append(plant.getRecharge()).append("s\n");
         sb.append("Level: ").append(plant.getLevel()).append("/").append(plant.getMaxLevel()).append("\n");
-        sb.append("Seeds: ").append(plant.getSeedPackets()).append("/").append(plant.getSeedPacketsNeeded()).append("\n");
+        sb.append("Seeds: ").append(plantSeeds).append("/").append(neededSeeds).append("\n");
         sb.append("Status: ").append(plant.isUnlocked() ? "✅ Unlocked" : "🔒 Locked").append("\n");
 
         if (plant.getTags().length > 0) {
@@ -582,6 +686,7 @@ public class CollectionScreen extends BaseScreen {
 
     @Override
     public void render(float delta) {
+        updateCurrencyDisplay();
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);

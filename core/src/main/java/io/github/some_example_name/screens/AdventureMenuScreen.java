@@ -10,7 +10,9 @@ import io.github.some_example_name.Main;
 import io.github.some_example_name.model.User;
 import io.github.some_example_name.model.PlayerProgress;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AdventureMenuScreen extends BaseScreen {
 
@@ -21,13 +23,18 @@ public class AdventureMenuScreen extends BaseScreen {
     private ScrollPane scrollPane;
     private boolean showingLevels = false;
     private String currentChapter = "";
-
+    private Map<String, Integer> completedLevelsPerChapter;
     public AdventureMenuScreen(Main game, User user) {
         super(game);
         this.user = user;
+        completedLevelsPerChapter = new HashMap<>();
 
+        completedLevelsPerChapter.put("Chapter 1", 0);
+        completedLevelsPerChapter.put("Chapter 2", 0);
+        completedLevelsPerChapter.put("Chapter 3", 0);
+        completedLevelsPerChapter.put("Chapter 4", 0);
         loadBackground();
-        // ❌ حذف: setupCurrencyDisplay(); ← خود BaseScreen این رو توی سازنده صدا میزنه
+
         buildUI();
     }
 
@@ -50,6 +57,7 @@ public class AdventureMenuScreen extends BaseScreen {
         stage.addActor(mainTable);
 
         Label titleLabel = new Label(" ADVENTURE", skin);
+        titleLabel.setFontScale(1.5f);
         mainTable.add(titleLabel).padBottom(10).row();
 
         chaptersTable = new Table();
@@ -62,6 +70,7 @@ public class AdventureMenuScreen extends BaseScreen {
         mainTable.add(scrollPane).width(450).height(350).padBottom(20).row();
 
         TextButton backBtn = new TextButton(" Back", skin, "default");
+        backBtn.getLabel().setFontScale(1.2f);
         mainTable.add(backBtn).width(150).height(50).row();
 
         backBtn.addListener(new ClickListener() {
@@ -84,13 +93,17 @@ public class AdventureMenuScreen extends BaseScreen {
             boolean isUnlocked = unlockedChapters.contains(chapter);
             int completedLevels = getCompletedLevelsForChapter(chapter);
 
-            String statusText = isUnlocked ? "✅" : "🔒";
-            String chapterText = statusText + " " + chapter + " (" + completedLevels + "/" + totalLevels + ")";
+            String statusText = isUnlocked ? " (Unlocked)" : " (Locked)";
+            String chapterText = chapter + statusText + " [" + completedLevels + "/" + totalLevels + "]";
 
             TextButton chapterBtn = new TextButton(chapterText, skin);
+            chapterBtn.getLabel().setFontScale(1.1f);
 
             if (!isUnlocked) {
                 chapterBtn.setDisabled(true);
+                chapterBtn.setColor(0.5f, 0.5f, 0.5f, 1);// خاکستری برای لاک
+            }else {
+                chapterBtn.setColor(1, 1, 1, 1);// سفید برای آنلاک
             }
             chaptersTable.add(chapterBtn).width(400).height(45).padBottom(5).row();
 
@@ -113,24 +126,32 @@ public class AdventureMenuScreen extends BaseScreen {
         currentChapter = chapterName;
 
         Label titleLabel = new Label(" " + chapterName + " - Levels", skin);
+        titleLabel.setFontScale(1.3f);
         chaptersTable.add(titleLabel).padBottom(10).row();
 
         String[] levels = {"Level 1", "Level 2", "Level 3", "Level 4"};
-        boolean[] isUnlocked = {true, true, false, false};
+        int completedCount = getCompletedLevelsForChapter(chapterName);
 
         for (int i = 0; i < levels.length; i++) {
             final int index = i;
             final String levelName = levels[i];
-            String status = isUnlocked[i] ? "▶️ " : "🔒 ";
-            TextButton levelBtn = new TextButton(status + levelName, skin);
 
-            if (!isUnlocked[i]) {
+            boolean isUnlocked = (i <= completedCount);
+            String statusText = isUnlocked ? " (Unlocked)" : " (Locked)";
+            String displayText = "▶ " + levelName + statusText;
+
+            TextButton levelBtn = new TextButton(displayText, skin);
+            levelBtn.getLabel().setFontScale(1f);
+            if (!isUnlocked) {
                 levelBtn.setDisabled(true);
+                levelBtn.setColor(0.5f, 0.5f, 0.5f, 1);
+            } else {
+                levelBtn.setColor(1, 1, 1, 1);
             }
 
             chaptersTable.add(levelBtn).width(350).height(40).padBottom(5).row();
 
-            final boolean isUnlockedFinal = isUnlocked[i];
+            final boolean isUnlockedFinal = isUnlocked;
             levelBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -143,20 +164,55 @@ public class AdventureMenuScreen extends BaseScreen {
         }
 
         TextButton backBtn = new TextButton(" Back to Chapters", skin, "default");
+        backBtn.getLabel().setFontScale(1.1f);
         chaptersTable.add(backBtn).width(350).height(40).padTop(10).row();
 
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 PlayerProgress progress = user.getProgress();
+                updateCompletedLevels(progress);
                 buildChapterList(progress);
             }
         });
         scrollPane.setScrollY(0);
     }
+    private void updateCompletedLevels(PlayerProgress progress) {
+        // در اینجا باید از داده‌های واقعی استفاده کنی
+        int totalCompleted = progress.getCompletedLevels();
+        int levelsPerChapter = 4;
+        for (String chapter : completedLevelsPerChapter.keySet()) {
+            if (totalCompleted >= levelsPerChapter) {
+                completedLevelsPerChapter.put(chapter, levelsPerChapter);
+                totalCompleted -= levelsPerChapter;
+            } else {
+                completedLevelsPerChapter.put(chapter, totalCompleted);
+                break;
+            }
+        }
+    }
 
     private int getCompletedLevelsForChapter(String chapter) {
-        return 2;
+        PlayerProgress progress = user.getProgress();
+        int totalCompleted = progress.getCompletedLevels();
+
+        if (totalCompleted == 0) return 0;
+
+        int levelsPerChapter = 4;
+        int chapterIndex = getChapterIndex(chapter);
+        int completedBefore = chapterIndex * levelsPerChapter;
+
+        if (totalCompleted <= completedBefore) return 0;
+        return Math.min(totalCompleted - completedBefore, levelsPerChapter);
+    }
+    private int getChapterIndex(String chapter) {
+        switch (chapter) {
+            case "Chapter 1": return 0;
+            case "Chapter 2": return 1;
+            case "Chapter 3": return 2;
+            case "Chapter 4": return 3;
+            default: return 0;
+        }
     }
 
     @Override

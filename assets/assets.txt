@@ -2319,6 +2319,9 @@ IMAGES/plants/twin_sunflower.png
 IMAGES/plants/wall_nut.png
 IMAGES/plants/wasabi_whip.png
 IMAGES/plants/winter_melon.png
+IMAGES/shop/plant_food.png
+IMAGES/shop/pot.png
+IMAGES/shop/seed_packet.png
 IMAGES/shop_background.jpg
 IMAGES/zombies/ZombieBeachArmor1Default.png
 IMAGES/zombies/ZombieBeachArmor2Default.png

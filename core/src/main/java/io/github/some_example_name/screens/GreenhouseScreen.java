@@ -409,8 +409,9 @@ public class GreenhouseScreen extends BaseScreen {
         int coinsReward = 500;
 
         if (!plantType.equals("MARIGOLD")) {
-            progress.addSeedPacket(plantType);
-            showToast("🌱 +1 " + plantType + " seed packet!", 2f, false);
+            progress.addPlantSeed(plantType, 1);
+            int totalSeeds = progress.getPlantSeedCount(plantType);
+            showToast("🌱 +1 " + plantType + " seed packet! (Total: " + totalSeeds + ")", 2f, false);
         }
 
         progress.addCoins(coinsReward);
