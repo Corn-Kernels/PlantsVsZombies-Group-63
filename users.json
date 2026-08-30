@@ -1,0 +1,2969 @@
+{
+  "test": {
+    "username": "test",
+    "password": "123",
+    "nickname": "Tester",
+    "email": "test@test.com",
+    "gender": "male",
+    "isLoggedIn": false,
+    "stayLoggedIn": false,
+    "progress": {
+      "coins": 1000,
+      "diamonds": 10,
+      "highScore": 0,
+      "unlockedChapters": [
+        "Chapter 1"
+      ],
+      "ownedPlants": [
+        "SUNFLOWER",
+        "PEASHOOTER",
+        "WALL_NUT"
+      ],
+      "seenZombies": [],
+      "completedLevels": 0,
+      "gamesPlayed": 0,
+      "pots": 0,
+      "plantFood": 0,
+      "plantSeedPackets": {},
+      "difficultyLevel": 3,
+      "gameSpeed": 1.0,
+      "showGrid": false,
+      "debugMode": false,
+      "minigamesCompleted": 0,
+      "dailyQuestsCompleted": 0,
+      "nonDailyQuestsCompleted": 0,
+      "newsList": [],
+      "garden": {
+        "pots": [
+          {
+            "row": 1,
+            "col": 1,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          }
+        ]
+      }
+    },
+    "securityQuestionIndex": 0,
+    "securityAnswer": ""
+  },
+  "bahar": {
+    "username": "bahar",
+    "password": "abc",
+    "nickname": "bahar",
+    "email": "bahar@gmail.com",
+    "gender": "female",
+    "isLoggedIn": true,
+    "stayLoggedIn": false,
+    "progress": {
+      "coins": 25760,
+      "diamonds": 4,
+      "highScore": 0,
+      "unlockedChapters": [
+        "Chapter 1"
+      ],
+      "ownedPlants": [
+        "SUNFLOWER",
+        "PEASHOOTER",
+        "WALL_NUT",
+        "DOOM-SHROOM",
+        "CAT-TAIL",
+        "CATTAIL-MINT",
+        "PHAT BEET",
+        "ELECTRIC BLUEBERRY",
+        "CHOMPER",
+        "GOLD BLOOM",
+        "TWIN SUNFLOWER"
+      ],
+      "seenZombies": [],
+      "completedLevels": 0,
+      "gamesPlayed": 0,
+      "pots": 0,
+      "plantFood": 2,
+      "plantSeedPackets": {
+        "SUNFLOWER": 4,
+        "REPEATER": 5,
+        "SNOW_PEA": 4,
+        "WALL_NUT": 4,
+        "PEASHOOTER": 2
+      },
+      "difficultyLevel": 3,
+      "gameSpeed": 2.0,
+      "showGrid": false,
+      "debugMode": false,
+      "minigamesCompleted": 0,
+      "dailyQuestsCompleted": 0,
+      "nonDailyQuestsCompleted": 0,
+      "newsList": [
+        {
+          "id": "1",
+          "title": "Welcome to the game!",
+          "date": "2024-01-01",
+          "body": "Welcome to Plants vs. Zombies! Start your adventure by playing Chapter 1.",
+          "isRead": false,
+          "type": "GENERAL"
+        },
+        {
+          "id": "2",
+          "title": "New zombie: Buckethead!",
+          "date": "2024-01-05",
+          "body": "The Buckethead zombie has high armor. Use explosive plants to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "3",
+          "title": "New plant: Snow Pea!",
+          "date": "2024-01-10",
+          "body": "Snow Pea slows down zombies with its icy peas.",
+          "isRead": false,
+          "type": "PLANT"
+        },
+        {
+          "id": "4",
+          "title": "Chapter 2 Unlocked!",
+          "date": "2024-01-12",
+          "body": "You have unlocked Chapter 2: Ice Caves. New zombies and plants await!",
+          "isRead": false,
+          "type": "LEVEL"
+        },
+        {
+          "id": "5",
+          "title": "New Minigame: Vasebreaker!",
+          "date": "2024-01-15",
+          "body": "Try the new Vasebreaker minigame. Break vases to find plants and defeat zombies.",
+          "isRead": false,
+          "type": "MINIGAME"
+        },
+        {
+          "id": "zombie_1788023094752",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788023094794",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788023094795",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788023094795",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788023094795",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-29",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788023094795",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-29",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788023094795",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788023094795",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788023094796",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "plant_1788023103703",
+          "title": "New Plant Unlocked: Sunflower",
+          "date": "2026-08-29",
+          "body": "You have unlocked Sunflower! Add it to your collection and use it in battles.",
+          "isRead": false,
+          "type": "PLANT"
+        },
+        {
+          "id": "zombie_1788032361999",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032362087",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032362087",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032362088",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032362088",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-29",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032362088",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-29",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032362088",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032362088",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032362088",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699908",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699908",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699909",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699909",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699909",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-29",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699909",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-29",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699909",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699910",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788032699910",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-29",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912262",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912323",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912323",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912324",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912324",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912324",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912324",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912324",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035912324",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926255",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926255",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926255",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926255",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926255",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926255",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926256",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926256",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788035926256",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092084",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092145",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092145",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092145",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092145",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092145",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092145",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092145",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788037092145",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425295",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425383",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425383",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425383",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425383",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425384",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425384",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425384",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038425384",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568897",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568974",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568975",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568975",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568975",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568976",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568976",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568976",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788038568976",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204224",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204304",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204304",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204305",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204305",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204305",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204305",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204305",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039204306",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209985",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209985",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209985",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209985",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209986",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209986",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209986",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209986",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039209986",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474256",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474346",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474346",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474346",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474347",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474347",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474347",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474347",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788039474348",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862313",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862366",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862366",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862366",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862366",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862367",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862367",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862367",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788060862367",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317412",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317457",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317458",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317458",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317458",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317458",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317458",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317458",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061317458",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360481",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360525",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360526",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360526",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360526",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360526",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360526",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360526",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061360526",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413736",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413779",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413780",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413780",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413780",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413780",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413780",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413780",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061413780",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628602",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628647",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628647",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628647",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628647",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628647",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628647",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628647",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788061628647",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053846",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053889",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053889",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053889",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053889",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053889",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053889",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053889",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062053890",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119747",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119791",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119792",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119792",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119792",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119792",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119792",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119792",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062119792",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279247",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279293",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279294",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279294",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279294",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279294",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279294",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279294",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062279294",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323938",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323981",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323981",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323981",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323981",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323982",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323982",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323982",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062323982",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637351",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637397",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637397",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637397",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637397",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637397",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637397",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637397",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788062637398",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720762",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720850",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720851",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720851",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720851",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720851",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720851",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720851",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065720851",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991310",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991436",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991436",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991436",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991437",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991437",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991437",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991437",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788065991438",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024509",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024509",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024509",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024509",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024509",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024510",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024510",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024510",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066024510",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046860",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046861",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046861",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046861",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046862",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046862",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046862",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046862",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066046862",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655650",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655739",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655739",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655739",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655739",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655740",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655740",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655740",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066655740",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684270",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684271",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684271",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684271",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684271",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684271",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684272",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684272",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066684272",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941561",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941650",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941651",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941651",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941651",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941651",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941652",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941652",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066941652",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956612",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956612",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956612",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956612",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956613",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956613",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956613",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956613",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788066956613",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067199966",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067200057",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067200057",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067200057",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067200057",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067200058",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067200058",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067200058",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067200058",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439803",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439893",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439893",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439894",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439894",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439894",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439894",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439894",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067439895",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509256",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509256",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509256",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509256",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509257",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509257",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509257",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509257",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788067509257",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884308",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884380",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884380",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884380",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884380",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884381",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884381",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884381",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788070884381",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751068",
+          "title": "New Zombie Discovered: Basic Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Basic Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751143",
+          "title": "New Zombie Discovered: Conehead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Conehead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751143",
+          "title": "New Zombie Discovered: Buckethead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Buckethead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751143",
+          "title": "New Zombie Discovered: Brickhead Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Brickhead Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751144",
+          "title": "New Zombie Discovered: Gargantuar",
+          "date": "2026-08-30",
+          "body": "You have encountered Gargantuar! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751144",
+          "title": "New Zombie Discovered: Imp",
+          "date": "2026-08-30",
+          "body": "You have encountered Imp! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751144",
+          "title": "New Zombie Discovered: Flag Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Flag Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751144",
+          "title": "New Zombie Discovered: Pet Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Pet Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "zombie_1788072751145",
+          "title": "New Zombie Discovered: Piano Zombie",
+          "date": "2026-08-30",
+          "body": "You have encountered Piano Zombie! Study its weaknesses to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        }
+      ],
+      "garden": {
+        "pots": [
+          {
+            "row": 1,
+            "col": 1,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "isLocked": false,
+            "plantType": "MARIGOLD",
+            "plantedAt": 1788073843110,
+            "readyAt": 1788073848110,
+            "isReady": true
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          }
+        ]
+      }
+    },
+    "securityQuestionIndex": 0,
+    "securityAnswer": "baran"
+  },
+  "bran": {
+    "username": "bran",
+    "password": "abc",
+    "nickname": "baran",
+    "email": "baran@gmail.com",
+    "gender": "female",
+    "isLoggedIn": true,
+    "stayLoggedIn": false,
+    "progress": {
+      "coins": 1590,
+      "diamonds": 9,
+      "highScore": 0,
+      "unlockedChapters": [
+        "Chapter 1"
+      ],
+      "ownedPlants": [
+        "SUNFLOWER",
+        "PEASHOOTER",
+        "WALL_NUT"
+      ],
+      "seenZombies": [],
+      "completedLevels": 0,
+      "gamesPlayed": 0,
+      "pots": 0,
+      "plantFood": 0,
+      "plantSeedPackets": {},
+      "difficultyLevel": 3,
+      "gameSpeed": 1.0,
+      "showGrid": false,
+      "debugMode": false,
+      "minigamesCompleted": 0,
+      "dailyQuestsCompleted": 0,
+      "nonDailyQuestsCompleted": 0,
+      "newsList": [
+        {
+          "id": "1",
+          "title": "Welcome to the game!",
+          "date": "2024-01-01",
+          "body": "Welcome to Plants vs. Zombies! Start your adventure by playing Chapter 1.",
+          "isRead": false,
+          "type": "GENERAL"
+        },
+        {
+          "id": "2",
+          "title": "New zombie: Buckethead!",
+          "date": "2024-01-05",
+          "body": "The Buckethead zombie has high armor. Use explosive plants to defeat it.",
+          "isRead": false,
+          "type": "ZOMBIE"
+        },
+        {
+          "id": "3",
+          "title": "New plant: Snow Pea!",
+          "date": "2024-01-10",
+          "body": "Snow Pea slows down zombies with its icy peas.",
+          "isRead": false,
+          "type": "PLANT"
+        },
+        {
+          "id": "4",
+          "title": "Chapter 2 Unlocked!",
+          "date": "2024-01-12",
+          "body": "You have unlocked Chapter 2: Ice Caves. New zombies and plants await!",
+          "isRead": false,
+          "type": "LEVEL"
+        },
+        {
+          "id": "5",
+          "title": "New Minigame: Vasebreaker!",
+          "date": "2024-01-15",
+          "body": "Try the new Vasebreaker minigame. Break vases to find plants and defeat zombies.",
+          "isRead": false,
+          "type": "MINIGAME"
+        }
+      ],
+      "garden": {
+        "pots": [
+          {
+            "row": 1,
+            "col": 1,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 2,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 3,
+            "isLocked": false,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 1,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 1,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 2,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 1,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 2,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 3,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          },
+          {
+            "row": 3,
+            "col": 4,
+            "isLocked": true,
+            "plantedAt": 0,
+            "readyAt": 0,
+            "isReady": false
+          }
+        ]
+      }
+    },
+    "securityQuestionIndex": 0,
+    "securityAnswer": "b"
+  }
+}
