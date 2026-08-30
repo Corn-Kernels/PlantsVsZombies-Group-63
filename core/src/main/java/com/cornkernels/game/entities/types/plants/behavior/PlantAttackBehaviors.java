@@ -432,7 +432,7 @@ public class PlantAttackBehaviors {
         register(def, new KernelPultBehavior(
             shots,
             new LobProjectile(normalDmg, null, null, 0f, 0),
-            new LobProjectile(butterDmg, null, null, 0f, 0),
+            new LobProjectile(butterDmg, null, null),
             butterChance
         ));
     }

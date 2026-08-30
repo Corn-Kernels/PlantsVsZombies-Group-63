@@ -2,10 +2,7 @@ package com.cornkernels.game.entities.types.plants.behavior;
 
 import com.cornkernels.game.entities.types.plants.PlantDef;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
-import com.cornkernels.game.entities.types.plants.behavior.plantfoods.DefensivePlantFoodBehavior;
-import com.cornkernels.game.entities.types.plants.behavior.plantfoods.PuffShroomPlantFoodBehavior;
-import com.cornkernels.game.entities.types.plants.behavior.plantfoods.RapidFirePlantFoodBehavior;
-import com.cornkernels.game.entities.types.plants.behavior.plantfoods.SunProducerPlantFoodBehavior;
+import com.cornkernels.game.entities.types.plants.behavior.plantfoods.*;
 import com.cornkernels.game.entities.types.plants.behavior.plantfoods.specific.RepeaterPlantFoodBehavior;
 import com.cornkernels.game.entities.types.plants.behavior.plantfoods.specific.SunShroomPlantFoodBehavior;
 import com.cornkernels.game.entities.types.plants.behavior.plantfoods.specific.ThreepeaterPlantFoodBehavior;
@@ -139,11 +136,24 @@ public class PlantFoodBehaviors {
         registerPuffShroomPF(PlantDef.SEA_SHROOM3, 25, 60);
         registerPuffShroomPF(PlantDef.SEA_SHROOM4, 25, 60);
 
+        PlantDef[] lobbers = {
+            PlantDef.CABBAGE_PULT1, PlantDef.CABBAGE_PULT2, PlantDef.CABBAGE_PULT3, PlantDef.CABBAGE_PULT4,
+            PlantDef.MELON_PULT1, PlantDef.MELON_PULT2, PlantDef.MELON_PULT3, PlantDef.MELON_PULT4,
+            PlantDef.WINTER_MELON1, PlantDef.WINTER_MELON2, PlantDef.WINTER_MELON3, PlantDef.WINTER_MELON4,
+            PlantDef.PEPPER_PULT1, PlantDef.PEPPER_PULT2, PlantDef.PEPPER_PULT3, PlantDef.PEPPER_PULT4,
+            PlantDef.KERNEL_PULT1, PlantDef.KERNEL_PULT2, PlantDef.KERNEL_PULT3, PlantDef.KERNEL_PULT4
+        };
+        LobberPlantFoodBehavior LOBBER_PF = new LobberPlantFoodBehavior();
+        for (PlantDef def : lobbers) {
+            register(def, LOBBER_PF, 30);
+        }
+
         // ==========================================
         // UNIMPLEMENTED FALLBACKS
         // ==========================================
+        RapidFirePlantFoodBehavior RAPID_PF = new RapidFirePlantFoodBehavior();
         for (PlantDef def : rapidFirePlants) {
-            register(def, new RapidFirePlantFoodBehavior(), 60);
+        register(def, RAPID_PF, 60);
         }
 
         for (PlantDef def : PlantDef.values()) {

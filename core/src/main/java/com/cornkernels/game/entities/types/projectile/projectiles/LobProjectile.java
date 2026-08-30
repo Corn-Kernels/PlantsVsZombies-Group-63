@@ -16,6 +16,7 @@ public class LobProjectile extends AbstractProjectile {
     public Vec2d startPosition;
     public float areaOfEffect;
     public int aoeDamage;
+    public boolean butter=false;
 
     public LobProjectile(int damage, Vec2d startPosition, Entity target, float radius, int aoeDamage) {
         super(damage, new Vec2d(LOB_SPEED, 0), startPosition);
@@ -23,6 +24,12 @@ public class LobProjectile extends AbstractProjectile {
         this.startPosition = startPosition;
         this.areaOfEffect = radius;
         this.aoeDamage = aoeDamage;
+    }
+    public LobProjectile(int damage, Vec2d startPosition, Entity target) {
+        super(damage, new Vec2d(LOB_SPEED, 0), startPosition);
+        this.target = target;
+        this.startPosition = startPosition;
+        butter=true;
     }
 
     @Override
@@ -41,6 +48,10 @@ public class LobProjectile extends AbstractProjectile {
             } else {
                 // Standard Lobber (e.g., Cabbage-pult)
                 CombatSystem.applyDamage(target, directDamage, false);
+                //TODO add the buttering
+//                if(butter){
+//                    target.add()
+//                }
             }
 
             return true;

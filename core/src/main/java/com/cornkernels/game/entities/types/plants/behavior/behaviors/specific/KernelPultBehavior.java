@@ -91,4 +91,8 @@ public class KernelPultBehavior implements PlantAttackBehavior {
             field.addProjectile(spawned);
         }
     }
+
+    public AbstractProjectile getSpecialProjectile() {
+        return specialProjectile;
+    }
 }
