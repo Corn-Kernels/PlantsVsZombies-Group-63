@@ -82,4 +82,9 @@ public class LobShotBehavior implements PlantAttackBehavior {
             field.addProjectile(spawned);
         }
     }
+
+    // Add this to the bottom of LobShotBehavior.java
+    public AbstractProjectile getProjectile() {
+        return projectile;
+    }
 }

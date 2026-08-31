@@ -38,7 +38,19 @@ public class PlantAttackSystem extends EntitySystem {
 
             attack.cooldownRemaining = Math.max(0, attack.cooldownRemaining - deltaTick);
 
-            boolean hasTarget = attack.behavior.hasTarget(plant, field);
+            // --- PLANT FOOD BYPASS LOGIC ---
+            PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
+            boolean isPlantFoodActive = (pf != null && pf.timerTicks > 0);
+
+            boolean hasTarget;
+            if (isPlantFoodActive) {
+                pf.behavior.plantFood(plant,field);
+                updateAttackAnimation(plant, true);
+                continue;
+            } else {
+                hasTarget = attack.behavior.hasTarget(plant, field);
+            }
+
             updateAttackAnimation(plant, hasTarget);
 
             if (attack.cooldownRemaining > 0) continue;
@@ -62,10 +74,8 @@ public class PlantAttackSystem extends EntitySystem {
         if (stateComp.state == desired) return;
 
         stateComp.state = desired;
-
-        if (desired == PlantStateComponent.State.IDLE) {
-            PlantAnimationLocator.applyClip(pamPlayer, plant.get(PamAnimationComponent.class),
-                plant.get(PlantDefComponent.class).def(), "idle");
-        }
+        PlantAnimationLocator.applyClip(pamPlayer, plant.get(PamAnimationComponent.class),
+            plant.get(PlantDefComponent.class).def(),
+            desired == PlantStateComponent.State.SHOOTING ? "attack" : "idle");
     }
 }

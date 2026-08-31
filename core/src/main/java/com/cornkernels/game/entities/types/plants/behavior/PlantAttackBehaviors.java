@@ -280,6 +280,7 @@ public class PlantAttackBehaviors {
         registerTrapExplosive(PlantDef.PRIMAL_POTATO_MINE3, 2400, 1.5f, 4.0f);
         registerTrapExplosive(PlantDef.PRIMAL_POTATO_MINE4, 2800, 1.5f, 4.0f);
 
+        // Cherry Bomb (3x3 area -> 1.5 tile radius, 1.0s wait)
         registerInstaExplosion(PlantDef.CHERRY_BOMB1, 1800, 1.5f, 1.0f, true);
         registerInstaExplosion(PlantDef.CHERRY_BOMB2, 1800, 1.5f, 1.0f, true);
         registerInstaExplosion(PlantDef.CHERRY_BOMB3, 2400, 1.5f, 1.0f, true);
@@ -361,7 +362,6 @@ public class PlantAttackBehaviors {
         // Processes everything without a custom registry
         // ==========================================
 
-
         for (PlantDef def : PlantDef.values()) {
             if (!REGISTRY.containsKey(def)) {
                 register(def, NO_ATTACK);
@@ -402,7 +402,7 @@ public class PlantAttackBehaviors {
     }
 
     /**
-     * Helper to register Lobbers with Area of Effect splash damage (e.g. Melon-pult, Winter Melon).
+     * Helper to register Lobbers with Area of Effect splash damage (e.g. Melon-pult).
      */
     private static void registerLobberAoE(PlantDef def, int defaultDamage, float radius, int aoeDamage, boolean fiery, int chillDurationTicks) {
         int damage = parseDamage(def, defaultDamage);
@@ -439,7 +439,7 @@ public class PlantAttackBehaviors {
         register(def, new KernelPultBehavior(
             shots,
             new LobProjectile(normalDmg, null, null, 0f, 0),
-            new LobProjectile(butterDmg, null, null, 0f, 0, false, 0, 160), // 160 ticks = 8 seconds stun
+            new LobProjectile(butterDmg, null, null, 0f, 0, false, 0, 160),
             butterChance
         ));
     }
@@ -501,9 +501,6 @@ public class PlantAttackBehaviors {
         throw new IllegalArgumentException("Unknown PlantID: " + id);
     }
 
-    /**
-     * Specialized helper for Snow Pea to allow variable chill durations across levels.
-     */
     private static void registerSnowPea(PlantDef def, int defaultDamage, float chillDurationSeconds) {
         int damage = parseDamage(def, defaultDamage);
         int chillTicks = (int) (chillDurationSeconds * 20);
@@ -512,7 +509,7 @@ public class PlantAttackBehaviors {
     }
 
     /**
-     * Registers pea shooters that respect the "Heat" system (Fire Pea).
+     * Registers pea shooters that respect the "Heat" system (Snow Pea, Fire Pea).
      */
     private static void registerTruePeaShooter(PlantDef def, int defaultDamage, int defaultShots, int heat) {
         int damage = parseDamage(def, defaultDamage);

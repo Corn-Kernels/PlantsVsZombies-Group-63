@@ -10,19 +10,19 @@ import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceCompo
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 public class LobProjectile extends AbstractProjectile {
 
     private final static float LOB_SPEED = 1f;
     public Entity target;
+    public Vec2d startPosition;
     public float areaOfEffect;
     public int aoeDamage;
+    public boolean butter = false;
     public boolean fiery;
     public int chillDurationTicks;
     public int stunDurationTicks;
-
-    // Store the spawn location so the visual arc can recalculate upon bouncing
-    public Vec2d startPosition;
 
     public LobProjectile(int damage, Vec2d startPosition, Entity target, float radius, int aoeDamage) {
         this(damage, startPosition, target, radius, aoeDamage, false, 0, 0);
@@ -40,7 +40,7 @@ public class LobProjectile extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         if (this.target != null && target == this.target && super.hit(target, field)) {
 
             // Umbrella Zombie Deflection Logic
