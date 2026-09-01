@@ -77,22 +77,37 @@ public class PamRenderSystem extends RenderSystem {
                 if (death != null) alpha = death.getAlpha();
             }
 
-            if (scale == 1.0f) {
-                batch.setColor(1f, 1f, 1f, alpha);
+            // 1. Process Debuff Hue (Ignore if perfectly white)
+            float r = 1f, g = 1f, b = 1f;
+            if (anim.tint != null && (anim.tint.r != 1f || anim.tint.g != 1f || anim.tint.b != 1f)) {
+                r = anim.tint.r;
+                g = anim.tint.g;
+                b = anim.tint.b;
+            }
+
+            // 2. Process Flipping (Invert X scale if flipX is true)
+            float currentScaleX = anim.flipX ? -scale : scale;
+
+            // Fast path: No scaling and no flipping
+            if (currentScaleX == 1.0f && scale == 1.0f) {
+                batch.setColor(r, g, b, alpha);
                 pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
                 batch.setColor(1f, 1f, 1f, 1f);
                 continue;
             }
 
+            // Matrix path: Apply scaling and/or flipping around the center point
             Matrix4 original = batch.getTransformMatrix().cpy();
             Matrix4 scaled = original.cpy()
                 .translate(x, y, 0)
-                .scale(scale, scale, 1f)
+                .scale(currentScaleX, scale, 1f)
                 .translate(-x, -y, 0);
 
             batch.setTransformMatrix(scaled);
-            batch.setColor(1f, 1f, 1f, alpha);
+            batch.setColor(r, g, b, alpha);
             pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
+
+            // Reset to pure white and restore matrix
             batch.setColor(1f, 1f, 1f, 1f);
             batch.setTransformMatrix(original);
         }

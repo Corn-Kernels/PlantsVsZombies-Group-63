@@ -2,8 +2,11 @@ package com.cornkernels.game.utility;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
+import com.cornkernels.game.entities.components.ArmorComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
+import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.ClipRef;
@@ -65,6 +68,38 @@ public final class ZombieAnimationLocator {
             String prefix = ARMOR_PART_PREFIXES.get(armorType);
             if (prefix != null) {
                 anim.visibilityMap.put(prefix + "_norm", true);
+            }
+        }
+    }
+
+    /**
+     * Dynamically checks the zombie's current components and updates PAM visibility.
+     * Call this from CombatSystem when an ArmorComponent is removed.
+     */
+    public static void updateArmorVisibility(@NonNull ZombieInstance zombie) {
+        PamAnimationComponent anim = zombie.get(PamAnimationComponent.class);
+        ZombieDefComponent defComp = zombie.get(ZombieDefComponent.class);
+        if (anim == null || defComp == null) return;
+
+        ZombieDef def = defComp.def();
+
+        // 1. Hide all base armors assigned to this zombie definition
+        for (ArmorType armorType : def.armors) {
+            String prefix = ARMOR_PART_PREFIXES.get(armorType);
+            if (prefix != null) {
+                anim.visibilityMap.put(prefix + "_norm", false);
+                anim.visibilityMap.put(prefix + "_dmg1", false);
+                anim.visibilityMap.put(prefix + "_dmg2", false);
+            }
+        }
+
+        // 2. Re-enable visibility for armors the zombie STILL possesses
+        for (ArmorComponent armorComp : zombie.getAll(ArmorComponent.class)) {
+            String prefix = ARMOR_PART_PREFIXES.get(armorComp.armorType);
+            if (prefix != null) {
+                anim.visibilityMap.put(prefix + "_norm", true);
+                // Note: If you add damaged texture logic based on armor HP later,
+                // you would toggle _dmg1 or _dmg2 here instead of _norm.
             }
         }
     }
@@ -148,5 +183,23 @@ public final class ZombieAnimationLocator {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * Hides the specific PAM sprite nodes associated with the zombie's arm.
+     */
+    public static void applyArmLossVisibility(@NonNull ZombieInstance zombie) {
+        PamAnimationComponent anim = zombie.get(PamAnimationComponent.class);
+        if (anim == null) return;
+
+        // Turn off the standard left arm nodes.
+        // Note: You may need to adjust these string keys depending on your exact PAM naming conventions.
+        anim.visibilityMap.put("zombie_leftarm", false);
+        anim.visibilityMap.put("zombie_leftarm_lower", false);
+        anim.visibilityMap.put("zombie_leftarm_upper", false);
+        anim.visibilityMap.put("zombie_leftarm_hand", false);
+
+        // Ensure the "lost arm" stump texture is turned ON if the skeleton uses one
+        anim.visibilityMap.put("zombie_leftarm_stump", true);
     }
 }

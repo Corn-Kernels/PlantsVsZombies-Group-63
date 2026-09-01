@@ -356,6 +356,56 @@ public class PlantAttackBehaviors {
         registerCaulipower(PlantDef.CAULIPOWER4);
         //endregion
 
+        // ------------------------------------------
+        // Mints
+        // ------------------------------------------
+        //region Mints
+        registerMint(PlantDef.ENLIGHTEN_MINT1, 10.0f);
+        registerMint(PlantDef.ENLIGHTEN_MINT2, 11.0f); // Duration +1s[cite: 32]
+        registerMint(PlantDef.ENLIGHTEN_MINT3, 11.0f); // Cooldown -5s (Handled by registry)[cite: 32]
+        registerMint(PlantDef.ENLIGHTEN_MINT4, 11.0f); // Reset family cooldowns (Requires future integration)[cite: 32]
+
+        registerMint(PlantDef.APPEASE_MINT1, 10.0f);
+        registerMint(PlantDef.APPEASE_MINT2, 11.0f);
+        registerMint(PlantDef.APPEASE_MINT3, 11.0f);
+        registerMint(PlantDef.APPEASE_MINT4, 11.0f);
+
+        registerMint(PlantDef.ARMA_MINT1, 10.0f);
+        registerMint(PlantDef.ARMA_MINT2, 11.0f);
+        registerMint(PlantDef.ARMA_MINT3, 11.0f);
+        registerMint(PlantDef.ARMA_MINT4, 11.0f);
+
+        registerMint(PlantDef.BOMBARD_MINT1, 10.0f);
+        registerMint(PlantDef.BOMBARD_MINT2, 11.0f);
+        registerMint(PlantDef.BOMBARD_MINT3, 11.0f);
+        registerMint(PlantDef.BOMBARD_MINT4, 11.0f);
+
+        registerMint(PlantDef.ENFORCE_MINT1, 10.0f);
+        registerMint(PlantDef.ENFORCE_MINT2, 11.0f);
+        registerMint(PlantDef.ENFORCE_MINT3, 11.0f);
+        registerMint(PlantDef.ENFORCE_MINT4, 11.0f);
+
+        registerMint(PlantDef.REINFORCE_MINT1, 10.0f);
+        registerMint(PlantDef.REINFORCE_MINT2, 11.0f);
+        registerMint(PlantDef.REINFORCE_MINT3, 11.0f);
+        registerMint(PlantDef.REINFORCE_MINT4, 11.0f);
+
+        registerMint(PlantDef.ENCHANT_MINT1, 10.0f);
+        registerMint(PlantDef.ENCHANT_MINT2, 11.0f);
+        registerMint(PlantDef.ENCHANT_MINT3, 11.0f);
+        registerMint(PlantDef.ENCHANT_MINT4, 11.0f);
+
+        registerMint(PlantDef.PIERCE_MINT1, 10.0f);
+        registerMint(PlantDef.PIERCE_MINT2, 11.0f);
+        registerMint(PlantDef.PIERCE_MINT3, 11.0f);
+        registerMint(PlantDef.PIERCE_MINT4, 11.0f);
+
+        registerMint(PlantDef.CATTAIL_MINT1, 10.0f);
+        registerMint(PlantDef.CATTAIL_MINT2, 11.0f);
+        registerMint(PlantDef.CATTAIL_MINT3, 11.0f);
+        registerMint(PlantDef.CATTAIL_MINT4, 11.0f);
+        //endregion
+
         //endregion
 
         // ==========================================
@@ -738,5 +788,8 @@ public class PlantAttackBehaviors {
         register(def, new IceExplosiveBehavior(radius, damage, waitTime, freezeTicks, chillTicks));
     }
 
+    private static void registerMint(PlantDef def, float lifespanSeconds) {
+        register(def, new MintBehavior(lifespanSeconds));
+    }
     //endregion
 }

@@ -1,9 +1,12 @@
 package com.cornkernels.game.systems.entity;
 
-import com.cornkernels.game.entities.components.VelocityComponent;
+import com.badlogic.gdx.graphics.Color;
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.PoisonComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 
 import java.util.Iterator;
@@ -39,7 +42,46 @@ public class DebuffSystem extends EntitySystem {
                 }
             }
 
+            // 2. Process PamAnimation Tinting
+            PamAnimationComponent pam = zombie.get(PamAnimationComponent.class);
+            if (pam != null) {
+                float r = 0f, g = 0f, b = 0f;
+                int activeCount = 0;
 
+                if (zombie.has(ButterComponent.class)) {
+                    r += 1.0f; g += 1.0f; b += 0.4f; // Yellow
+                    activeCount++;
+                }
+                if (zombie.has(HypnoComponent.class)) {
+                    r += 0.8f; g += 0.2f; b += 1.0f; // Purple
+                    activeCount++;
+                }
+                if (zombie.has(PoisonComponent.class)) {
+                    r += 0.4f; g += 1.0f; b += 0.4f; // Green
+                    activeCount++;
+                }
+                if (zombie.has(SunInfectedComponent.class)) {
+                    r += 1.0f; g += 0.4f; b += 0.4f; // Red
+                    activeCount++;
+                }
+
+                IceComponent ice = zombie.get(IceComponent.class);
+                if (ice != null && ice.freezeLevel > 0) {
+                    if (ice.freezeLevel == 2) {
+                        r += 0.2f; g += 0.5f; b += 1.0f; // Bluer (Frozen Solid)
+                    } else {
+                        r += 0.6f; g += 0.8f; b += 1.0f; // Light Blue (Chilled)
+                    }
+                    activeCount++;
+                }
+
+                // Average the colors if multiple debuffs are active, or reset to pure white
+                if (activeCount == 0) {
+                    pam.tint.set(1.0f, 1.0f, 1.0f, 1.0f);
+                } else {
+                    pam.tint.set(r / activeCount, g / activeCount, b / activeCount, 1.0f);
+                }
+            }
         }
     }
 }

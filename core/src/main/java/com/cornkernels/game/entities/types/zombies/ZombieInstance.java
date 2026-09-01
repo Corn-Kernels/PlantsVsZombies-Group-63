@@ -10,6 +10,7 @@ import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceCompo
 import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
 import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehavior;
 import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehaviors;
+import com.cornkernels.game.utility.ZombieAnimationLocator;
 import org.jetbrains.annotations.NotNull;
 
 public class ZombieInstance extends Entity {
@@ -21,9 +22,10 @@ public class ZombieInstance extends Entity {
         add(new PositionComponent(position));
         add(new VelocityComponent(new Vec2d(-def.baseSpeed, 0f)));
         add(new ZombieStateComponent());
-        add(new PamAnimationComponent());
 
-        // Pre-loaded singleton debuff component (Defaults to freezeLevel = 0)
+        PamAnimationComponent pamAnim = new PamAnimationComponent();
+        add(pamAnim);
+
         add(new IceComponent());
 
         HealthComponent health = new HealthComponent();
@@ -34,11 +36,27 @@ public class ZombieInstance extends Entity {
         for (ArmorType armorType : def.armors) {
             add(new ArmorComponent(armorType));
         }
-        //adds custom behavior to zombies with custom behavior
+
+        ZombieAnimationLocator.updateArmorVisibility(this);
+
+        // Add a listener to monitor health and handle the arm-loss visual state
+        health.addListener(new HealthComponent.OnHealthChangedListener() {
+            @Override
+            public void OnHealthChanged(int currentHealth, int maxHealth, int delta) {
+                // If health drops to 50% or below, strip the arm
+                if (currentHealth <= (maxHealth / 2)) {
+                    ZombieAnimationLocator.applyArmLossVisibility(ZombieInstance.this);
+                }
+            }
+
+            @Override
+            public void onMaxHealthChanged(int maxHealth, int delta) {
+            }
+        });
+
         ZombieBehavior behavior = ZombieBehaviors.get(def);
         if (behavior != null) {
             add(new ZombieBehaviorComponent(behavior));
         }
-
     }
 }

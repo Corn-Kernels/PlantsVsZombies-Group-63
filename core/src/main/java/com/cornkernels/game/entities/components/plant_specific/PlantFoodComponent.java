@@ -19,6 +19,6 @@ public class PlantFoodComponent {
     }
 
     public void activate() {
-        timerTicks = normalTime;
+        if(timerTicks==0)timerTicks = normalTime;
     }
 }
