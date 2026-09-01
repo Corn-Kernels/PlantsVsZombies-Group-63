@@ -11,35 +11,31 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.cornkernels.GameManager;
-import com.cornkernels.game.menus.model.Garden;
-import com.cornkernels.game.menus.model.GardenPot;
-import com.cornkernels.game.menus.model.PlayerProgress;
-import com.cornkernels.game.menus.model.User;
+import com.cornkernels.game.menus.model.*;
 import org.jspecify.annotations.NonNull;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class GreenhouseScreen extends BaseScreen {
 
-    private static final int HARVEST_COIN_REWARD = 500;
-    // ===== لیست ۵ گیاه ثابت =====
-    private static final String[] AVAILABLE_PLANTS = {
-        "SUNFLOWER",
-        "PEASHOOTER",
-        "WALL_NUT",
-        "SNOW_PEA",
-        "REPEATER"
-    };
     private User user;
     private Garden garden;
+
     private Label statusLabel;
     private Table potsTable;
     private Table infoTable;
+
     private GardenPot selectedPot;
     private int selectedRow = -1;
     private int selectedCol = -1;
+
     private Drawable lockedDrawable;
     private Drawable emptyDrawable;
     private Drawable growingDrawable;
     private Drawable readyDrawable;
+
     private Texture potEmptyTexture;
     private Texture potLockedTexture;
 
@@ -324,7 +320,8 @@ public class GreenhouseScreen extends BaseScreen {
 
         // ===== جایزه =====
         if (pot.isReady()) {
-            Label rewardLabel = new Label("🪙" + HARVEST_COIN_REWARD, skin);
+            int reward = 5 + (int) (Math.random() * 15);
+            Label rewardLabel = new Label("💎" + reward, skin);
             rewardLabel.setFontScale(0.9f);
             rewardLabel.setColor(1, 0.8f, 0, 1);
             card.add(rewardLabel).center().row();
@@ -375,13 +372,23 @@ public class GreenhouseScreen extends BaseScreen {
             showToast("❌ Select an empty, unlocked pot first!", 2f, true);
             return;
         }
-
+        PlayerProgress progress = user.getProgress();
+        java.util.List<String> ownedPlants = progress.getOwnedPlants();
+        java.util.List<String> availablePlants = new ArrayList<>();
+        for (String plant : ownedPlants) {
+            if (!plant.equals("MARIGOLD")) {
+                availablePlants.add(plant);
+            }
+        }
+        if (availablePlants.isEmpty()) {
+            showToast("❌ You don't have any plants to grow!", 2f, true);
+            return;
+        }
         String plantType;
-        if (Math.random() < 0.5) {
+        if (Math.random() < 0.3) {
             plantType = "MARIGOLD";
         } else {
-            int randomIndex = (int) (Math.random() * AVAILABLE_PLANTS.length);
-            plantType = AVAILABLE_PLANTS[randomIndex];
+            plantType = availablePlants.get((int) (Math.random() * availablePlants.size()));
         }
 
         selectedPot.plant(plantType);
@@ -402,10 +409,21 @@ public class GreenhouseScreen extends BaseScreen {
         PlayerProgress progress = user.getProgress();
         String plantType = selectedPot.getPlantType();
 
-        int coinsReward = HARVEST_COIN_REWARD;
+        int coinsReward = 500;
 
         if (!plantType.equals("MARIGOLD")) {
             progress.addPlantSeed(plantType, 1);
+            if (!progress.hasPlant(plantType)) {
+                progress.addPlant(plantType);
+                NewsItem news = new NewsItem(
+                    "plant_" + System.currentTimeMillis(),
+                    "New Plant Unlocked: " + plantType,
+                    new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                    "You unlocked " + plantType + " by growing it in the Greenhouse!",
+                    "PLANT"
+                );
+                progress.addNews(news);
+            }
             int totalSeeds = progress.getPlantSeedCount(plantType);
             showToast("🌱 +1 " + plantType + " seed packet! (Total: " + totalSeeds + ")", 2f, false);
         }

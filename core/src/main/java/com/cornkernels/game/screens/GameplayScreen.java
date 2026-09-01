@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.cornkernels.GameManager;
@@ -19,7 +20,6 @@ import com.cornkernels.game.GameSession;
 import com.cornkernels.game.hud.EndGameMenu;
 import com.cornkernels.game.hud.HudFactory;
 import com.cornkernels.game.hud.PauseMenu;
-import com.cornkernels.game.hud.seeds.PlantSelectionMenu;
 import com.cornkernels.game.hud.seeds.SeedChooser;
 import com.cornkernels.game.hud.seeds.SeedSelectionBar;
 import com.cornkernels.game.levels.LevelDef;
@@ -74,8 +74,8 @@ public class GameplayScreen implements Screen {
         pamPlayer = new PamPlayer(textures, assetsFolder);
 
         mapLoader = new MapLoader();
-        MapData mapData = mapLoader.load(new MapDefinition(1,
-            "maps/default.tmx", MapSkin.DELAY_LOAD_BACKGROUND_FRONTLAWN_BIGBRAINZ));
+        MapSkin skin = MapSkin.forChapter(gameAttributes.levelDef.chapter);
+        MapData mapData = mapLoader.load(new MapDefinition(1, "maps/default.tmx", skin));
 
         Rectangle worldBounds = mapData.getWorldBounds();
         camera = new Camera(worldBounds.height);
@@ -93,9 +93,14 @@ public class GameplayScreen implements Screen {
             gameAttributes, batch, pamPlayer, mapData, camera);
 
         hudFactory = new HudFactory(pamPlayer, gameSession.getPlantingController(),
-            gameSession.getPauseController(), hudWidth, hudHeight);
+            gameSession.getPauseController(), gameManager.getCurrentUser().getProgress(), hudWidth, hudHeight);
 
         hudStage.addActor(hudFactory.createSunCounter());
+        hudStage.addActor(hudFactory.createPlantFoodCounter());
+        hudStage.addActor(hudFactory.createAddSunButton());
+        hudStage.addActor(hudFactory.createAddPlantFoodButton());
+        hudStage.addActor(hudFactory.createCoinCounter());
+        hudStage.addActor(hudFactory.createGemCounter());
         hudStage.addActor(hudFactory.createLevelProgressBar(gameSession.getWaveSystem(),
             () -> gameSession.getPhase() == GameSession.LevelPhase.PLAYING));
 
@@ -124,7 +129,7 @@ public class GameplayScreen implements Screen {
         endGameMenu.setPosition((hudWidth - endGameMenu.getWidth()) / 2f, (hudHeight - endGameMenu.getHeight()) / 2f);
         hudStage.addActor(endGameMenu);
 
-        PlantSelectionMenu plantMenu = seedChooser.getMenu();
+        ScrollPane plantMenu = seedChooser.getMenuContainer();
         plantMenu.setPosition((hudWidth - plantMenu.getWidth()) / 2f,
             (hudHeight - plantMenu.getHeight()) / 2f);
         plantMenu.setVisible(false);

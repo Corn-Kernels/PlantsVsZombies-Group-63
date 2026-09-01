@@ -11,10 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -30,6 +27,7 @@ import com.cornkernels.game.hud.seeds.PlantSelectionMenu;
 import com.cornkernels.game.hud.seeds.SeedChooser;
 import com.cornkernels.game.hud.seeds.SeedPacket;
 import com.cornkernels.game.hud.seeds.SeedSelectionBar;
+import com.cornkernels.game.menus.model.PlayerProgress;
 import com.cornkernels.game.systems.controller.GameSpeedController;
 import com.cornkernels.game.systems.controller.PauseController;
 import com.cornkernels.game.systems.controller.plants.PlantingController;
@@ -43,6 +41,7 @@ import pvz.libpvz.pam.PamPlayer;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 
 public class HudFactory implements Disposable {
 
@@ -54,8 +53,10 @@ public class HudFactory implements Disposable {
     private static final float MENU_PACKET_WIDTH = 150f;
     private static final float MENU_PADDING = 12f;
     private static final float MENU_MARGIN = 28f;
+    private static final int MENU_VISIBLE_ROWS = 4;
     private static final int REWARD_BG_INSET = 20;
     private static final int PAUSE_BG_INSET = 14;
+    private static final int MAX_TRAY_SLOTS = 8;
 
     private final TextureAtlas alwaysLoadedAtlas;
     private final TextureAtlas seedPacketsAtlas;
@@ -70,6 +71,7 @@ public class HudFactory implements Disposable {
     private final PamPlayer pamPlayer;
     private final PlantingController plantingController;
     private final PauseController pauseController;
+    private final PlayerProgress playerProgress;
 
     private final float hudWidth;
     private final float hudHeight;
@@ -78,6 +80,7 @@ public class HudFactory implements Disposable {
         PamPlayer pamPlayer,
         PlantingController plantingController,
         PauseController pauseController,
+        PlayerProgress playerProgress,
         float hudWidth,
         float hudHeight) {
         this.alwaysLoadedAtlas = new TextureAtlas(Gdx.files.internal("ui/atlases/UI_AlwaysLoaded.atlas"));
@@ -92,6 +95,7 @@ public class HudFactory implements Disposable {
         this.pamPlayer = pamPlayer;
         this.plantingController = plantingController;
         this.pauseController = pauseController;
+        this.playerProgress = playerProgress;
         this.hudWidth = hudWidth;
         this.hudHeight = hudHeight;
     }
@@ -125,11 +129,6 @@ public class HudFactory implements Disposable {
             @Override
             public void act(float delta) {
                 super.act(delta);
-                // Set both imageUp AND imageOver to the same drawable — ImageButton renders
-                // imageOver whenever the cursor is hovering the button, regardless of imageUp, so
-                // leaving imageOver fixed on "down" made the icon look permanently paused while
-                // hovered (which is right where the cursor sits immediately after clicking it),
-                // masking the real state until the mouse moved away.
                 Drawable current = pauseController.isPaused() ? down : up;
                 style.imageUp = current;
                 style.imageOver = current;
@@ -170,7 +169,6 @@ public class HudFactory implements Disposable {
                 speedController.toggleFastForward();
             }
         });
-        // Directly left of the pause button, same row.
         placeButton(button, hudWidth - 20f - BUTTON_SIZE - 10f - BUTTON_SIZE, hudHeight - 20f - BUTTON_SIZE);
         return button;
     }
@@ -201,7 +199,9 @@ public class HudFactory implements Disposable {
                 plantingController.toggleShovel(shovelCursor);
             }
         });
-        placeButton(button, hudWidth - 70f - BUTTON_SIZE, hudHeight - 70f - BUTTON_SIZE);
+        // Same row as the pause/2x buttons, one BUTTON_SIZE + 10f gap to the left of the 2x button.
+        placeButton(button, hudWidth - 20f - BUTTON_SIZE - 10f - BUTTON_SIZE - 10f - BUTTON_SIZE,
+            hudHeight - 20f - BUTTON_SIZE);
         return button;
     }
 
@@ -231,6 +231,102 @@ public class HudFactory implements Disposable {
         return group;
     }
 
+    public @NonNull Group createPlantFoodCounter() {
+        float belowSunOffset = 90f;
+
+        Image background = new Image(drawable(alwaysLoadedAtlas, "background_3slice"));
+        background.setColor(0.12f, 0.12f, 0.12f, 0.92f);
+        background.setBounds(70f, hudHeight - 20f - 50f - belowSunOffset, 180f, 50f);
+
+        Image icon = new Image(drawable(ingameSkinAtlas, "image_ui_hud_eventbutton_event_icon_potw_up"));
+        icon.setScaling(Scaling.stretch);
+        icon.setBounds(50f, hudHeight - 14f - 70f - belowSunOffset, 70f, 70f);
+
+        Label count = new Label("", new Label.LabelStyle(counterFont, Color.WHITE)) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                setText(String.valueOf(playerProgress.getPlantFood()));
+            }
+        };
+        count.setAlignment(Align.center);
+        count.setBounds(150f, hudHeight - 14f - 60f - belowSunOffset, 90f, 60f);
+
+        Group group = new Group();
+        group.setTouchable(Touchable.disabled);
+        group.addActor(background);
+        group.addActor(icon);
+        group.addActor(count);
+        return group;
+    }
+
+    public @NonNull ImageButton createAddSunButton() {
+        ImageButton button = createPlusButton(() -> plantingController.addSun(100));
+        placeButton(button, 220f + 15f, hudHeight - 74f);
+        return button;
+    }
+
+    public @NonNull ImageButton createAddPlantFoodButton() {
+        ImageButton button = createPlusButton(
+            () -> playerProgress.setPlantFood(Math.clamp(playerProgress.getPlantFood() + 1, 0, 4)));
+        float belowSunOffset = 90f;
+        placeButton(button, 250f + 15f, hudHeight - 74f - belowSunOffset);
+        return button;
+    }
+
+    private @NonNull ImageButton createPlusButton(@NonNull Runnable onClick) {
+        Drawable up = drawable(ingameSkinAtlas, "image_ui_hud_ingame_coin_buy");
+        Drawable down = drawable(ingameSkinAtlas, "image_ui_hud_ingame_coin_buy_down");
+
+        ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
+        style.imageUp = up;
+        style.imageDown = down;
+
+        ImageButton button = new ImageButton(style);
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                onClick.run();
+            }
+        });
+        return button;
+    }
+
+    public @NonNull Group createCoinCounter() {
+        return createCurrencyCounter("image_ui_coins_stack_2", 20f, playerProgress::getCoins);
+    }
+
+    public @NonNull Group createGemCounter() {
+        return createCurrencyCounter("image_ui_gems_stack_1", 20f + 50f + 14f, playerProgress::getDiamonds);
+    }
+
+    private @NonNull Group createCurrencyCounter(String iconRegion, float backgroundY,
+                                                 @NonNull IntSupplier valueSupplier) {
+        Image background = new Image(drawable(alwaysLoadedAtlas, "background_3slice"));
+        background.setBounds(70f, backgroundY, 150f, 50f);
+
+        Image icon = new Image(drawable(ingameSkinAtlas, iconRegion));
+        icon.setScaling(Scaling.stretch);
+        icon.setBounds(50f, backgroundY - 7f, 84f, 64f);
+
+        Label count = new Label("", new Label.LabelStyle(counterFont, Color.WHITE)) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                setText(String.valueOf(valueSupplier.getAsInt()));
+            }
+        };
+        count.setAlignment(Align.center);
+        count.setBounds(140f, backgroundY + 10f, 80f, 30f);
+
+        Group group = new Group();
+        group.setTouchable(Touchable.disabled);
+        group.addActor(background);
+        group.addActor(icon);
+        group.addActor(count);
+        return group;
+    }
+
 
     public @NonNull SeedPacket createSeedPacket(@NonNull SeedSlot slot) {
         SeedPacket packet = new SeedPacket(
@@ -249,7 +345,7 @@ public class HudFactory implements Disposable {
                                                   @NonNull BooleanSupplier placementMode) {
         SeedSelectionBar tray = new SeedSelectionBar(
             drawable(seedPacketsAtlas, "empty_packet"), SEED_PACKET_WIDTH, SEED_SLOT_PADDING);
-        tray.createSeedSlots(slots.size());
+        tray.createSeedSlots(Math.min(MAX_TRAY_SLOTS, slots.size()));
 
         NinePatch patch = new NinePatch(alwaysLoadedAtlas.findRegion("reward3_bg"),
             REWARD_BG_INSET, REWARD_BG_INSET, REWARD_BG_INSET, REWARD_BG_INSET);
@@ -261,7 +357,18 @@ public class HudFactory implements Disposable {
             MENU_MARGIN);
         menu.setSeedSlots(slots);
 
-        return new SeedChooser(tray, menu, seedBank,
+        ScrollPane.ScrollPaneStyle scrollStyle = new ScrollPane.ScrollPaneStyle();
+        scrollStyle.vScrollKnob = new TextureRegionDrawable(new TextureRegion(whitePixel));
+        ScrollPane menuScrollPane = new ScrollPane(menu, scrollStyle);
+        menuScrollPane.setScrollingDisabled(true, false);
+        menuScrollPane.setFadeScrollBars(false);
+
+        float packetHeight = MENU_PACKET_WIDTH / SeedPacket.ASPECT;
+        float visibleContentHeight = MENU_VISIBLE_ROWS * packetHeight + (MENU_VISIBLE_ROWS - 1) * MENU_PADDING;
+        float scrollHeight = Math.min(menu.getHeight(), visibleContentHeight + 2f * MENU_MARGIN);
+        menuScrollPane.setSize(menu.getWidth(), scrollHeight);
+
+        return new SeedChooser(tray, menu, menuScrollPane, seedBank,
             this::createSeedPacket, this::createThumbnail, placementMode);
     }
 
@@ -326,8 +433,6 @@ public class HudFactory implements Disposable {
         return new EndGameMenu(background, title, List.of(restartButton, exitButton), visibleWhen, wonWhen);
     }
 
-    // Classic PvZ flag-meter: a track that fills as the level's zombie budget is spawned in, a
-    // zombie-head icon riding the leading edge of the fill, and a flag marking the final wave.
     public @NonNull Group createLevelProgressBar(@NonNull WaveSystem waveSystem, BooleanSupplier visibleWhen) {
         float barWidth = 273f;
         float barHeight = 33f;

@@ -1,6 +1,7 @@
 package com.cornkernels.game.hud.seeds;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.cornkernels.game.hud.cursor.CursorAttachment;
 import com.cornkernels.game.systems.controller.plants.SeedBank;
@@ -17,6 +18,7 @@ public class SeedChooser {
 
     private final SeedSelectionBar tray;
     private final PlantSelectionMenu menu;
+    private final ScrollPane menuScrollPane;
     private final SeedBank seedBank;
     private final Function<SeedSlot, SeedPacket> packetFactory;
     private final Function<SeedSlot, CursorAttachment> thumbnailFactory;
@@ -24,12 +26,14 @@ public class SeedChooser {
 
     public SeedChooser(@NonNull SeedSelectionBar tray,
                        @NonNull PlantSelectionMenu menu,
+                       @NonNull ScrollPane menuScrollPane,
                        @NonNull SeedBank seedBank,
                        @NonNull Function<SeedSlot, SeedPacket> packetFactory,
                        @NonNull Function<SeedSlot, CursorAttachment> thumbnailFactory,
                        @NonNull BooleanSupplier placementMode) {
         this.tray = tray;
         this.menu = menu;
+        this.menuScrollPane = menuScrollPane;
         this.seedBank = seedBank;
         this.packetFactory = packetFactory;
         this.thumbnailFactory = thumbnailFactory;
@@ -52,6 +56,13 @@ public class SeedChooser {
 
     public PlantSelectionMenu getMenu() {
         return menu;
+    }
+
+    /**
+     * The scrollable viewport wrapping the menu — add this (not getMenu()) to the HUD stage.
+     */
+    public ScrollPane getMenuContainer() {
+        return menuScrollPane;
     }
 
     public List<SeedSlot> getChosenSlots() {

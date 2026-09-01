@@ -1,4 +1,4 @@
-package io.github.some_example_name.screens;
+package com.cornkernels.game.menus.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -10,26 +10,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import io.github.some_example_name.Main;
-import io.github.some_example_name.model.Plant;
-import io.github.some_example_name.model.PlayerProgress;
-import io.github.some_example_name.model.User;
-import io.github.some_example_name.utils.DataLoader;
+import com.cornkernels.GameManager;
+import com.cornkernels.game.menus.model.Plant;
+import com.cornkernels.game.menus.model.PlayerProgress;
+import com.cornkernels.game.menus.model.User;
+import com.cornkernels.game.menus.utils.DataLoader;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlantSelectionScreen extends BaseScreen {
 
+    private static final int MAX_PLANTS = 8;
     private User user;
     private String chapterName;
     private Image backgroundImage;
     private List<Plant> allPlants;
     private List<Plant> selectedPlants;
     private List<Plant> ownedPlants;
-    private static final int MAX_PLANTS = 8;
-
     private Table plantListTable;
     private Table selectedTable;
     private Label selectedCountLabel;
@@ -40,7 +39,7 @@ public class PlantSelectionScreen extends BaseScreen {
     // ===== Drawable برای کارت‌ها =====
     private Drawable cardDrawable;
 
-    public PlantSelectionScreen(Main game, User user, String chapterName) {
+    public PlantSelectionScreen(GameManager game, User user, String chapterName) {
         super(game);
         this.user = user;
         this.chapterName = chapterName;
@@ -64,25 +63,23 @@ public class PlantSelectionScreen extends BaseScreen {
         cardPixmap.dispose();
     }
 
-    private List<Plant> getOwnedPlants() {
+    private @NonNull List<Plant> getOwnedPlants() {
         List<Plant> result = new ArrayList<>();
         PlayerProgress progress = user.getProgress();
         for (Plant plant : allPlants) {
             if (progress.hasPlant(plant.getName().toUpperCase())) {
-                boolean isBoosted = checkIfBoosted(plant);
+                // ===== تغییر: استفاده از متدهای جدید =====
+                boolean isBoosted = plant.getLevel(progress) >= 2;
                 plant.setBoosted(isBoosted);
-
-                boolean isUpgradable = plant.getSeedPackets() >= plant.getSeedPacketsNeeded();
-                plant.setUpgradable(isUpgradable);
-
                 result.add(plant);
             }
         }
         return result;
     }
 
-    private boolean checkIfBoosted(Plant plant) {
-        return plant.getLevel() >= 2;
+    private boolean checkIfBoosted(@NonNull Plant plant) {
+        PlayerProgress progress = user.getProgress();
+        return plant.getLevel(progress) >= 2;
     }
 
     private void loadBackground() {
@@ -207,12 +204,15 @@ public class PlantSelectionScreen extends BaseScreen {
     }
 
     private Table createPlantCard(Plant plant) {
+        PlayerProgress progress = user.getProgress();
         Table card = new Table();
         card.setBackground(cardDrawable);
 
         boolean isSelected = selectedPlants.contains(plant);
-        boolean isBoosted = plant.isBoosted();
-        boolean isUpgradable = plant.isUpgradable();
+        int currentLevel = plant.getLevel(progress);
+        boolean isBoosted = currentLevel >= 2;
+        int plantSeeds = progress.getPlantSeedCount(plant.getName());
+        int neededSeeds = plant.getSeedPacketsNeeded(progress);
 
         // ===== رنگ‌بندی کارت =====
         if (isBoosted) {
@@ -243,10 +243,10 @@ public class PlantSelectionScreen extends BaseScreen {
         Label costLabel = new Label("☀ " + plant.getCost(), skin);
         costLabel.setFontScale(0.65f);
 
-        Label levelLabel = new Label("Lv." + plant.getLevel(), skin);
+        Label levelLabel = new Label("Lv." + currentLevel, skin);
         levelLabel.setFontScale(0.65f);
 
-        Label seedLabel = new Label("Seeds: " + plant.getSeedPackets() + "/" + plant.getSeedPacketsNeeded(), skin);
+        Label seedLabel = new Label("Seeds: " + plantSeeds + "/" + neededSeeds, skin);
         seedLabel.setFontScale(0.55f);
 
         Label statusLabel = new Label(isSelected ? "✅" : (isBoosted ? "⭐" : ""), skin);
@@ -288,17 +288,26 @@ public class PlantSelectionScreen extends BaseScreen {
         });
 
         TextButton upgradeBtn = null;
-        if (isUpgradable && !isSelected) {
-            upgradeBtn = new TextButton("⬆", skin, "default");
-            upgradeBtn.setWidth(30);
-            upgradeBtn.setHeight(25);
-            upgradeBtn.getLabel().setFontScale(0.8f);
-            upgradeBtn.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    handleUpgrade(finalPlant);
-                }
-            });
+        if (currentLevel < plant.getMaxLevel()) {
+            boolean hasEnoughSeeds = plantSeeds >= neededSeeds;
+            if (hasEnoughSeeds) {
+                upgradeBtn = new TextButton("⬆", skin, "green");
+                upgradeBtn.setWidth(30);
+                upgradeBtn.setHeight(25);
+                upgradeBtn.getLabel().setFontScale(0.8f);
+                upgradeBtn.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        handleUpgrade(finalPlant);
+                    }
+                });
+            } else {
+                upgradeBtn = new TextButton("⬆", skin, "default");
+                upgradeBtn.setWidth(30);
+                upgradeBtn.setHeight(25);
+                upgradeBtn.getLabel().setFontScale(0.8f);
+                upgradeBtn.setDisabled(true);
+            }
         }
 
         card.add(plantImage).size(50, 50).padTop(8).row();
@@ -320,30 +329,35 @@ public class PlantSelectionScreen extends BaseScreen {
 
     private void handleUpgrade(Plant plant) {
         PlayerProgress progress = user.getProgress();
-
-        int upgradeCost = 50;
+        int upgradeCost = plant.getUpgradeCost(progress);
+        int plantSeeds = progress.getPlantSeedCount(plant.getName());
+        int neededSeeds = plant.getSeedPacketsNeeded(progress);
+        int currentLevel = plant.getLevel(progress);
 
         if (progress.getCoins() < upgradeCost) {
             errorLabel.setText("❌ Not enough coins! Need " + upgradeCost + " coins.");
             return;
         }
 
-        if (plant.getSeedPackets() < plant.getSeedPacketsNeeded()) {
-            errorLabel.setText("❌ Not enough seed packets!");
+        if (plantSeeds < neededSeeds) {
+            errorLabel.setText("❌ Not enough seed packets! Need " + neededSeeds + " seeds.");
+            return;
+        }
+
+        if (currentLevel >= plant.getMaxLevel()) {
+            errorLabel.setText("⭐ Already at max level!");
             return;
         }
 
         progress.deductCoins(upgradeCost);
-        plant.setSeedPackets(plant.getSeedPackets() - plant.getSeedPacketsNeeded());
-        plant.setLevel(plant.getLevel() + 1);
-        plant.setUpgradable(false);
+        plant.performUpgrade(progress);
 
         game.getStorageService().saveUsers();
         updateCurrencyDisplay();
         updatePlantList();
         updateSelectedList();
 
-        showToast("✅ " + plant.getName() + " upgraded to Lv." + plant.getLevel() + "!", 2f, false);
+        showToast("✅ " + plant.getName() + " upgraded to Lv." + plant.getLevel(progress) + "!", 2f, false);
     }
 
     private void updateSelectedList() {

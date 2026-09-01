@@ -92,6 +92,27 @@ public class KernelPultBehavior implements PlantAttackBehavior {
         }
     }
 
+    @Override
+    public boolean hasTarget(Entity self, Field field) {
+        Vec2d origin = self.get(PositionComponent.class).position;
+        int lane = GridPosition.fromContinuous(origin).lane();
+
+        for (ZombieInstance z : field.getZombiesInLane(lane)) {
+            if (!z.isMarkedForRemoval() && z.get(PositionComponent.class).position.getX() >= origin.getX()) {
+                return true;
+            }
+        }
+        for (Entity e : field.getEntities()) {
+            if (e instanceof Grave && !e.isMarkedForRemoval()) {
+                Vec2d targetPos = e.get(PositionComponent.class).position;
+                if (targetPos.getY() == origin.getY() && targetPos.getX() >= origin.getX()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public AbstractProjectile getSpecialProjectile() {
         return specialProjectile;
     }

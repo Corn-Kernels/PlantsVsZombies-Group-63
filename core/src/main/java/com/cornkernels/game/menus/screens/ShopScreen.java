@@ -12,12 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.cornkernels.GameManager;
 import com.cornkernels.game.menus.model.GardenPot;
+import com.cornkernels.game.menus.model.NewsItem;
 import com.cornkernels.game.menus.model.PlayerProgress;
 import com.cornkernels.game.menus.model.User;
-import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NonNull;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ShopScreen extends BaseScreen {
@@ -33,7 +34,14 @@ public class ShopScreen extends BaseScreen {
     private ShopItem selectedItem;
     private float dailyOfferTimeRemaining = 10f; // 10 ثانیه
     private boolean dailyOfferExpired = false;
-    private com.badlogic.gdx.utils.Timer.Task pendingDailyOfferTask;
+
+    private String[] allPlants = {
+        "SUNFLOWER", "PEASHOOTER", "WALL_NUT", "POTATO_MINE",
+        "CHERRY_BOMB", "SNOW_PEA", "REPEATER", "FIRE_PEASHOOTER",
+        "BONK_CHOY", "CACTUS", "STARFRUIT", "MELON_PULT",
+        "FUME_SHROOM", "MAGNET_SHROOM", "HYPNOSHROOM",
+        "DOOM_SHROOM", "ICE_SHROOM", "WINTER_MELON", "CAT_TAIL"
+    };
 
     private String[] dailyPlants = {
         "SUNFLOWER", "PEASHOOTER", "WALL_NUT", "POTATO_MINE",
@@ -107,8 +115,32 @@ public class ShopScreen extends BaseScreen {
         shopItems.add(new ShopItem("RANDOM SEED", "Get a random plant seed", 1000, "Coins",
             "IMAGES/shop/seed_packet.png", false, 0));
 
-        shopItems.add(new ShopItem("CHOSEN SEED", "Choose a plant seed", 5, "Diamonds",
-            "IMAGES/shop/seed_packet.png", false, 0));
+        //shopItems.add(new ShopItem("CHOSEN SEED", "Choose a plant seed", 2, "Diamonds",
+        //"IMAGES/shop/seed_packet.png", false, 0));
+        addChosenSeedItems();
+    }
+
+    private void addChosenSeedItems() {
+        String[] displayNames = {
+            " Sunflower", " Peashooter", " Wall-nut", " Potato Mine",
+            " Cherry Bomb", "❄ Snow Pea", " Repeater", " Fire Peashooter",
+            " Bonk Choy", " Cactus", " Starfruit", " Melon-pult",
+            " Fume-shroom", " Magnet-shroom", " Hypno-shroom",
+            " Doom-shroom", " Ice-shroom", "❄ Winter Melon", " Cat-tail"
+        };
+        for (int i = 0; i < allPlants.length; i++) {
+            String plantName = allPlants[i];
+            String displayName = displayNames[i];
+            shopItems.add(new ShopItem(
+                "SEED: " + displayName,
+                "Buy 1 seed packet for " + plantName,
+                1,
+                "Diamonds",
+                "IMAGES/plants/" + plantName.toLowerCase() + ".png",
+                false,
+                0
+            ));
+        }
     }
 
     private void createDailyOffer() {
@@ -131,23 +163,35 @@ public class ShopScreen extends BaseScreen {
         dailyOfferExpired = false;
     }
 
-    @Contract(pure = true)
-    private int getPlantCost(@NonNull String plantName) {
-        return switch (plantName) {
-            case "SUNFLOWER" -> 100;
-            case "PEASHOOTER" -> 150;
-            case "WALL_NUT" -> 80;
-            case "POTATO_MINE" -> 60;
-            case "CHERRY_BOMB" -> 200;
-            case "SNOW_PEA" -> 180;
-            case "REPEATER" -> 250;
-            case "FIRE_PEASHOOTER" -> 220;
-            case "BONK_CHOY" -> 170;
-            case "CACTUS" -> 190;
-            case "STARFRUIT" -> 160;
-            case "MELON_PULT" -> 300;
-            default -> 100;
-        };
+    private int getPlantCost(String plantName) {
+        switch (plantName) {
+            case "SUNFLOWER":
+                return 100;
+            case "PEASHOOTER":
+                return 150;
+            case "WALL_NUT":
+                return 80;
+            case "POTATO_MINE":
+                return 60;
+            case "CHERRY_BOMB":
+                return 200;
+            case "SNOW_PEA":
+                return 180;
+            case "REPEATER":
+                return 250;
+            case "FIRE_PEASHOOTER":
+                return 220;
+            case "BONK_CHOY":
+                return 170;
+            case "CACTUS":
+                return 190;
+            case "STARFRUIT":
+                return 160;
+            case "MELON_PULT":
+                return 300;
+            default:
+                return 100;
+        }
     }
 
     private void buildUI() {
@@ -265,6 +309,8 @@ public class ShopScreen extends BaseScreen {
                 itemImage.setColor(0.6f, 0.4f, 0.2f, 1); // قهوه‌ای
             } else if (item.name.equals("PLANT FOOD")) {
                 itemImage.setColor(0.2f, 0.8f, 0.2f, 1); // سبز
+            } else if (item.name.startsWith("SEED:")) {
+                itemImage.setColor(0.5f, 0.3f, 0.8f, 1);
             } else {
                 itemImage.setColor(0.5f, 0.5f, 0.8f, 1); // آبی
             }
@@ -286,11 +332,13 @@ public class ShopScreen extends BaseScreen {
         priceLabel.setColor(1, 0.8f, 0, 1);
 
         // ===== دکمه انتخاب =====
-
         TextButton selectBtn = new TextButton("Select", skin, "default");
+        selectBtn.setWidth(90);
+        selectBtn.setHeight(35);
         selectBtn.getLabel().setFontScale(0.9f);
 
         Table topRow = new Table();
+        topRow.setFillParent(true);
         // ===== نشان روزانه =====
         if (item.isDaily) {
             Label dailyLabel = new Label("⭐ DAILY", skin);
@@ -340,7 +388,7 @@ public class ShopScreen extends BaseScreen {
             selectBtn.setDisabled(true);
             selectBtn.setColor(0.5f, 0.5f, 0.5f, 1);
         }
-        rightTable.add(selectBtn).size(90, 35);
+        rightTable.add(selectBtn);
         card.add(rightTable);
 
         return card;
@@ -411,10 +459,41 @@ public class ShopScreen extends BaseScreen {
         if (item.name.startsWith("DAILY OFFER:")) {
             String plantName = item.name.replace("DAILY OFFER: ", "");
             progress.addPlantSeed(plantName, 1);
+            if (!progress.hasPlant(plantName)) {
+                progress.addPlant(plantName);
+                NewsItem news = new NewsItem(
+                    "plant_" + System.currentTimeMillis(),
+                    "New Plant Unlocked: " + plantName,
+                    new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                    "You unlocked " + plantName + " from Daily Offer!",
+                    "PLANT"
+                );
+                progress.addNews(news);
+            }
             int totalSeeds = progress.getPlantSeedCount(plantName);
             showToast("✅ " + plantName + " seed added! (Daily Offer) (Total: " + totalSeeds + ")", 2f, false);
             dailyOfferExpired = true;
-            scheduleNextDailyOffer();
+        } else if (item.name.startsWith("SEED:")) {
+            String displayName = item.name.replace("SEED: ", "");
+            String plantName = extractPlantName(displayName);
+            if (plantName != null) {
+                progress.addPlantSeed(plantName, 1);
+                System.out.println("🔍 Shop: added seed for " + plantName + " → total: " + progress.getPlantSeedCount(plantName));
+                System.out.println("🔍 Shop: ownedPlants = " + progress.getOwnedPlants());
+                if (!progress.hasPlant(plantName)) {
+                    progress.addPlant(plantName);
+                    NewsItem news = new NewsItem(
+                        "plant_" + System.currentTimeMillis(),
+                        "New Plant Unlocked: " + plantName,
+                        new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                        "You unlocked " + plantName + " by buying a seed packet!",
+                        "PLANT"
+                    );
+                    progress.addNews(news);
+                }
+                int totalSeeds = progress.getPlantSeedCount(plantName);
+                showToast("✅ " + plantName + " seed added! (Total: " + totalSeeds + ")", 2f, false);
+            }
         } else {
             switch (item.name) {
                 case "POT":
@@ -438,16 +517,21 @@ public class ShopScreen extends BaseScreen {
                     break;
 
                 case "RANDOM SEED":
-                    String[] plants = {"SUNFLOWER", "PEASHOOTER", "WALL_NUT", "POTATO_MINE",
-                        "CHERRY_BOMB", "SNOW_PEA", "REPEATER", "CACTUS"};
-                    String randomPlant = plants[(int) (Math.random() * plants.length)];
+                    String randomPlant = allPlants[(int) (Math.random() * allPlants.length)];
                     progress.addPlantSeed(randomPlant, 1);
+                    if (!progress.hasPlant(randomPlant)) {
+                        progress.addPlant(randomPlant);
+                        NewsItem news = new NewsItem(
+                            "plant_" + System.currentTimeMillis(),
+                            "New Plant Unlocked: " + randomPlant,
+                            new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                            "You unlocked " + randomPlant + " from a Random Seed!",
+                            "PLANT"
+                        );
+                        progress.addNews(news);
+                    }
                     int totalSeeds = progress.getPlantSeedCount(randomPlant);
                     showToast("✅ Random seed: " + randomPlant + " added! (Total: " + totalSeeds + ")", 2f, false);
-                    break;
-
-                case "CHOSEN SEED":
-                    showPlantSelectionDialog(item.price);
                     break;
             }
         }
@@ -458,71 +542,46 @@ public class ShopScreen extends BaseScreen {
         updateItemsDisplay();
     }
 
-    private void showPlantSelectionDialog(int refundOnCancel) {
-        Dialog plantDialog = new Dialog("Choose a Plant", skin);
+    private String extractPlantName(String displayName) {
+        String clean = displayName.replaceAll("[^a-zA-Z\\- ]", "").trim();
+        if (clean.isEmpty()) return null;
 
-        Table plantTable = new Table();
-        String[] plants = {"SUNFLOWER", "PEASHOOTER", "WALL_NUT", "POTATO_MINE",
-            "CHERRY_BOMB", "SNOW_PEA", "REPEATER", "CACTUS", "BONK_CHOY",
-            "FIRE_PEASHOOTER", "STARFRUIT", "MELON_PULT"};
+        String[][] nameMapping = {
+            {"Sunflower", "SUNFLOWER"},
+            {"Peashooter", "PEASHOOTER"},
+            {"Wall-nut", "WALL_NUT"},
+            {"Potato Mine", "POTATO_MINE"},
+            {"Cherry Bomb", "CHERRY_BOMB"},
+            {"Snow Pea", "SNOW_PEA"},
+            {"Repeater", "REPEATER"},
+            {"Fire Peashooter", "FIRE_PEASHOOTER"},
+            {"Bonk Choy", "BONK_CHOY"},
+            {"Cactus", "CACTUS"},
+            {"Starfruit", "STARFRUIT"},
+            {"Melon-pult", "MELON_PULT"},
+            {"Fume-shroom", "FUME_SHROOM"},
+            {"Magnet-shroom", "MAGNET_SHROOM"},
+            {"Hypno-shroom", "HYPNOSHROOM"},
+            {"Doom-shroom", "DOOM_SHROOM"},
+            {"Ice-shroom", "ICE_SHROOM"},
+            {"Winter Melon", "WINTER_MELON"},
+            {"Cat-tail", "CAT_TAIL"}
+        };
+        for (String[] mapping : nameMapping) {
+            String displayKey = mapping[0].toLowerCase();
+            String plantKey = mapping[1];
 
-        int cols = 3;
-        int colCount = 0;
-        Table rowTable = new Table();
-        for (String plant : plants) {
-            if (colCount >= cols) {
-                plantTable.add(rowTable).padBottom(5).row();
-                rowTable = new Table();
-                colCount = 0;
+            if (clean.equalsIgnoreCase(displayKey)) {
+                return plantKey;
             }
-
-            TextButton plantBtn = new TextButton(plant, skin, "default");
-            plantBtn.getLabel().setFontScale(0.8f);
-            plantBtn.setWidth(120);
-            plantBtn.setHeight(35);
-
-            final String selectedPlant = plant;
-            plantBtn.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    plantDialog.hide();
-                    plantDialog.remove();
-
-                    user.getProgress().addPlantSeed(selectedPlant, 1);
-                    int totalSeeds = user.getProgress().getPlantSeedCount(selectedPlant);
-                    showToast("✅ " + selectedPlant + " seed added! (Total: " + totalSeeds + ")", 2f, false);
-                    game.getStorageService().saveUsers();
-                    updateCurrencyDisplay();
-                    updateInfoDisplay();
-                    updateItemsDisplay();
-                }
-            });
-            rowTable.add(plantBtn).width(120).height(35).pad(4);
-            colCount++;
-        }
-
-        if (colCount > 0) {
-            plantTable.add(rowTable).padBottom(5).row();
-        }
-
-        plantDialog.getContentTable().add(plantTable);
-
-        TextButton cancelBtn = new TextButton("Cancel", skin, "default");
-        cancelBtn.getLabel().setFontScale(0.9f);
-        cancelBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                plantDialog.hide();
-                plantDialog.remove();
-                user.getProgress().addDiamonds(refundOnCancel);
-                showToast("❌ Purchase cancelled. Diamonds returned.", 2f, true);
-                updateCurrencyDisplay();
-                updateInfoDisplay();
+            if (clean.replace(" ", "").equalsIgnoreCase(displayKey.replace(" ", ""))) {
+                return plantKey;
             }
-        });
-        plantDialog.getContentTable().add(cancelBtn).padTop(10);
-
-        plantDialog.show(stage);
+            if (clean.replace("-", "").equalsIgnoreCase(displayKey.replace("-", ""))) {
+                return plantKey;
+            }
+        }
+        return null;
     }
 
     private void updateDailyOfferTimer(float delta) {
@@ -541,24 +600,16 @@ public class ShopScreen extends BaseScreen {
                 dailyOfferTimeRemaining = 0;
                 updateItemsDisplay();
                 showToast(" Daily offer expired!", 2f, true);
-                scheduleNextDailyOffer();
+                com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+                    @Override
+                    public void run() {
+                        createDailyOffer();
+                        updateItemsDisplay();
+                        showToast(" New daily offer available!", 2f, false);
+                    }
+                }, 3f);
             }
         }
-    }
-
-    private void scheduleNextDailyOffer() {
-        if (pendingDailyOfferTask != null) {
-            pendingDailyOfferTask.cancel();
-        }
-        pendingDailyOfferTask = new com.badlogic.gdx.utils.Timer.Task() {
-            @Override
-            public void run() {
-                createDailyOffer();
-                updateItemsDisplay();
-                showToast(" New daily offer available!", 2f, false);
-            }
-        };
-        com.badlogic.gdx.utils.Timer.schedule(pendingDailyOfferTask, 3f);
     }
 
     @Override
@@ -572,9 +623,6 @@ public class ShopScreen extends BaseScreen {
 
     @Override
     public void dispose() {
-        if (pendingDailyOfferTask != null) {
-            pendingDailyOfferTask.cancel();
-        }
         super.dispose();
     }
 

@@ -223,6 +223,7 @@ public class CollectionScreen extends BaseScreen {
     }
 
     private void applyFilters() {
+        refreshPlantUnlockStatus();
         filteredPlants.clear();
         PlayerProgress progress = user.getProgress();
         for (Plant plant : allPlants) {
@@ -237,8 +238,7 @@ public class CollectionScreen extends BaseScreen {
                     passFilter = !plant.isUnlocked();
                     break;
                 case "UPGRADABLE":
-                    passFilter = plant.isUnlocked()
-                        && plant.canUpgrade(progress.getPlantSeedCount(plant.getName()));
+                    passFilter = plant.canUpgrade(progress);
                     break;
                 default:
                     passFilter = true;
@@ -256,7 +256,16 @@ public class CollectionScreen extends BaseScreen {
         showPlantsTab();
     }
 
+    private void refreshPlantUnlockStatus() {
+        PlayerProgress progress = user.getProgress();
+        List<String> ownedPlants = progress.getOwnedPlants();
+        for (Plant plant : allPlants) {
+            plant.setUnlocked(ownedPlants.contains(plant.getName().toUpperCase()));
+        }
+    }
+
     private void showPlantsTab() {
+        refreshPlantUnlockStatus();
         contentTable.clear();
 
         Table plantsTable = new Table();
@@ -325,8 +334,12 @@ public class CollectionScreen extends BaseScreen {
     }
 
     private Table createPlantCard(Plant plant) {
-        int plantSeeds = user.getProgress().getPlantSeedCount(plant.getName());
-        int neededSeeds = plant.getSeedPacketsNeeded();
+        PlayerProgress progress = user.getProgress();
+        int plantSeeds = progress.getPlantSeedCount(plant.getName());
+        int neededSeeds = plant.getSeedPacketsNeeded(progress);
+        System.out.println("🔍 Collection: " + plant.getName() + " → seeds: " + plantSeeds +
+            " | unlocked: " + plant.isUnlocked());
+        int currentLevel = plant.getLevel(progress);
         Table card = new Table();
         card.setBackground(cardDrawable);
         card.pad(5);
@@ -354,7 +367,7 @@ public class CollectionScreen extends BaseScreen {
         Label nameLabel = new Label(plant.getName(), skin);
         nameLabel.setFontScale(0.75f);
 
-        Label levelLabel = new Label("Lv." + plant.getLevel(), skin);
+        Label levelLabel = new Label("Lv." + currentLevel, skin);
         levelLabel.setFontScale(0.65f);
 
         Label costLabel = new Label("☀ " + plant.getCost(), skin);
@@ -369,15 +382,15 @@ public class CollectionScreen extends BaseScreen {
 
         Table buttonTable = new Table();
 
-        if (plant.isUnlocked() && plant.getLevel() < plant.getMaxLevel()) {
-            boolean canUpgrade = plant.canUpgrade(plantSeeds);
-            int upgradeCost = plant.getUpgradeCost();
+        if (plant.isUnlocked() && currentLevel < plant.getMaxLevel()) {
+            boolean canUpgrade = plant.canUpgrade(progress);
+            int upgradeCost = plant.getUpgradeCost(progress);
 
             TextButton upgradeBtn;
             if (canUpgrade) {
-                upgradeBtn = new TextButton("⬆ Lv." + (plant.getLevel() + 1) + " (" + upgradeCost + ")", skin, "green");
+                upgradeBtn = new TextButton("⬆ Lv." + (currentLevel + 1) + " (" + upgradeCost + ")", skin, "green");
             } else {
-                upgradeBtn = new TextButton("Need " + plant.getSeedPacketsNeeded() + " seeds", skin, "default");
+                upgradeBtn = new TextButton("Need " + plant.getSeedPacketsNeeded(progress) + " seeds", skin, "default");
                 upgradeBtn.setDisabled(true);
             }
             upgradeBtn.setWidth(100);
@@ -385,13 +398,14 @@ public class CollectionScreen extends BaseScreen {
             upgradeBtn.getLabel().setFontScale(0.7f);
 
             final Plant finalPlant = plant;
+            final boolean canUpgradeFinal = canUpgrade;
             upgradeBtn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if (canUpgrade) {
+                    if (canUpgradeFinal) {
                         handleUpgrade(finalPlant);
                     } else {
-                        showToast("❌ Not enough seeds! Need " + finalPlant.getSeedPacketsNeeded() + " seed packets.", 2f, true);
+                        showToast("❌ Not enough seeds! Need " + finalPlant.getSeedPacketsNeeded(progress) + " seed packets.", 2f, true);
                     }
                 }
             });
@@ -548,9 +562,10 @@ public class CollectionScreen extends BaseScreen {
 
     private void handleUpgrade(Plant plant) {
         PlayerProgress progress = user.getProgress();
-        int cost = plant.getUpgradeCost();
+        int cost = plant.getUpgradeCost(progress);
         int plantSeeds = progress.getPlantSeedCount(plant.getName());
-        int neededSeeds = plant.getSeedPacketsNeeded();
+        int neededSeeds = plant.getSeedPacketsNeeded(progress);
+        int currentLevel = plant.getLevel(progress);
 
         if (progress.getCoins() < cost) {
             showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
@@ -562,20 +577,20 @@ public class CollectionScreen extends BaseScreen {
         }
 
 
-        if (plant.getLevel() >= plant.getMaxLevel()) {
+        if (currentLevel >= plant.getMaxLevel()) {
             showToast("⭐ Already at max level!", 2f, false);
             return;
         }
 
         progress.deductCoins(cost);
-        progress.removePlantSeed(plant.getName(), neededSeeds);
-        plant.performUpgrade(plantSeeds);
-
+        //progress.removePlantSeed(plant.getName(), neededSeeds);
+        //plant.performUpgrade();
+        plant.performUpgrade(progress);
         game.getStorageService().saveUsers();
         updateCurrencyDisplay();
         applyFilters();
 
-        showToast("✅ " + plant.getName() + " upgraded to Lv." + plant.getLevel() + "!", 2f, false);
+        showToast("✅ " + plant.getName() + " upgraded to Lv." + plant.getLevel(progress) + "!", 2f, false);
     }
 
     private void buyPlant(Plant plant) {
@@ -619,8 +634,10 @@ public class CollectionScreen extends BaseScreen {
         } catch (Exception e) {
             detailImage.setColor(0.3f, 0.3f, 0.3f, 1);
         }
-        int plantSeeds = user.getProgress().getPlantSeedCount(plant.getName());
-        int neededSeeds = plant.getSeedPacketsNeeded();
+        PlayerProgress progress = user.getProgress();
+        int plantSeeds = progress.getPlantSeedCount(plant.getName());
+        int neededSeeds = plant.getSeedPacketsNeeded(progress);
+        int currentLevel = plant.getLevel(progress);
 
         StringBuilder sb = new StringBuilder();
         sb.append("🌱 ").append(plant.getName()).append("\n");
@@ -629,7 +646,7 @@ public class CollectionScreen extends BaseScreen {
         sb.append("HP: ").append(plant.getBaseHp()).append("\n");
         sb.append("Damage: ").append(plant.getDamage()).append("\n");
         sb.append("Recharge: ").append(plant.getRecharge()).append("s\n");
-        sb.append("Level: ").append(plant.getLevel()).append("/").append(plant.getMaxLevel()).append("\n");
+        sb.append("Level: ").append(currentLevel).append("/").append(plant.getMaxLevel()).append("\n");
         sb.append("Seeds: ").append(plantSeeds).append("/").append(neededSeeds).append("\n");
         sb.append("Status: ").append(plant.isUnlocked() ? "✅ Unlocked" : "🔒 Locked").append("\n");
 

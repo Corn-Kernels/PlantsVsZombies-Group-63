@@ -18,6 +18,7 @@ import java.util.random.RandomGenerator;
 public class WaveSystem extends EntitySystem {
 
     private static final float BASE_SPAWN_DURATION = 3.0f;
+    private static final float WAVE_ADVANCE_DAMAGE_FRACTION = 0.5f;
 
     private final int[] zombiesPerWave;
     private final List<ZombieDef> eligibleZombies;
@@ -28,7 +29,10 @@ public class WaveSystem extends EntitySystem {
     private int waveNumber = 0;
     private int zombiesSpawnedThisWave = 0;
 
-    public WaveSystem(@NotNull int[] zombiesPerWave, RandomGenerator rng,
+    private float currentWaveMaxHealthTotal = 0f;
+    private float currentWaveDamageDealt = 0f;
+
+    public WaveSystem(int @NotNull [] zombiesPerWave, RandomGenerator rng,
                       List<ZombieDef> eligibleZombies, PamPlayer pamPlayer) {
         this.zombiesPerWave = zombiesPerWave;
         this.eligibleZombies = eligibleZombies;
@@ -37,7 +41,7 @@ public class WaveSystem extends EntitySystem {
     }
 
     public void update(float deltaTick) {
-        if (waveNumber == 0 || (!isFinalWave() && shouldStartNextWave(field))) {
+        if (waveNumber == 0 || (!isFinalWave() && shouldStartNextWave())) {
             startNextWave();
         }
 
@@ -64,7 +68,26 @@ public class WaveSystem extends EntitySystem {
 
         ZombieInstance zombie = new ZombieInstance(chosen, spawnPosition);
         ZombieAnimationLocator.applyClip(pamPlayer, zombie.get(PamAnimationComponent.class), chosen, "walk");
+        ZombieAnimationLocator.applyArmorVisibility(chosen, zombie.get(PamAnimationComponent.class));
+        trackWaveHealth(zombie);
         field.addZombie(zombie);
+    }
+
+    private void trackWaveHealth(@NotNull ZombieInstance zombie) {
+        HealthComponent health = zombie.get(HealthComponent.class);
+        if (health == null) return;
+
+        currentWaveMaxHealthTotal += health.maxHealth;
+        health.addListener(new HealthComponent.OnHealthChangedListener() {
+            @Override
+            public void OnHealthChanged(int currentHealth, int maxHealth, int delta) {
+                currentWaveDamageDealt -= delta;
+            }
+
+            @Override
+            public void onMaxHealthChanged(int maxHealth, int delta) {
+            }
+        });
     }
 
     private @NotNull ZombieDef pickWeighted(@NotNull List<ZombieDef> candidates) {
@@ -84,17 +107,18 @@ public class WaveSystem extends EntitySystem {
         waveNumber++;
         zombiesSpawnedThisWave = 0;
         spawnTimer = 0f;
+        currentWaveMaxHealthTotal = 0f;
+        currentWaveDamageDealt = 0f;
     }
 
-    private boolean shouldStartNextWave(@NotNull Field field) {
-        List<ZombieInstance> zombies = field.getActiveZombies();
+    private boolean shouldStartNextWave() {
+        if (!isWaveSpawningDone()) return false;
+        if (currentWaveMaxHealthTotal <= 0f) return true;
 
-        boolean zombiesHealthLow = zombies.stream().allMatch(zombie -> {
-            HealthComponent health = zombie.get(HealthComponent.class);
-            return !zombie.isMarkedForRemoval() && health.currentHealth <= 0.05 * health.maxHealth && !isFinalWave();
-        });
+        // Preferred trigger: the player has chipped away at roughly half the wave's total health.
+        if (currentWaveDamageDealt >= WAVE_ADVANCE_DAMAGE_FRACTION * currentWaveMaxHealthTotal) return true;
 
-        return isWaveSpawningDone() && zombiesHealthLow;
+        return field.getActiveZombies().isEmpty();
     }
 
     public boolean isWaveSpawningDone() {

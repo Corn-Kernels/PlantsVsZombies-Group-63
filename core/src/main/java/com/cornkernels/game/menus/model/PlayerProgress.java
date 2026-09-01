@@ -1,5 +1,8 @@
 package com.cornkernels.game.menus.model;
 
+import com.cornkernels.game.entities.types.plants.PlantDef;
+import org.jspecify.annotations.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +21,7 @@ public class PlayerProgress {
     private int pots;
     private int plantFood;
     private Map<String, Integer> plantSeedPackets;
+    private Map<String, Integer> plantLevels;
 
     private int difficultyLevel;
     private float gameSpeed;
@@ -37,9 +41,50 @@ public class PlayerProgress {
         this.unlockedChapters = new ArrayList<>();
         this.unlockedChapters.add("Chapter 1");
         this.ownedPlants = new ArrayList<>();
-        this.ownedPlants.add("SUNFLOWER");
-        this.ownedPlants.add("PEASHOOTER");
-        this.ownedPlants.add("WALL_NUT");
+        this.ownedPlants.add(PlantDef.SUNFLOWER1.getPlantName());
+        this.ownedPlants.add(PlantDef.TWIN_SUNFLOWER1.getPlantName());
+        this.ownedPlants.add(PlantDef.PRIMAL_SUNFLOWER1.getPlantName());
+        this.ownedPlants.add(PlantDef.SUN_SHROOM1.getPlantName());
+        this.ownedPlants.add(PlantDef.PEASHOOTER1.getPlantName());
+        this.ownedPlants.add(PlantDef.REPEATER1.getPlantName());
+        this.ownedPlants.add(PlantDef.SNOW_PEA1.getPlantName());
+        this.ownedPlants.add(PlantDef.FIRE_PEASHOOTER1.getPlantName());
+        this.ownedPlants.add(PlantDef.MEGA_GATLING_PEA1.getPlantName());
+        this.ownedPlants.add(PlantDef.THREEPEATER1.getPlantName());
+        this.ownedPlants.add(PlantDef.PEA_POD1.getPlantName());
+        this.ownedPlants.add(PlantDef.SPLIT_PEA1.getPlantName());
+        this.ownedPlants.add(PlantDef.SEA_SHROOM1.getPlantName());
+        this.ownedPlants.add(PlantDef.PUFF_SHROOM1.getPlantName());
+        this.ownedPlants.add(PlantDef.STARFRUIT1.getPlantName());
+        this.ownedPlants.add(PlantDef.CITRON1.getPlantName());
+        this.ownedPlants.add(PlantDef.GOO_PEASHOOTER1.getPlantName());
+        this.ownedPlants.add(PlantDef.BOWLING_BULB1.getPlantName());
+        this.ownedPlants.add(PlantDef.CACTUS1.getPlantName());
+        this.ownedPlants.add(PlantDef.FUME_SHROOM1.getPlantName());
+        this.ownedPlants.add(PlantDef.CABBAGE_PULT1.getPlantName());
+        this.ownedPlants.add(PlantDef.KERNEL_PULT1.getPlantName());
+        this.ownedPlants.add(PlantDef.MELON_PULT1.getPlantName());
+        this.ownedPlants.add(PlantDef.WINTER_MELON1.getPlantName());
+        this.ownedPlants.add(PlantDef.PEPPER_PULT1.getPlantName());
+        this.ownedPlants.add(PlantDef.BONK_CHOY1.getPlantName());
+        this.ownedPlants.add(PlantDef.PHAT_BEET1.getPlantName());
+        this.ownedPlants.add(PlantDef.CHOMPER1.getPlantName());
+        this.ownedPlants.add(PlantDef.WASABI_WHIP1.getPlantName());
+        this.ownedPlants.add(PlantDef.KIWIBEAST1.getPlantName());
+        this.ownedPlants.add(PlantDef.PRIMAL_POTATO_MINE1.getPlantName());
+        this.ownedPlants.add(PlantDef.CHERRY_BOMB1.getPlantName());
+        this.ownedPlants.add(PlantDef.JALAPENO1.getPlantName());
+        this.ownedPlants.add(PlantDef.DOOM_SHROOM1.getPlantName());
+        this.ownedPlants.add(PlantDef.ICE_SHROOM1.getPlantName());
+        this.ownedPlants.add(PlantDef.GRAPESHOT1.getPlantName());
+        this.ownedPlants.add(PlantDef.TANGLE_KELP1.getPlantName());
+        this.ownedPlants.add(PlantDef.SQUASH1.getPlantName());
+        this.ownedPlants.add(PlantDef.HOT_POTATO1.getPlantName());
+        this.ownedPlants.add(PlantDef.GRAVE_BUSTER1.getPlantName());
+        this.ownedPlants.add(PlantDef.ELECTRIC_BLUEBERRY1.getPlantName());
+        this.ownedPlants.add(PlantDef.CAULIPOWER1.getPlantName());
+
+
         this.seenZombies = new ArrayList<>();
         this.completedLevels = 0;
         this.gamesPlayed = 0;
@@ -47,6 +92,7 @@ public class PlayerProgress {
         this.pots = 0;
         this.plantFood = 0;
         this.plantSeedPackets = new HashMap<>();
+        this.plantLevels = new HashMap<>();
 
         this.difficultyLevel = 3;
         this.gameSpeed = 1.0f;
@@ -141,31 +187,30 @@ public class PlayerProgress {
         return ownedPlants;  // همان ownedPlants رو برمی‌گردونه
     }
 
-    public boolean hasPlant(String plant) {
-        String key = normalizePlantKey(plant);
-        for (String owned : ownedPlants) {
-            if (normalizePlantKey(owned).equals(key)) return true;
-        }
-        return false;
+    public boolean hasPlant(@NonNull String plant) {
+        String key = plant.toUpperCase().replace("-", "_");
+        return ownedPlants.contains(key);
     }
 
-    public void addPlant(String plant) {
-        if (!hasPlant(plant)) {
-            ownedPlants.add(plant);
+    public void addPlant(@NonNull String plant) {
+        String key = plant.toUpperCase().replace("-", "_");
+        if (!hasPlant(key)) {
+            ownedPlants.add(key);
         }
     }
 
-    public int getPlantSeedCount(String plantName) {
-        return plantSeedPackets.getOrDefault(plantName.toUpperCase(), 0);
+    public int getPlantSeedCount(@NonNull String plantName) {
+        String key = plantName.toUpperCase().replace("-", "_");
+        return plantSeedPackets.getOrDefault(key, 0);
     }
 
-    public void addPlantSeed(String plantName, int count) {
-        String key = plantName.toUpperCase();
+    public void addPlantSeed(@NonNull String plantName, int count) {
+        String key = plantName.toUpperCase().replace("-", "_");
         plantSeedPackets.put(key, plantSeedPackets.getOrDefault(key, 0) + count);
     }
 
-    public boolean removePlantSeed(String plantName, int count) {
-        String key = plantName.toUpperCase();
+    public boolean removePlantSeed(@NonNull String plantName, int count) {
+        String key = plantName.toUpperCase().replace("-", "_");
         int current = plantSeedPackets.getOrDefault(key, 0);
         if (current >= count) {
             plantSeedPackets.put(key, current - count);
@@ -176,6 +221,18 @@ public class PlayerProgress {
 
     public Map<String, Integer> getPlantSeedPackets() {
         return plantSeedPackets;
+    }
+
+    public int getPlantLevel(@NonNull String plantName) {
+        return plantLevels.getOrDefault(plantName.toUpperCase(), 1);
+    }
+
+    public void setPlantLevel(@NonNull String plantName, int level) {
+        plantLevels.put(plantName.toUpperCase(), level);
+    }
+
+    public Map<String, Integer> getPlantLevels() {
+        return plantLevels;
     }
 
     // ===== زامبی‌ها =====

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
+import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.ClipRef;
 import pvz.libpvz.pam.PamPlayer;
@@ -50,7 +51,22 @@ public final class ZombieAnimationLocator {
     private static final String[] FALLBACK_CLIP_NAMES = {"idle", "loop"};
     private static final String[] DEATH_CLIP_NAMES = {"death", "die", "dying", "Death", "Die", "Dying"};
 
+    private static final Map<ArmorType, String> ARMOR_PART_PREFIXES = Map.of(
+        ArmorType.CONE, "zombie_armor_cone",
+        ArmorType.BUCKET, "zombie_armor_bucket",
+        ArmorType.BRICK, "zombie_armor_brick"
+    );
+
     private ZombieAnimationLocator() {
+    }
+
+    public static void applyArmorVisibility(@NonNull ZombieDef zombieDef, @NonNull PamAnimationComponent anim) {
+        for (ArmorType armorType : zombieDef.armors) {
+            String prefix = ARMOR_PART_PREFIXES.get(armorType);
+            if (prefix != null) {
+                anim.visibilityMap.put(prefix + "_norm", true);
+            }
+        }
     }
 
     public static @NonNull String findPamPath(@NonNull ZombieDef zombieDef) {

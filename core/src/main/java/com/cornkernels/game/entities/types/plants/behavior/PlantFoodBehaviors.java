@@ -17,18 +17,13 @@ import java.util.Map;
 
 public class PlantFoodBehaviors {
 
-    // 1. New record to bundle the behavior and its timer duration
-    public record PlantFoodEntry(PlantFoodBehavior behavior, int activeTimeTicks) {}
-
     private static final Map<PlantDef, PlantFoodEntry> REGISTRY = new EnumMap<>(PlantDef.class);
-
     private static final PlantFoodBehavior NO_EFFECT = new PlantFoodBehavior() {
         @Override
         public boolean plantFood(PlantInstance plant, Field field) {
             return false;
         }
     };
-
     // Fallback entry for unimplemented plants (0 ticks)
     private static final PlantFoodEntry NO_EFFECT_ENTRY = new PlantFoodEntry(NO_EFFECT, 0);
 
@@ -153,7 +148,7 @@ public class PlantFoodBehaviors {
         // ==========================================
         RapidFirePlantFoodBehavior RAPID_PF = new RapidFirePlantFoodBehavior();
         for (PlantDef def : rapidFirePlants) {
-        register(def, RAPID_PF, 60);
+            register(def, RAPID_PF, 60);
         }
 
         for (PlantDef def : PlantDef.values()) {
@@ -219,6 +214,10 @@ public class PlantFoodBehaviors {
     private static void registerPuffShroomPF(PlantDef def, int defaultDamage, int time) {
         int damage = parseDamage(def, defaultDamage);
         register(def, new PuffShroomPlantFoodBehavior(new PeaProjectile(damage, null)), time);
+    }
+
+    // 1. New record to bundle the behavior and its timer duration
+    public record PlantFoodEntry(PlantFoodBehavior behavior, int activeTimeTicks) {
     }
 
 }

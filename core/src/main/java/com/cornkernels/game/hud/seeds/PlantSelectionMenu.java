@@ -86,6 +86,16 @@ public class PlantSelectionMenu extends WidgetGroup {
     }
 
     @Override
+    public float getPrefWidth() {
+        return getWidth();
+    }
+
+    @Override
+    public float getPrefHeight() {
+        return getHeight();
+    }
+
+    @Override
     public void layout() {
         background.setBounds(0f, 0f, getWidth(), getHeight());
 

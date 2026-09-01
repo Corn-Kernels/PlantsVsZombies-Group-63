@@ -31,7 +31,7 @@ public class HomingShotBehavior implements PlantAttackBehavior {
         List<Entity> laneTargets = new ArrayList<>();
 
         for (Entity e : field.getEntities()) {
-            if (e instanceof ZombieInstance || e instanceof Grave) {
+            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
                 laneTargets.add(e);
             }
         }
@@ -68,7 +68,7 @@ public class HomingShotBehavior implements PlantAttackBehavior {
     public boolean hasTarget(Entity self, Field field) {
         boolean flag = false;
         for (Entity e : field.getEntities()) {
-            if (e instanceof Grave || e instanceof ZombieInstance) {
+            if ((e instanceof Grave || e instanceof ZombieInstance) && !e.isMarkedForRemoval()) {
                 flag = true;
                 break;
             }

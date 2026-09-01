@@ -3,9 +3,13 @@ package com.cornkernels.game.systems.controller.plants;
 import com.badlogic.gdx.Gdx;
 import com.cornkernels.engine.renderer.camera.GameplayCamera;
 import com.cornkernels.engine.utility.InputSnapshot;
+import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
 import com.cornkernels.game.entities.types.plants.PlantDef;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
+import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehaviors;
+import com.cornkernels.game.entities.types.plants.behavior.behaviors.TrapExplosiveBehavior;
 import com.cornkernels.game.hud.HighlightAnimationSet;
 import com.cornkernels.game.hud.cursor.CursorAttachment;
 import com.cornkernels.game.hud.cursor.CursorToolController;
@@ -40,7 +44,7 @@ public class PlantingController {
     }
 
     public void addSun(int amount) {
-        currentSun += amount;
+        currentSun = Math.clamp(currentSun + amount, 0, 5000);
     }
 
     public int getCurrentSun() {
@@ -66,6 +70,7 @@ public class PlantingController {
                 if (plantDef != null) {
                     PlantInstance plant = new PlantInstance(plantDef, gridPosition);
                     applyIdleAnimation(plant, plantDef);
+                    wireDamageStageAnimation(plant, plantDef);
                     field.addPlant(plant);
                     currentSun -= sunCost;
                     toolState.active = false;
@@ -83,7 +88,29 @@ public class PlantingController {
             Gdx.app.error("PlantingController", "No PAM animation found for " + plantDef);
             return;
         }
+        if (PlantAttackBehaviors.get(plantDef) instanceof TrapExplosiveBehavior) {
+            PlantAnimationLocator.applyClip(pamPlayer, plant.get(PamAnimationComponent.class), plantDef, "plant_idle");
+            return;
+        }
         PlantAnimationLocator.applySpawnAnimation(pamPlayer, plant.get(PamAnimationComponent.class), pamPath);
+    }
+
+    private void wireDamageStageAnimation(@NonNull PlantInstance plant, @NonNull PlantDef plantDef) {
+        if (plant.get(PlantAttackComponent.class) != null) return;
+        HealthComponent health = plant.get(HealthComponent.class);
+        if (health == null) return;
+
+        health.addListener(new HealthComponent.OnHealthChangedListener() {
+            @Override
+            public void OnHealthChanged(int currentHealth, int maxHealth, int delta) {
+                float fraction = maxHealth > 0 ? (float) currentHealth / maxHealth : 1f;
+                PlantAnimationLocator.applyDamageStageClip(pamPlayer, plant.get(PamAnimationComponent.class), plantDef, fraction);
+            }
+
+            @Override
+            public void onMaxHealthChanged(int maxHealth, int delta) {
+            }
+        });
     }
 
     public void toggleShovel(CursorAttachment shovelIcon) {

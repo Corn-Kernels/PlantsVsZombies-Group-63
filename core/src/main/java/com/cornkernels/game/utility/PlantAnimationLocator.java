@@ -8,10 +8,7 @@ import org.jspecify.annotations.Nullable;
 import pvz.libpvz.pam.ClipRef;
 import pvz.libpvz.pam.PamPlayer;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 public final class PlantAnimationLocator {
 
@@ -22,13 +19,24 @@ public final class PlantAnimationLocator {
         "768/FULL/EMPOWERMINTS/PLANT/%1$s/%1$s.PAM",
     };
 
+    private static final Map<String, String> SLUG_OVERRIDES = Map.of(
+        "KERNELPULT", "KERNALPULT",
+        "MEGAGATLINGPEA", "MEGAGATLING",
+        "PHATBEET", "PHATBEETS",
+        "ROTOBAGA", "ROTORUTABAGA",
+        "TWINSUNFLOWER", "SUNFLOWER_TWIN",
+        "PRIMALSUNFLOWER", "PRIMAL_SUNFLOWER",
+        "PRIMALPOTATOMINE", "PRIMAL_POTATOMINE"
+    );
+
     private PlantAnimationLocator() {
     }
 
     public static @Nullable String findPamPath(@NonNull PlantDef plantDef) {
         String slug = slugify(plantDef.getPlantName());
+        String folderName = SLUG_OVERRIDES.getOrDefault(slug, slug);
         for (String template : PAM_PATH_TEMPLATES) {
-            String path = String.format(template, slug);
+            String path = String.format(template, folderName);
             if (Gdx.files.internal("IMAGES/" + path).exists()) {
                 return path;
             }
@@ -52,6 +60,29 @@ public final class PlantAnimationLocator {
         anim.stateTime = 0f;
         anim.upcomingClips = queue;
         anim.isLooping = queue.isEmpty();
+    }
+
+
+    public static void applyDamageStageClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
+                                            @NonNull PlantDef plantDef, float healthFraction) {
+        String path = findPamPath(plantDef);
+        if (path == null) return;
+        pamPlayer.loadSync(path);
+        List<String> available = pamPlayer.clips(path);
+        if (available == null || available.isEmpty()) return;
+
+        String prefix = available.contains("damage") ? "damage"
+            : available.contains("idle_damage") ? "idle_damage"
+            : null;
+        if (prefix == null) return;
+
+        int stageCount = 1;
+        while (available.contains(prefix + (stageCount + 1))) stageCount++;
+        int bucket = (int) ((1f - healthFraction) * (stageCount + 1));
+        bucket = Math.clamp(bucket, 0, stageCount);
+
+        String clip = bucket == 0 ? "idle" : bucket == 1 ? prefix : prefix + bucket;
+        applyClip(pamPlayer, anim, plantDef, clip);
     }
 
     public static void applyClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,

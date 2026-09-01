@@ -9,12 +9,13 @@ import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 public class PuffShotBehavior extends DirectShotBehavior {
 
+    public final float lifespan; // Made public so Plant Food effects can read it
     private final float maxRangeTiles;
     private final float actionInterval;
-    public final float lifespan; // Made public so Plant Food effects can read it
 
     public PuffShotBehavior(int shotCount, AbstractProjectile projectile, float maxRangeTiles, float actionInterval, float lifespan) {
         super(shotCount, projectile);
@@ -28,9 +29,7 @@ public class PuffShotBehavior extends DirectShotBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
-        // Always return true so the game engine constantly calls execute().[cite: 25]
-        // This ensures the lifespan timer ticks down even when no zombies are around.[cite: 25]
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         return true;
     }
 
@@ -39,7 +38,7 @@ public class PuffShotBehavior extends DirectShotBehavior {
         PuffShroomComponent comp = self.get(PuffShroomComponent.class);
         if (comp == null) {
             comp = new PuffShroomComponent(actionInterval);
-            comp.lifeTimer=lifespan;
+            comp.lifeTimer = lifespan;
             self.add(comp);
 
         }
