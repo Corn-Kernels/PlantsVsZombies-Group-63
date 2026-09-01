@@ -75,7 +75,6 @@ public class DebuffSystem extends EntitySystem {
                     activeCount++;
                 }
 
-                // Average the colors if multiple debuffs are active, or reset to pure white
                 if (activeCount == 0) {
                     pam.tint.set(1.0f, 1.0f, 1.0f, 1.0f);
                 } else {

@@ -46,9 +46,6 @@ public class PlantAttackSystem extends EntitySystem {
             PamAnimationComponent anim = plant.get(PamAnimationComponent.class);
 
             // --- PLANT FOOD ---
-            // Runs for every plant that has a PlantFoodComponent, not just ones with an attack
-            // behavior - defensive Wall-nut-family plants have no PlantAttackComponent at all, but
-            // still need their Plant Food effect (and visuals) to actually run.
             PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
             if (pf != null && pf.timerTicks > 0) {
                 if (pf.timerTicks == pf.normalTime) {
@@ -116,11 +113,6 @@ public class PlantAttackSystem extends EntitySystem {
         }
     }
 
-    /**
-     * Once Plant Food wears off, Wall-nut-family plants should drop back to their current
-     * damage-stage crack clip (not always plain "idle") if they've taken damage; everything else
-     * uses the plant's own Plant Food outro / plain idle via {@link PlantAnimationLocator#applyPlantFoodEndClip}.
-     */
     private void applyPlantFoodEndAnimation(@NonNull PlantInstance plant, @NonNull PlantDef def,
                                             @NonNull PamAnimationComponent anim) {
         if (def.getCategory() == PlantCategory.WALL_NUT) {
@@ -134,7 +126,6 @@ public class PlantAttackSystem extends EntitySystem {
         PlantAnimationLocator.applyPlantFoodEndClip(pamPlayer, anim, def);
     }
 
-    /** Spawns the shared Plant-Food sparkle overlay at the plant's position and tracks it on {@code pf} so it can be ended later. */
     private void spawnPlantFoodEffect(@NonNull PlantInstance plant, @NonNull PlantFoodComponent pf) {
         PositionComponent posComp = plant.get(PositionComponent.class);
         if (posComp == null) return;
@@ -145,7 +136,6 @@ public class PlantAttackSystem extends EntitySystem {
         pf.effectEntity = effect;
     }
 
-    /** Plays the overlay's outro and hands it off to {@link PlantFoodEffectSystem} to remove once it finishes. */
     private void endPlantFoodEffect(@NonNull PlantFoodComponent pf) {
         PlantFoodEffect effect = pf.effectEntity;
         pf.effectEntity = null;

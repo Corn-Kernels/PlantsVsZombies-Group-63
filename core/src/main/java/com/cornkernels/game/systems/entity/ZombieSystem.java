@@ -185,7 +185,6 @@ public class ZombieSystem extends EntitySystem {
                         }
                     }
 
-                    // If it was an instant-consume trap, destroy it and abort the standard bite sequence
                     if (instantConsume) {
                         plantTarget.markForRemoval();
                         state.changeState(ZombieStateComponent.State.WALKING);
@@ -195,7 +194,6 @@ public class ZombieSystem extends EntitySystem {
                     }
                 }
 
-                // Standard combat logic (bypassed if the plant was just instantly consumed)
                 CombatSystem.applyDamage(state.targetEntity, currentDamage, false);
                 state.ticksUntilNextBite = BITE_INTERVAL_TICKS;
             }
