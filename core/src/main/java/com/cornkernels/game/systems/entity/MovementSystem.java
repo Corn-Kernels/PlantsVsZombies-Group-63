@@ -5,6 +5,8 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.components.zombie_specific.specific_specific.EnragedComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
@@ -13,10 +15,14 @@ import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.OctopusP
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
+import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.AreaOfIceDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.GrapeshotProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.LightningCloudProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class MovementSystem extends EntitySystem {
 
@@ -27,7 +33,6 @@ public class MovementSystem extends EntitySystem {
                 continue;
             }
 
-            // TODO: MUST BE ADDED TO ZOMBIE BEHAVIORS
             if (e instanceof ZombieInstance zombie
                 && zombie.get(ZombieStateComponent.class).state == ZombieStateComponent.State.EATING) {
                 continue;
@@ -82,7 +87,7 @@ public class MovementSystem extends EntitySystem {
                     if (cloudProj.target != null && cloudProj.target.has(PositionComponent.class)) {
                         Vec2d pos = posComp.position;
                         Vec2d targetPos = cloudProj.target.get(PositionComponent.class).position;
-                        Vec2d vel = velComp.velocityPerTick;
+                        Vec2d vel = new Vec2d(0.4f,0);
 
                         double desiredAngle = Math.atan2(targetPos.getY() - pos.getY(), targetPos.getX() - pos.getX());
                         double speedMag = Math.hypot(vel.getX(), vel.getY());
@@ -109,17 +114,12 @@ public class MovementSystem extends EntitySystem {
 
             // 3. AoE Processing (No movement applied)
             if (e instanceof AreaOfDamage) {
-                if (((AreaOfDamage) e).used) {
-                    e.markForRemoval();
-                } else {
-                    ((AreaOfDamage) e).used = true;
-                }
+                if (((AreaOfDamage) e).used)e.markForRemoval();
                 continue;
             }
 
             if (e instanceof AreaOfIceDamage) {
                 if (((AreaOfIceDamage) e).used) e.markForRemoval();
-                else ((AreaOfIceDamage) e).used = true;
                 continue;
             }
 
@@ -202,10 +202,80 @@ public class MovementSystem extends EntitySystem {
             if (e.has(EnragedComponent.class)) {
                 vx *= e.get(EnragedComponent.class).speedMultiplier;
             }
+
+            if(e instanceof ZombieInstance){
+                ZombieInstance zombie=(ZombieInstance) e;
+                // 2. Process Ice (Freeze & Slow)
+                IceComponent ice = zombie.get(IceComponent.class);
+                if (ice != null && ice.freezeLevel > 0) {
+                    if (ice.freezeLevel == 2) {
+                        vx=0;
+                        vy=0;
+                    }
+                    if (ice.freezeLevel == 1) {
+                        vx/=2;
+                        vy/=2;
+                    }
+                    if (ice.freezeTicksRemaining > 0) {
+                        ice.freezeTicksRemaining--;
+                        if (ice.freezeTicksRemaining <= 0) {
+                            ice.freezeLevel = 1; // Thaw into a slow/chill state
+                        }
+                    }
+
+                    if (ice.slowTicksRemaining > 0) {
+                        ice.slowTicksRemaining--;
+                        if (ice.slowTicksRemaining <= 0 && ice.freezeTicksRemaining <= 0) {
+                            ice.melt(); // Completely clear the debuff
+                        }
+                    }
+                }
+
+                // 3. Process Stuns (Butter)
+                if (zombie.has(ButterComponent.class)) {
+                    List<ButterComponent> stuns = zombie.getAll(ButterComponent.class);
+                    Iterator<ButterComponent> iterator = stuns.iterator();
+
+                    while (iterator.hasNext()) {
+                        ButterComponent stun = iterator.next();
+                        stun.stunTicksRemaining--;
+                        vx=0;
+                        vy=0;
+                        if (stun.stunTicksRemaining <= 0) {
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+
+
             posComp.position = new Vec2d(
                 posComp.position.getX() + vx,
                 posComp.position.getY() + vy
             );
+
+            if(e instanceof LobProjectile){
+                float startX = ((LobProjectile) e).startPosition.getX();
+                float endX;
+                if(((LobProjectile) e).target!=null)
+                    endX= ((LobProjectile) e).target.get(PositionComponent.class).position.getX();
+                else
+                    endX=14;
+                float currentX = posComp.position.getX();
+
+                float totalDistance = endX - startX;
+
+                float progress = (totalDistance == 0) ? 1.0f : (currentX - startX) / totalDistance;
+
+                progress = Math.max(0.0f, Math.min(1.0f, progress));
+
+                float heightOffset = 16.0f * progress * (1.0f - progress);
+
+                float baseY = ((LobProjectile) e).startPosition.getY();
+                e.get(PositionComponent.class).position.setY(baseY + heightOffset);
+                if(currentX>endX)
+                    e.get(PositionComponent.class).position.setY(20);
+            }
 
         }
     }

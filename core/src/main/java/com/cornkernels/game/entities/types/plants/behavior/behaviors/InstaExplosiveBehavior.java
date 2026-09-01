@@ -41,6 +41,7 @@ public class InstaExplosiveBehavior implements PlantAttackBehavior {
 
             // Snap health exactly to 0 so the standard entity removal system destroys the plant
             hc.currentHealth = 0;
+            self.markForRemoval();
         }
     }
 

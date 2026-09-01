@@ -4,6 +4,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -27,7 +28,7 @@ public class SplitPeaBehavior implements PlantAttackBehavior {
         boolean targetBackward = false;
 
         for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval()) {
+            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
                 double zX = z.get(PositionComponent.class).position.getX();
                 if (zX >= origin.getX()) {
                     targetForward = true;
@@ -37,18 +38,14 @@ public class SplitPeaBehavior implements PlantAttackBehavior {
             }
         }
 
-        // Shoot 1 forward
         if (targetForward) {
             field.addProjectile(projectile.clone(new Vec2d(origin.getX() + 0.5f, origin.getY())));
         }
 
-        // Shoot 2 backwards
         if (targetBackward) {
             for (int i = 0; i < 2; i++) {
-                // FIXED: + i * shotSpacing means the 2nd pea spawns further right (closer to plant), correctly trailing!
                 AbstractProjectile backPea = projectile.clone(new Vec2d((float) (origin.getX() - 0.5 + i * shotSpacing), origin.getY()));
 
-                // FIXED: Clean in-place mutation using your Vec2d class
                 VelocityComponent velComp = backPea.get(VelocityComponent.class);
                 if (velComp != null && velComp.velocityPerTick != null) {
                     velComp.velocityPerTick.setX(-Math.abs(velComp.velocityPerTick.getX()));
@@ -62,6 +59,6 @@ public class SplitPeaBehavior implements PlantAttackBehavior {
     @Override
     public boolean hasTarget(Entity self, Field field) {
         int lane = GridPosition.fromContinuous(self.get(PositionComponent.class).position).lane();
-        return field.getZombiesInLane(lane).stream().anyMatch(z -> !z.isMarkedForRemoval());
+        return field.getZombiesInLane(lane).stream().anyMatch(z -> !z.isMarkedForRemoval() && !z.has(HypnoComponent.class));
     }
 }

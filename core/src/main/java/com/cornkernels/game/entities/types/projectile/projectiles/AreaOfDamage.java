@@ -33,7 +33,7 @@ public class AreaOfDamage extends AbstractProjectile {
     public boolean hit(@NonNull Entity target, Field field) {
         this.used = true;
 
-        if (super.hit(target, field) && target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position) < radius) {
+        if (target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position) < radius) {
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
 
             if (fiery && target.has(IceComponent.class)) {

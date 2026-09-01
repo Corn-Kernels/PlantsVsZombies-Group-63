@@ -4,6 +4,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
@@ -21,7 +22,7 @@ public class StarfruitBehavior implements PlantAttackBehavior {
     @Override
     public void execute(Entity self, Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
-        double centerX = origin.getX() + 0.5;
+        double centerX = origin.getX();
         double centerY = origin.getY();
 
         float baseSpeed = 1.0f;
@@ -31,16 +32,14 @@ public class StarfruitBehavior implements PlantAttackBehavior {
             if (speed > 0) baseSpeed = (float) speed;
         }
 
-        // Calculate diagonal speed (cos(45) and sin(45) are approx 0.707)
         float diagSpeed = (float) (baseSpeed * 0.7071f);
 
-        // Define the 5 standard Starfruit directions (Velocity X, Velocity Y)
         float[][] directions = {
-            {-baseSpeed, 0},         // Backward
-            {0, -baseSpeed},         // Up
-            {0, baseSpeed},          // Down
-            {diagSpeed, -diagSpeed}, // Top-Right (Forward-Up)
-            {diagSpeed, diagSpeed}   // Bottom-Right (Forward-Down)
+            {-baseSpeed, 0},
+            {0, -baseSpeed},
+            {0, baseSpeed},
+            {diagSpeed, -diagSpeed},
+            {diagSpeed, diagSpeed}
         };
 
         for (float[] dir : directions) {
@@ -63,26 +62,23 @@ public class StarfruitBehavior implements PlantAttackBehavior {
         double centerX = origin.getX() + 0.5;
         double centerY = origin.getY();
 
-        float halfWidth = 0.5f; // Threshold for lane width tolerance
+        float halfWidth = 0.5f;
         float diagThreshold = (float) (halfWidth * Math.sqrt(2));
-        float length = 12.0f; // Max tile scanning distance (since starfruit hits the whole screen)
+        float length = 12.0f;
 
         for (Entity e : field.getEntities()) {
             if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
+                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+
                 Vec2d pos = e.get(PositionComponent.class).position;
                 double dx = pos.getX() - centerX;
                 double dy = pos.getY() - centerY;
 
                 if (Math.hypot(dx, dy) <= length) {
-                    // Backward (-X, 0Y)
                     if (dx <= 0 && Math.abs(dy) <= halfWidth) return true;
-                    // Up (0X, -Y)
                     if (dy <= 0 && Math.abs(dx) <= halfWidth) return true;
-                    // Down (0X, +Y)
                     if (dy >= 0 && Math.abs(dx) <= halfWidth) return true;
-                    // Top-Right (+X, -Y) -> Line: y = -x
                     if (dx >= 0 && dy <= 0 && Math.abs(dx + dy) <= diagThreshold) return true;
-                    // Bottom-Right (+X, +Y) -> Line: y = x
                     if (dx >= 0 && dy >= 0 && Math.abs(dy - dx) <= diagThreshold) return true;
                 }
             }

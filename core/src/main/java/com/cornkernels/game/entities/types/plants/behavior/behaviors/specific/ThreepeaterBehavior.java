@@ -3,6 +3,7 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors.specific;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
@@ -31,8 +32,8 @@ public class ThreepeaterBehavior implements PlantAttackBehavior {
     public boolean hasTarget(Entity self, Field field) {
         int lane = GridPosition.fromContinuous(self.get(PositionComponent.class).position).lane();
 
-        return field.getZombiesInLane(lane).stream().anyMatch(z -> !z.isMarkedForRemoval())
-            || field.getZombiesInLane(lane - 1).stream().anyMatch(z -> !z.isMarkedForRemoval())
-            || field.getZombiesInLane(lane + 1).stream().anyMatch(z -> !z.isMarkedForRemoval());
+        return field.getZombiesInLane(lane).stream().anyMatch(z -> !z.isMarkedForRemoval() && !z.has(HypnoComponent.class))
+            || field.getZombiesInLane(lane - 1).stream().anyMatch(z -> !z.isMarkedForRemoval() && !z.has(HypnoComponent.class))
+            || field.getZombiesInLane(lane + 1).stream().anyMatch(z -> !z.isMarkedForRemoval() && !z.has(HypnoComponent.class));
     }
 }

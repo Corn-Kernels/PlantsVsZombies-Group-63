@@ -32,6 +32,7 @@ public class PlantInstance extends Entity {
         if (behavior != null) {
             float interval = plantDef.getActionInterval().orElse(0.0f);
             add(new PlantAttackComponent(behavior, interval));
+
         }
 
         // Unpack the bundled PlantFoodEntry

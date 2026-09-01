@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.SquashComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
@@ -37,30 +38,25 @@ public class SquashBehavior implements PlantAttackBehavior {
             self.add(state);
         }
 
-        // --- Attack Execution Phase ---
         if (state.isAttacking) {
             state.attackTimer += (1.0f / 20.0f);
 
-            // Wait 0.5s to simulate the Squash jumping into the air before crushing
             if (state.attackTimer >= 0.5f) {
                 Vec2d crushPos = new Vec2d(state.targetCrushX, state.targetCrushY);
 
                 if (useLineAoe) {
-                    // Level 3+: Spawn the Jalapeno-style LineOfDamage (2.5 length, 1.0 width)
                     field.addProjectile(new LineOfDamage(crushPos, 2.5f, 1.0f, damage));
                 } else {
-                    // Level 1-2: Spawn standard AreaOfDamage (0.5 radius)
                     field.addProjectile(new AreaOfDamage(crushPos, 0.5f, damage));
                 }
 
                 state.crushesLeft--;
                 if (state.crushesLeft <= 0) {
-                    hc.currentHealth = 0; // Die after final crush
+                    hc.currentHealth = 0;
+                    self.markForRemoval();
                 } else {
-                    // Update position to the tile we crushed
                     self.get(PositionComponent.class).position.setX((float) Math.floor(state.targetCrushX));
                     self.get(PositionComponent.class).position.setY((float) Math.floor(state.targetCrushY));
-
                     state.isAttacking = false;
                     state.attackTimer = 0f;
                 }
@@ -68,7 +64,6 @@ public class SquashBehavior implements PlantAttackBehavior {
             return;
         }
 
-        // --- Target Acquisition Phase ---
         Vec2d origin = self.get(PositionComponent.class).position;
         double originX = origin.getX() + 0.5;
         int lane = GridPosition.fromContinuous(origin).lane();
@@ -76,9 +71,10 @@ public class SquashBehavior implements PlantAttackBehavior {
         Entity closestTarget = null;
         double minDistance = Double.MAX_VALUE;
 
-        // Search the lane for the closest zombie or grave within 1.5 tiles left or right
         for (Entity e : field.getEntities()) {
             if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
+                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+
                 if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
                     double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
                     double dist = Math.abs(targetX - originX);

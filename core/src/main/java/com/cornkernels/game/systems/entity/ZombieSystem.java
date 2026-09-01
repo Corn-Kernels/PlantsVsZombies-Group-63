@@ -1,5 +1,6 @@
 package com.cornkernels.game.systems.entity;
 
+import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.OctoedComponent;
@@ -10,6 +11,7 @@ import com.cornkernels.game.entities.components.zombie_specific.ZombieBehaviorCo
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDeathComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
 import com.cornkernels.game.entities.components.zombie_specific.specific_specific.EnragedComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
@@ -52,35 +54,62 @@ public class ZombieSystem extends EntitySystem {
             }
 
             GridPosition pos = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position);
-            PlantInstance plant = field.getPlantAt(pos.lane(), pos.column());
-            if (plant != null) {
-                // Ignore plants that have an octopus on them
-                if (plant.has(OctoedComponent.class)) {
-                    plant = null;
-                } else if (plant.has(SheepedComponent.class)) {
-                    plant = null;
+            Entity target = null;
+            boolean isHypnotized = zombie.has(HypnoComponent.class);
+
+            if (isHypnotized) {
+                // 1. Hypnotized zombies target normal zombies in the same column
+                for (ZombieInstance z : field.getZombiesInLane(pos.lane())) {
+                    if (z != zombie && !z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
+                        GridPosition zPos = GridPosition.fromContinuous(z.get(PositionComponent.class).position);
+                        if (zPos.column() == pos.column()) {
+                            target = z;
+                            break;
+                        }
+                    }
                 }
-                // Ignore fully frozen plants
-                else {
-                    PlantFreezeComponent freezeComp = plant.get(PlantFreezeComponent.class);
-                    if (freezeComp != null && freezeComp.frozenHp > 0) {
-                        plant = null;
+            } else {
+                // 2. Normal zombies target hypnotized zombies first
+                for (ZombieInstance z : field.getZombiesInLane(pos.lane())) {
+                    if (!z.isMarkedForRemoval() && z.has(HypnoComponent.class)) {
+                        GridPosition zPos = GridPosition.fromContinuous(z.get(PositionComponent.class).position);
+                        if (zPos.column() == pos.column()) {
+                            target = z;
+                            break;
+                        }
+                    }
+                }
+
+                // 3. If no hypnotized zombie is found, target plants normally
+                if (target == null) {
+                    PlantInstance plant = field.getPlantAt(pos.lane(), pos.column());
+                    if (plant != null) {
+                        // Ignore plants that have an octopus or sheep on them
+                        if (!plant.has(OctoedComponent.class) && !plant.has(SheepedComponent.class)) {
+                            // Ignore fully frozen plants
+                            PlantFreezeComponent freezeComp = plant.get(PlantFreezeComponent.class);
+                            if (freezeComp == null || freezeComp.frozenHp <= 0) {
+                                target = plant;
+                            }
+                        }
                     }
                 }
             }
 
-            if (plant == null) {
+            // State switching if no target is found
+            if (target == null) {
                 if (state.state == ZombieStateComponent.State.EATING) {
                     state.changeState(ZombieStateComponent.State.WALKING);
-                    state.targetPlant = null;
+                    state.targetEntity = null;
                     applyClip(zombie, "walk");
                 }
                 continue;
             }
 
-            if (state.state != ZombieStateComponent.State.EATING || state.targetPlant != plant) {
+            // Lock onto new target and start eating
+            if (state.state != ZombieStateComponent.State.EATING || state.targetEntity != target) {
                 state.changeState(ZombieStateComponent.State.EATING);
-                state.targetPlant = plant;
+                state.targetEntity = target;
                 state.ticksUntilNextBite = BITE_INTERVAL_TICKS;
                 applyClip(zombie, "eat");
             }
@@ -88,12 +117,6 @@ public class ZombieSystem extends EntitySystem {
             state.ticksUntilNextBite--;
             if (state.ticksUntilNextBite <= 0) {
                 ZombieDef def = zombie.get(ZombieDefComponent.class).def();
-
-                PlantDefComponent plantDefComp = plant.get(PlantDefComponent.class);
-                if (plantDefComp != null && plantDefComp.def().getId() % 1000 == 51) {
-                    zombie.add(new SunInfectedComponent());
-                }
-
                 int currentDamage = def.eatDps;
 
                 // Check if the zombie is enraged to apply the damage buff
@@ -102,9 +125,17 @@ public class ZombieSystem extends EntitySystem {
                     currentDamage = (int) (currentDamage * enraged.damageMultiplier);
                 }
 
-                // ... apply damage to plant
+                // Apply damage dynamically to whatever the target is (Plant or Zombie)
+                CombatSystem.applyDamage(state.targetEntity, currentDamage, false);
 
-                CombatSystem.applyDamage(plant, def.eatDps, true);
+                // Sun Bean infection logic (only applies if the target is a PlantInstance)
+                if (state.targetEntity instanceof PlantInstance plantTarget) {
+                    PlantDefComponent plantDefComp = plantTarget.get(PlantDefComponent.class);
+                    if (plantDefComp != null && plantDefComp.def().getId() % 1000 == 51) {
+                        zombie.add(new SunInfectedComponent());
+                    }
+                }
+
                 state.ticksUntilNextBite = BITE_INTERVAL_TICKS;
             }
         }

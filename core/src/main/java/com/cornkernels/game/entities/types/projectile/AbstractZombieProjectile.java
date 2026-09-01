@@ -12,7 +12,7 @@ import org.jspecify.annotations.NonNull;
 
 public class AbstractZombieProjectile extends Entity {
 
-    private static final double HIT_DISTANCE = 0.3f;
+    private static final double HIT_DISTANCE = 0.6f;
 
     public AbstractZombieProjectile(int damage, Vec2d velocity, Vec2d Position) {
         super();

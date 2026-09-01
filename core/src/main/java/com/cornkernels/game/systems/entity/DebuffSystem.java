@@ -39,46 +39,7 @@ public class DebuffSystem extends EntitySystem {
                 }
             }
 
-            // 2. Process Ice (Freeze & Slow)
-            IceComponent ice = zombie.get(IceComponent.class);
-            if (ice != null && ice.freezeLevel > 0) {
-                if (ice.freezeLevel == 2) {
-                    zombie.get(VelocityComponent.class).velocityPerTick.setX(0);
-                    zombie.get(VelocityComponent.class).velocityPerTick.setY(0);
-                }
-                if (ice.freezeLevel == 1) {
-                    zombie.get(VelocityComponent.class).velocityPerTick.setX(zombie.get(VelocityComponent.class).velocityPerTick.getX());
-                    zombie.get(VelocityComponent.class).velocityPerTick.setY(zombie.get(VelocityComponent.class).velocityPerTick.getY());
-                }
-                if (ice.freezeTicksRemaining > 0) {
-                    ice.freezeTicksRemaining--;
-                    if (ice.freezeTicksRemaining <= 0) {
-                        ice.freezeLevel = 1; // Thaw into a slow/chill state
-                    }
-                }
 
-                if (ice.slowTicksRemaining > 0) {
-                    ice.slowTicksRemaining--;
-                    if (ice.slowTicksRemaining <= 0 && ice.freezeTicksRemaining <= 0) {
-                        ice.melt(); // Completely clear the debuff
-                    }
-                }
-            }
-
-            // 3. Process Stuns (Butter)
-            if (zombie.has(ButterComponent.class)) {
-                List<ButterComponent> stuns = zombie.getAll(ButterComponent.class);
-                Iterator<ButterComponent> iterator = stuns.iterator();
-
-                while (iterator.hasNext()) {
-                    ButterComponent stun = iterator.next();
-                    stun.stunTicksRemaining--;
-
-                    if (stun.stunTicksRemaining <= 0) {
-                        iterator.remove();
-                    }
-                }
-            }
         }
     }
 }

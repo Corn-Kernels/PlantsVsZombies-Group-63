@@ -709,7 +709,7 @@ public class PlantAttackBehaviors {
      */
     private static void registerCaulipower(PlantDef def) {
         // Hypnosis handles the heavy lifting inside the projectile, 0 direct damage.
-        register(def, new HomingShotBehavior(1, new HypnoHomingProjectile(0, null, null)));
+        register(def, new HomingShotBehavior(1, new HypnoHomingProjectile(999999, null, null)));
     }
 
     /**

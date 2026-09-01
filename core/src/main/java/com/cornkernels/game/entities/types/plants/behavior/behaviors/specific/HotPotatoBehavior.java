@@ -76,6 +76,8 @@ public class HotPotatoBehavior implements PlantAttackBehavior {
         // 3. Die after 1.5 seconds (30 ticks)
         if (state.ticksAlive >= state.maxTicks) {
             hc.currentHealth = 0;
+            self.markForRemoval();
+
         }
     }
 

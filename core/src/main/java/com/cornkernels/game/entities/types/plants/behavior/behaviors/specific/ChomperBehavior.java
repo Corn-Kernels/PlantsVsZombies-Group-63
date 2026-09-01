@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.ChomperComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
@@ -34,34 +35,31 @@ public class ChomperBehavior implements PlantAttackBehavior {
     public void execute(Entity self, Field field) {
         ChomperComponent state = self.get(ChomperComponent.class);
 
-        // Self-initialize the component if it hasn't been added yet
         if (state == null) {
             state = new ChomperComponent();
             self.add(state);
         }
 
-        // --- Timer Logic ---
         if (state.isDigesting) {
             state.digestTimerTicks--;
             if (state.digestTimerTicks <= 0) {
                 state.isDigesting = false;
             }
-            return; // Can't attack while full
+            return;
         }
 
         if (state.biteCooldownTicks > 0) {
             state.biteCooldownTicks--;
-            return; // Can't attack while waiting on standard bite cooldown
+            return;
         }
 
-        // --- Attack Logic ---
         Vec2d origin = self.get(PositionComponent.class).position;
         double originX = origin.getX() + 0.5;
         int lane = GridPosition.fromContinuous(origin).lane();
 
         List<Entity> frontTargets = new ArrayList<>();
         for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval()) {
+            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
                 double targetX = z.get(PositionComponent.class).position.getX() + 0.5;
                 if (targetX > originX && targetX - originX <= frontRange) {
                     frontTargets.add(z);
@@ -70,19 +68,16 @@ public class ChomperBehavior implements PlantAttackBehavior {
         }
 
         if (!frontTargets.isEmpty()) {
-            // Sort leftmost to rightmost so we hit the closest one in front
             frontTargets.sort(Comparator.comparingDouble(a -> a.get(PositionComponent.class).position.getX()));
 
             Entity target = frontTargets.get(0);
             HealthComponent hc = target.get(HealthComponent.class);
 
             if (hc != null && hc.maxHealth >= heavyThreshold) {
-                // Chomp heavy target (Gargantuars, Mecha-Football, etc.)
                 CombatSystem.applyDamage(target, chompDamage, false);
                 state.biteCooldownTicks = this.biteCooldownTicks;
             } else {
-                // Swallow normal target
-                CombatSystem.applyDamage(target, 99999, false); // Massive damage to ensure death and process armor properly
+                CombatSystem.applyDamage(target, 99999, false);
                 state.isDigesting = true;
                 state.digestTimerTicks = this.digestTicks;
             }

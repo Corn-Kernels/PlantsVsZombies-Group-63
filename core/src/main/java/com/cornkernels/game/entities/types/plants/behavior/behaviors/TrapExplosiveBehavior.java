@@ -47,12 +47,14 @@ public class TrapExplosiveBehavior implements PlantAttackBehavior {
                 field.addProjectile(new AreaOfDamage(self.get(PositionComponent.class).position, radius, damage));
 
                 hc.currentHealth = 0; // Die immediately after triggering
+                self.markForRemoval();
             } else {
                 // Plant is being eaten before it armed!
                 state.fakeUnarmedHealth -= damageTaken;
 
                 if (state.fakeUnarmedHealth <= 0) {
                     hc.currentHealth = 0; // It got eaten completely, die without exploding
+                    self.markForRemoval();
                 } else {
                     hc.currentHealth = hc.maxHealth; // Heal it back up so we can detect the next bite
                 }

@@ -3,6 +3,7 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors.specific;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
@@ -37,6 +38,8 @@ public class FumeShroomBehavior implements PlantAttackBehavior {
 
         for (Entity e : field.getEntities()) {
             if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
+                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+
                 if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
                     double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
                     if (targetX >= plantX && targetX - plantX <= range) {

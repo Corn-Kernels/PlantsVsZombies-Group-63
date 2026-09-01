@@ -28,7 +28,7 @@ public class AreaOfIceDamage extends AbstractProjectile {
     public boolean hit(@NonNull Entity target, Field field) {
         this.used = true; // Mark as used the moment collision is processed
 
-        if (super.hit(target, field) && target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position) < radius) {
+        if (target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position) < radius) {
 
             // Deal the standard Ice-shroom 20 damage
             CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);

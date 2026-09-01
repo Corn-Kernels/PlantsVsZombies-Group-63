@@ -4,6 +4,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.PuffShroomComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -13,7 +14,7 @@ import org.jspecify.annotations.NonNull;
 
 public class PuffShotBehavior extends DirectShotBehavior {
 
-    public final float lifespan; // Made public so Plant Food effects can read it
+    public final float lifespan;
     private final float maxRangeTiles;
     private final float actionInterval;
 
@@ -38,14 +39,11 @@ public class PuffShotBehavior extends DirectShotBehavior {
         PuffShroomComponent comp = self.get(PuffShroomComponent.class);
         if (comp == null) {
             comp = new PuffShroomComponent(actionInterval);
-            comp.lifeTimer = lifespan;
             self.add(comp);
-
         }
 
         float dt = (1.0f / 20.0f);
 
-        // 1. Handle Lifespan Clock (Independent of enemies)[cite: 25]
         if (lifespan > 0.0f) {
             comp.lifeTimer += dt;
             if (comp.lifeTimer >= lifespan) {
@@ -54,15 +52,12 @@ public class PuffShotBehavior extends DirectShotBehavior {
             }
         }
 
-        // 2. Handle Shooting Clock[cite: 25]
         comp.shootTimer += dt;
         if (comp.shootTimer >= actionInterval) {
             if (isEnemyInRange(self, field)) {
-                // Trigger the base DirectShotBehavior to actually fire[cite: 25]
                 super.execute(self, field);
-                comp.shootTimer = 0.0f; // Reset shoot clock after firing[cite: 25]
+                comp.shootTimer = 0.0f;
             } else {
-                // Keep timer capped so it fires instantly when a zombie enters range[cite: 25]
                 comp.shootTimer = actionInterval;
             }
         }
@@ -72,9 +67,8 @@ public class PuffShotBehavior extends DirectShotBehavior {
         Vec2d origin = self.get(PositionComponent.class).position;
         int lane = GridPosition.fromContinuous(origin).lane();
 
-        // Check for zombies within range in the current lane[cite: 25]
         for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval()) {
+            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
                 double zX = z.get(PositionComponent.class).position.getX();
                 if (zX >= origin.getX() && zX <= origin.getX() + maxRangeTiles) {
                     return true;
@@ -82,7 +76,6 @@ public class PuffShotBehavior extends DirectShotBehavior {
             }
         }
 
-        // Check for graves within range in the current lane[cite: 25]
         for (Entity e : field.getEntities()) {
             if (e instanceof Grave && !e.isMarkedForRemoval()) {
                 Vec2d targetPos = e.get(PositionComponent.class).position;

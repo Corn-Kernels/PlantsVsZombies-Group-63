@@ -10,6 +10,7 @@ import com.cornkernels.game.entities.components.plant_specific.PlantFreezeCompon
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.GraveBeingEatenComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDeathComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
@@ -97,7 +98,7 @@ public class CombatSystem extends EntitySystem {
     public void update(float delta) {
         List<Entity> validTargets = new ArrayList<>();
         for (Entity e : field.getEntities()) {
-            boolean isLiveZombie = e instanceof ZombieInstance
+            boolean isLiveZombie = e instanceof ZombieInstance && !e.has(HypnoComponent.class)
                 && e.get(ZombieStateComponent.class).state != ZombieStateComponent.State.DEAD;
             if (!e.isMarkedForRemoval() && (isLiveZombie || e instanceof Grave)) {
                 validTargets.add(e);

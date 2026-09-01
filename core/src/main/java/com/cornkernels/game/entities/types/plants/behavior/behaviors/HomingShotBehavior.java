@@ -3,6 +3,7 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
@@ -32,6 +33,7 @@ public class HomingShotBehavior implements PlantAttackBehavior {
 
         for (Entity e : field.getEntities()) {
             if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
+                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
                 laneTargets.add(e);
             }
         }
@@ -66,13 +68,12 @@ public class HomingShotBehavior implements PlantAttackBehavior {
 
     @Override
     public boolean hasTarget(Entity self, Field field) {
-        boolean flag = false;
         for (Entity e : field.getEntities()) {
             if ((e instanceof Grave || e instanceof ZombieInstance) && !e.isMarkedForRemoval()) {
-                flag = true;
-                break;
+                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+                return true;
             }
         }
-        return flag;
+        return false;
     }
 }

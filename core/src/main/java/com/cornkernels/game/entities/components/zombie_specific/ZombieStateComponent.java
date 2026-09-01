@@ -5,7 +5,7 @@ import com.cornkernels.game.entities.Entity;
 public class ZombieStateComponent {
 
     public State state = State.WALKING;
-    public Entity targetPlant;
+    public Entity targetEntity;
     public long ticksUntilNextBite;
     public int stateTicks = 0; // Tracks consecutive ticks spent in the current state
 

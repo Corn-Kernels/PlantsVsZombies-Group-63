@@ -36,6 +36,8 @@ public class ImitatorBehavior implements PlantAttackBehavior {
             GridPosition pos = GridPosition.fromContinuous(self.get(PositionComponent.class).position);
 
             hc.currentHealth = 0;
+            self.markForRemoval();
+
         }
     }
 

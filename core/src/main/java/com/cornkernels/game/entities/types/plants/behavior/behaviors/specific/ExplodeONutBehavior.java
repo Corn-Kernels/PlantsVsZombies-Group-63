@@ -31,6 +31,7 @@ public class ExplodeONutBehavior implements PlantAttackBehavior {
 
             // Snap health exactly to 0 so the standard entity removal system destroys the plant safely
             hc.currentHealth = 0;
+            self.markForRemoval();
         }
     }
 

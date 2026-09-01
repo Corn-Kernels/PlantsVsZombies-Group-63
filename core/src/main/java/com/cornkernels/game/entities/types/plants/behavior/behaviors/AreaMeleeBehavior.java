@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.GrowthComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -28,7 +29,7 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
     @Override
     public void execute(Entity self, Field field) {
         int stage = getStage(self);
-        int index = stage - 1; // Adjust the 1-based stage to a 0-based array index
+        int index = stage - 1;
 
         float currentRange = ranges[index];
         int currentDamage = damages[index];
@@ -39,6 +40,8 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
 
         for (Entity target : field.getEntities()) {
             if ((target instanceof ZombieInstance || target instanceof Grave) && !target.isMarkedForRemoval()) {
+                if (target instanceof ZombieInstance && target.has(HypnoComponent.class)) continue;
+
                 Vec2d targetPos = target.get(PositionComponent.class).position;
                 double targetX = targetPos.getX() + 0.5;
                 double targetY = targetPos.getY();
@@ -63,6 +66,8 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
 
         for (Entity target : field.getEntities()) {
             if ((target instanceof ZombieInstance || target instanceof Grave) && !target.isMarkedForRemoval()) {
+                if (target instanceof ZombieInstance && target.has(HypnoComponent.class)) continue;
+
                 Vec2d targetPos = target.get(PositionComponent.class).position;
                 double targetX = targetPos.getX() + 0.5;
                 double targetY = targetPos.getY();

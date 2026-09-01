@@ -43,6 +43,7 @@ public class LineExplosiveBehavior implements PlantAttackBehavior {
 
             // Snap health exactly to 0
             hc.currentHealth = 0;
+            self.markForRemoval();
         }
     }
 

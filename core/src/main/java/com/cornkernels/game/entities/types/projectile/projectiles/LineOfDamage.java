@@ -33,22 +33,19 @@ public class LineOfDamage extends AbstractProjectile {
     public boolean hit(@NonNull Entity target, Field field) {
         this.used = true;
 
-        if (super.hit(target, field)) {
-            Vec2d targetPos = target.get(PositionComponent.class).position;
-            Vec2d myPos = this.get(PositionComponent.class).position;
+        Vec2d targetPos = target.get(PositionComponent.class).position;
+        Vec2d myPos = this.get(PositionComponent.class).position;
 
-            if (Math.abs(targetPos.getY() - myPos.getY()) <= (width / 2.0f) &&
-                Math.abs(targetPos.getX() - myPos.getX()) <= (length / 2.0f)) {
+        if (Math.abs(targetPos.getY() - myPos.getY()) <= (width / 2.0f) &&
+            Math.abs(targetPos.getX() - myPos.getX()) <= (length / 2.0f)) {
 
-                CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
+            CombatSystem.applyDamage(target, this.get(DamageComponent.class).amount, false);
 
-                // Melt the zombie if this is a fire line (like Jalapeno)
-                if (fiery && target.has(IceComponent.class)) {
-                    target.get(IceComponent.class).melt();
-                }
+            // Melt the zombie if this is a fire line (like Jalapeno)
+            if (fiery && target.has(IceComponent.class)) {
+                target.get(IceComponent.class).melt();
             }
         }
-
         return false;
     }
 

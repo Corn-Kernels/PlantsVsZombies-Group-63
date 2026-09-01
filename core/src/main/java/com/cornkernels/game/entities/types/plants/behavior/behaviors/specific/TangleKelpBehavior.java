@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.TangleKelpComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
@@ -17,7 +18,7 @@ import java.util.List;
 public class TangleKelpBehavior implements PlantAttackBehavior {
     private final int damage = 99999;
     private final int maxTargets;
-    private final float lengthRange = 2.0f; // 2 tiles forward. Width 1 is implicitly handled by lane check.
+    private final float lengthRange = 2.0f;
 
     public TangleKelpBehavior(int maxTargets) {
         this.maxTargets = maxTargets;
@@ -39,56 +40,47 @@ public class TangleKelpBehavior implements PlantAttackBehavior {
         int lane = GridPosition.fromContinuous(origin).lane();
 
         if (state.isAttacking) {
-            state.attackTimer += (1.0f / 20.0f); // 20 ticks per second
+            state.attackTimer += (1.0f / 20.0f);
 
-            // Wait 0.5s to simulate the kelp bubbling up and dragging the zombie down
             if (state.attackTimer >= 0.5f) {
-                // Re-acquire the leftmost targets exactly when the timer pops to avoid hitting dead/escaped zombies
                 List<Entity> validTargets = getLeftmostTargets(field, lane, originX);
 
                 for (Entity target : validTargets) {
                     CombatSystem.applyDamage(target, damage, false);
                 }
 
-                // Snap health to 0 so the plant dies alongside the zombie(s)
                 hc.currentHealth = 0;
+                self.markForRemoval();
+
             }
             return;
         }
 
-        // --- Target Acquisition Phase ---
         List<Entity> validTargets = getLeftmostTargets(field, lane, originX);
 
         if (!validTargets.isEmpty()) {
             state.isAttacking = true;
-            // TODO: Trigger Tangle Kelp grab/bubble animation here
         }
     }
 
-    /**
-     * Internal helper to always fetch the absolute leftmost zombies within range.
-     */
     private List<Entity> getLeftmostTargets(Field field, int lane, double originX) {
         List<Entity> laneTargets = new ArrayList<>();
 
         for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval()) {
+            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
                 double targetX = z.get(PositionComponent.class).position.getX() + 0.5;
 
-                // Ensure target in the range
                 if (targetX >= originX - lengthRange / 2 && targetX <= originX + lengthRange / 2) {
                     laneTargets.add(z);
                 }
             }
         }
 
-        // Sort leftmost to rightmost
         laneTargets.sort((a, b) -> Double.compare(
             a.get(PositionComponent.class).position.getX(),
             b.get(PositionComponent.class).position.getX()
         ));
 
-        // Return up to maxTargets
         if (laneTargets.size() > maxTargets) {
             return laneTargets.subList(0, maxTargets);
         }

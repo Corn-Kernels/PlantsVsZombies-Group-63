@@ -204,10 +204,10 @@ public enum PlantDef {
     WASABI_WHIP3(3042, "Wasabi Whip", PlantCategory.MELEE, tags(PlantTag.FIRE), 150, 300, "50", 2.0f, 5f),
     WASABI_WHIP4(4042, "Wasabi Whip", PlantCategory.MELEE, tags(PlantTag.FIRE), 150, 500, "50", 2.0f, 5f),
 
-    KIWIBEAST1(1043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 300, "15/30/45", 2.0f, 5f),
-    KIWIBEAST2(2043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 500, "15/30/45", 2.0f, 5f),
-    KIWIBEAST3(3043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 500, "30/45/60", 2.0f, 5f),
-    KIWIBEAST4(4043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 500, "30/45/60", 2.0f, 5f),
+    KIWIBEAST1(1043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 3000, "15/30/45", 2.0f, 5f),
+    KIWIBEAST2(2043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 5000, "15/30/45", 2.0f, 5f),
+    KIWIBEAST3(3043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 5000, "30/45/60", 2.0f, 5f),
+    KIWIBEAST4(4043, "Kiwibeast", PlantCategory.MELEE, tags(PlantTag.AOE, PlantTag.WRAMP_UP), 175, 5000, "30/45/60", 2.0f, 5f),
     //endregion
 
     // ------------------------------------------
@@ -332,10 +332,10 @@ public enum PlantDef {
     ELECTRIC_BLUEBERRY3(3015, "Electric Blueberry", PlantCategory.HOMING, tags(PlantTag.CHARGE), 150, 300, "5000", 12.0f, 13f),
     ELECTRIC_BLUEBERRY4(4015, "Electric Blueberry", PlantCategory.HOMING, tags(PlantTag.CHARGE), 125, 300, "5000", 12.0f, 13f),
 
-    CAULIPOWER1(1014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 300, "Insta-kill", 12.0f, 15f),
-    CAULIPOWER2(2014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 300, "Insta-kill", 12.0f, 13f),
-    CAULIPOWER3(3014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 450, "Insta-kill", 12.0f, 13f),
-    CAULIPOWER4(4014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 200, 450, "Insta-kill", 12.0f, 13f),
+    CAULIPOWER1(1014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 300, "9999999", 24.0f, 15f),
+    CAULIPOWER2(2014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 300, "9999999", 24.0f, 13f),
+    CAULIPOWER3(3014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 250, 450, "9999999", 24.0f, 13f),
+    CAULIPOWER4(4014, "Caulipower", PlantCategory.HOMING, tags(PlantTag.MAGIC, PlantTag.CHARGE), 200, 450, "9999999", 24.0f, 13f),
     //endregion
 
     TORCH_WOOD1(1052, "Torch Wood", PlantCategory.WALL_NUT, tags(PlantTag.FIRE), 175, 300, "0", 1000.0f, 5f),
@@ -343,8 +343,6 @@ public enum PlantDef {
     TORCH_WOOD3(3052, "Torch Wood", PlantCategory.WALL_NUT, tags(PlantTag.FIRE), 175, 600, "0", 1000.0f, 5f),
     TORCH_WOOD4(4052, "Torch Wood", PlantCategory.WALL_NUT, tags(PlantTag.FIRE), 150, 600, "0", 1000.0f, 5f),
 
-
-    //endregion
 
     // ==========================================
     // UNIMPLEMENTED PLANTS
@@ -357,23 +355,78 @@ public enum PlantDef {
     // None Currently
 
     // Homing
-    MAGNET_SHROOM(53, "Magnet-shroom", PlantCategory.HOMING, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", 10.0f, 15f),
+    MAGNET_SHROOM1(1053, "Magnet-shroom", PlantCategory.HOMING, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", 10.0f, 15f),
+    MAGNET_SHROOM2(2053, "Magnet-shroom", PlantCategory.HOMING, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", 10.0f, 15f), // Range +1 Tile
+    MAGNET_SHROOM3(3053, "Magnet-shroom", PlantCategory.HOMING, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", 10.0f, 10f), // Cooldown -5s
+    MAGNET_SHROOM4(4053, "Magnet-shroom", PlantCategory.HOMING, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 500, "0", 10.0f, 10f), // HP +200
+
+    // Explosives
+    ICEBERG_LETTUCE1(1038, "Iceberg Lettuce", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.ICE), 0, 300, "0", null, 20f),
+    ICEBERG_LETTUCE2(2038, "Iceberg Lettuce", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.ICE), 0, 300, "0", null, 18f), // Cooldown -2s
+    ICEBERG_LETTUCE3(3038, "Iceberg Lettuce", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.ICE), 0, 300, "0", null, 18f), // Freeze Time +2s
+    ICEBERG_LETTUCE4(4038, "Iceberg Lettuce", PlantCategory.EXPLOSIVE, tags(PlantTag.TRAP, PlantTag.ICE), 0, 300, "0", null, 18f), // Cost -0
 
     // Modifiers / Environment
-    HYPNO_SHROOM(54, "Hypno-shroom", PlantCategory.MODIFIER, tags(PlantTag.SHROOM, PlantTag.MAGIC), 125, 300, "0", null, 20f),
-    IMITATER(56, "Imitater", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 0f),
-    LILY_PAD(58, "Lily Pad", PlantCategory.MODIFIER, tags(PlantTag.WATER, PlantTag.STACK), 25, 300, "0", null, 5f),
+    HYPNO_SHROOM1(1054, "Hypno-shroom", PlantCategory.MODIFIER, tags(PlantTag.SHROOM, PlantTag.MAGIC), 125, 300, "0", null, 20f),
+    HYPNO_SHROOM2(2054, "Hypno-shroom", PlantCategory.MODIFIER, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", null, 20f), // Cost -25
+    HYPNO_SHROOM3(3054, "Hypno-shroom", PlantCategory.MODIFIER, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", null, 20f), // Zombie HP Buff
+    HYPNO_SHROOM4(4054, "Hypno-shroom", PlantCategory.MODIFIER, tags(PlantTag.SHROOM, PlantTag.MAGIC), 100, 300, "0", null, 20f), // Zombie Dmg Buff
+
+    IMITATER1(1056, "Imitater", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 0f),
+    IMITATER2(2056, "Imitater", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 0f), // Cooldown -2s
+    IMITATER3(3056, "Imitater", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 0f), // Cost -25
+    IMITATER4(4056, "Imitater", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 0f), // plant food on enterance
+
+    LILY_PAD1(1058, "Lily Pad", PlantCategory.MODIFIER, tags(PlantTag.WATER, PlantTag.STACK), 25, 300, "0", null, 5f),
+    LILY_PAD2(2058, "Lily Pad", PlantCategory.MODIFIER, tags(PlantTag.WATER, PlantTag.STACK), 0, 300, "0", null, 5f), // Cost -25
+    LILY_PAD3(3058, "Lily Pad", PlantCategory.MODIFIER, tags(PlantTag.WATER, PlantTag.STACK), 0, 500, "0", null, 5f), // HP +200
+    LILY_PAD4(4058, "Lily Pad", PlantCategory.MODIFIER, tags(PlantTag.WATER, PlantTag.STACK), 0, 500, "0", null, 3f), // Cooldown -2s
 
     // Mints
-    ENLIGHTEN_MINT(61, "Enlighten-mint", PlantCategory.SUN_PRODUCER, tags(), 0, 0, "0", null, 85f),
-    APPEASE_MINT(62, "Appease-mint", PlantCategory.SHOOTER, tags(), 0, 0, "0", null, 85f),
-    ARMA_MINT(63, "Arma-mint", PlantCategory.LOBBER, tags(), 0, 0, "0", null, 85f),
-    BOMBARD_MINT(64, "Bombard-mint", PlantCategory.EXPLOSIVE, tags(), 0, 0, "0", null, 85f),
-    ENFORCE_MINT(65, "Enforce-mint", PlantCategory.MELEE, tags(), 0, 0, "0", null, 85f),
-    REINFORCE_MINT(66, "Reinforce-mint", PlantCategory.WALL_NUT, tags(), 0, 0, "0", null, 85f),
-    ENCHANT_MINT(67, "Enchant-mint", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 85f),
-    PIERCE_MINT(68, "Pierce-mint", PlantCategory.STRIKE_THROUGH, tags(), 0, 0, "0", null, 85f),
-    CATTAIL_MINT(69, "catTail-mint", PlantCategory.HOMING, tags(), 0, 0, "0", null, 85f);
+    ENLIGHTEN_MINT1(1061, "Enlighten-mint", PlantCategory.SUN_PRODUCER, tags(), 0, 0, "0", null, 85f),
+    ENLIGHTEN_MINT2(2061, "Enlighten-mint", PlantCategory.SUN_PRODUCER, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    ENLIGHTEN_MINT3(3061, "Enlighten-mint", PlantCategory.SUN_PRODUCER, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    ENLIGHTEN_MINT4(4061, "Enlighten-mint", PlantCategory.SUN_PRODUCER, tags(), 0, 0, "0", null, 80f), // reset family cooldowns
+
+    APPEASE_MINT1(1062, "Appease-mint", PlantCategory.SHOOTER, tags(), 0, 0, "0", null, 85f),
+    APPEASE_MINT2(2062, "Appease-mint", PlantCategory.SHOOTER, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    APPEASE_MINT3(3062, "Appease-mint", PlantCategory.SHOOTER, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    APPEASE_MINT4(4062, "Appease-mint", PlantCategory.SHOOTER, tags(), 0, 0, "0", null, 80f), // reset family cooldowns
+
+    ARMA_MINT1(1063, "Arma-mint", PlantCategory.LOBBER, tags(), 0, 0, "0", null, 85f),
+    ARMA_MINT2(2063, "Arma-mint", PlantCategory.LOBBER, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    ARMA_MINT3(3063, "Arma-mint", PlantCategory.LOBBER, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    ARMA_MINT4(4063, "Arma-mint", PlantCategory.LOBBER, tags(), 0, 0, "0", null, 80f), // reset family cooldowns
+
+    BOMBARD_MINT1(1064, "Bombard-mint", PlantCategory.EXPLOSIVE, tags(), 0, 0, "0", null, 85f),
+    BOMBARD_MINT2(2064, "Bombard-mint", PlantCategory.EXPLOSIVE, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    BOMBARD_MINT3(3064, "Bombard-mint", PlantCategory.EXPLOSIVE, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    BOMBARD_MINT4(4064, "Bombard-mint", PlantCategory.EXPLOSIVE, tags(), 0, 0, "0", null, 80f), // reset family cooldowns
+
+    ENFORCE_MINT1(1065, "Enforce-mint", PlantCategory.MELEE, tags(), 0, 0, "0", null, 85f),
+    ENFORCE_MINT2(2065, "Enforce-mint", PlantCategory.MELEE, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    ENFORCE_MINT3(3065, "Enforce-mint", PlantCategory.MELEE, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    ENFORCE_MINT4(4065, "Enforce-mint", PlantCategory.MELEE, tags(), 0, 0, "0", null, 80f), // reset family cooldowns
+
+    REINFORCE_MINT1(1066, "Reinforce-mint", PlantCategory.WALL_NUT, tags(), 0, 0, "0", null, 85f),
+    REINFORCE_MINT2(2066, "Reinforce-mint", PlantCategory.WALL_NUT, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    REINFORCE_MINT3(3066, "Reinforce-mint", PlantCategory.WALL_NUT, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    REINFORCE_MINT4(4066, "Reinforce-mint", PlantCategory.WALL_NUT, tags(), 0, 0, "0", null, 80f), // reset family cooldowns
+
+    ENCHANT_MINT1(1067, "Enchant-mint", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 85f),
+    ENCHANT_MINT2(2067, "Enchant-mint", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    ENCHANT_MINT3(3067, "Enchant-mint", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    ENCHANT_MINT4(4067, "Enchant-mint", PlantCategory.MODIFIER, tags(), 0, 0, "0", null, 80f), // reset family cooldowns
+
+    PIERCE_MINT1(1068, "Pierce-mint", PlantCategory.STRIKE_THROUGH, tags(), 0, 0, "0", null, 85f),
+    PIERCE_MINT2(2068, "Pierce-mint", PlantCategory.STRIKE_THROUGH, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    PIERCE_MINT3(3068, "Pierce-mint", PlantCategory.STRIKE_THROUGH, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    PIERCE_MINT4(4068, "Pierce-mint", PlantCategory.STRIKE_THROUGH, tags(), 0, 0, "0", null, 80f), // reset family cooldowns
+
+    CATTAIL_MINT1(1069, "catTail-mint", PlantCategory.HOMING, tags(), 0, 0, "0", null, 85f),
+    CATTAIL_MINT2(2069, "catTail-mint", PlantCategory.HOMING, tags(), 0, 0, "0", null, 85f), // Duration +1s
+    CATTAIL_MINT3(3069, "catTail-mint", PlantCategory.HOMING, tags(), 0, 0, "0", null, 80f), // Cooldown -5s
+    CATTAIL_MINT4(4069, "catTail-mint", PlantCategory.HOMING, tags(), 0, 0, "0", null, 80f); // reset family cooldowns
     //endregion
 
     private final int id;

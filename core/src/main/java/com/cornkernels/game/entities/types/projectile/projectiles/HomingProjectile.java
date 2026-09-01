@@ -10,7 +10,7 @@ import org.jspecify.annotations.NonNull;
 
 public class HomingProjectile extends AbstractProjectile {
 
-    private final static float HOMING_SPEED = 1f;
+    private final static float HOMING_SPEED = 0.25f;
     public Entity target;
 
     public HomingProjectile(int damage, Vec2d startPosition, Entity target) {

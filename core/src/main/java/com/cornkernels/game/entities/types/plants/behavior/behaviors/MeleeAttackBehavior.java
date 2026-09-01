@@ -3,6 +3,7 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
@@ -34,10 +35,8 @@ public class MeleeAttackBehavior implements PlantAttackBehavior {
         List<Entity> targets = findTargets(self, field);
 
         for (Entity target : targets) {
-            // Apply standard damage
             CombatSystem.applyDamage(target, damage, false);
 
-            // If it is a fiery attack (Wasabi Whip), immediately thaw the zombie
             if (fiery && target.has(IceComponent.class)) {
                 target.get(IceComponent.class).melt();
             }
@@ -49,21 +48,19 @@ public class MeleeAttackBehavior implements PlantAttackBehavior {
         return !findTargets(self, field).isEmpty();
     }
 
-    /**
-     * Scans the lane for the closest valid targets within the front and back attack radii.
-     */
     private List<Entity> findTargets(Entity self, Field field) {
         List<Entity> validTargets = new ArrayList<>();
         Vec2d origin = self.get(PositionComponent.class).position;
-        double plantX = origin.getX() + 0.5; // Center of the tile
+        double plantX = origin.getX() + 0.5;
         int lane = GridPosition.fromContinuous(origin).lane();
 
         for (Entity e : field.getEntities()) {
             if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
+                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+
                 if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
                     double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
 
-                    // Check if within front or back range
                     if ((targetX >= plantX && targetX - plantX <= frontRange) ||
                         (targetX < plantX && plantX - targetX <= backRange)) {
                         validTargets.add(e);
@@ -72,14 +69,12 @@ public class MeleeAttackBehavior implements PlantAttackBehavior {
             }
         }
 
-        // Sort by proximity to the plant so it hits the closest entities first
         validTargets.sort((e1, e2) -> {
             double dist1 = Math.abs((e1.get(PositionComponent.class).position.getX() + 0.5) - plantX);
             double dist2 = Math.abs((e2.get(PositionComponent.class).position.getX() + 0.5) - plantX);
             return Double.compare(dist1, dist2);
         });
 
-        // Limit the number of targets hit based on the plant's pierce count
         if (validTargets.size() > pierceCount) {
             return validTargets.subList(0, pierceCount);
         }

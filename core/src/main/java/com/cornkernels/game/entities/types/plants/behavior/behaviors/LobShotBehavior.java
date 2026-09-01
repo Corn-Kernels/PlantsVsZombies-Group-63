@@ -3,6 +3,7 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
@@ -33,7 +34,7 @@ public class LobShotBehavior implements PlantAttackBehavior {
         List<Entity> laneTargets = new ArrayList<>();
 
         for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval()) {
+            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
                 Vec2d targetPos = z.get(PositionComponent.class).position;
 
                 if (targetPos.getX() >= origin.getX()) {
@@ -42,7 +43,6 @@ public class LobShotBehavior implements PlantAttackBehavior {
             }
         }
 
-        // Fetch Graves (as they likely aren't returned by getZombiesInLane)
         if (laneTargets.isEmpty()) {
             for (Entity e : field.getEntities()) {
                 if (e instanceof Grave && !e.isMarkedForRemoval()) {
@@ -89,7 +89,7 @@ public class LobShotBehavior implements PlantAttackBehavior {
         int lane = GridPosition.fromContinuous(origin).lane();
 
         for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval() && z.get(PositionComponent.class).position.getX() >= origin.getX()) {
+            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class) && z.get(PositionComponent.class).position.getX() >= origin.getX()) {
                 return true;
             }
         }
@@ -104,7 +104,6 @@ public class LobShotBehavior implements PlantAttackBehavior {
         return false;
     }
 
-    // Add this to the bottom of LobShotBehavior.java
     public AbstractProjectile getProjectile() {
         return projectile;
     }

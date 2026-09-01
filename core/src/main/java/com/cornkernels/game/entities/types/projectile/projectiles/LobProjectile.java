@@ -15,6 +15,8 @@ import org.jspecify.annotations.NonNull;
 public class LobProjectile extends AbstractProjectile {
 
     private final static float LOB_SPEED = 1f;
+    private static final double HIT_DISTANCE = 0.6f; // Standard collision threshold[cite: 19]
+
     public Entity target;
     public Vec2d startPosition;
     public float areaOfEffect;
@@ -41,24 +43,28 @@ public class LobProjectile extends AbstractProjectile {
 
     @Override
     public boolean hit(@NonNull Entity target, Field field) {
-        if (this.target != null && target == this.target && super.hit(target, field)) {
+        // Calculate only the X-axis distance[cite: 18, 19]
+        double xDistance = Math.abs(target.get(PositionComponent.class).position.getX() - this.get(PositionComponent.class).position.getX());
+        boolean isHit = xDistance <= HIT_DISTANCE;
 
-            // Umbrella Zombie Deflection Logic
+        if (this.target != null && target == this.target && isHit) {
+
+            // Umbrella Zombie Deflection Logic[cite: 18]
             if (target.get(ZombieDefComponent.class).def().id.equals("ZombieLostCityJane")) {
                 Vec2d currentPos = this.get(PositionComponent.class).position;
 
-                // Switch spawn location to the exact location of the hit
+                // Switch spawn location to the exact location of the hit[cite: 18]
                 this.startPosition = new Vec2d(currentPos.getX(), currentPos.getY());
 
-                // Clear the target so the projectile ignores all future collisions and flies right forever
+                // Clear the target so the projectile ignores all future collisions and flies right forever[cite: 18]
                 this.target = null;
 
-                return false; // Return false so CombatSystem does NOT destroy the projectile
+                return false; // Return false so CombatSystem does NOT destroy the projectile[cite: 18]
             }
 
             int directDamage = this.get(DamageComponent.class).amount;
 
-            // Apply direct impact debuffs
+            // Apply direct impact debuffs[cite: 18]
             if (fiery && target.has(IceComponent.class)) target.get(IceComponent.class).melt();
             if (chillDurationTicks > 0 && target.has(IceComponent.class))
                 target.get(IceComponent.class).applyChill(chillDurationTicks);
