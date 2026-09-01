@@ -28,6 +28,13 @@ public final class PlantAnimationLocator {
         "PRIMALSUNFLOWER", "PRIMAL_SUNFLOWER",
         "PRIMALPOTATOMINE", "PRIMAL_POTATOMINE"
     );
+    // Verified against the real PAM assets: most Wall-nut-family plants use a bare "plantfood"/
+    // "plantfood2"/"plantfood3" family (optionally preceded by a "plantfood_on" intro and followed
+    // by a "plantfood_off" outro - Wall-nut/Explode-o-nut have the full set, Endurian/Sun Bean only
+    // "plantfood_on"(+"plantfood"), Garlic/Sweet Potato just a bare "plantfood"). Pumpkin instead
+    // uses an "idle_plantfood"/"idle_plantfood2".. family, mirroring its "idle_"-prefixed damage
+    // clips, so both prefixes are tried.
+    private static final String[] PLANT_FOOD_PREFIXES = {"plantfood", "idle_plantfood"};
 
     private PlantAnimationLocator() {
     }
@@ -62,7 +69,6 @@ public final class PlantAnimationLocator {
         anim.isLooping = queue.isEmpty();
     }
 
-
     public static void applyDamageStageClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
                                             @NonNull PlantDef plantDef, float healthFraction) {
         String path = findPamPath(plantDef);
@@ -83,6 +89,73 @@ public final class PlantAnimationLocator {
 
         String clip = bucket == 0 ? "idle" : bucket == 1 ? prefix : prefix + bucket;
         applyClip(pamPlayer, anim, plantDef, clip);
+    }
+
+    /**
+     * Plays the plant's Plant-Food-boosted visuals: an intro one-shot ("plantfood_on") if present,
+     * chained into whatever sustained stages exist ("plantfood", "plantfood2", ...), looping on the
+     * last one for the rest of the boost. No-ops (leaves the current clip alone) if the plant has no
+     * Plant Food clips at all.
+     */
+    public static void applyPlantFoodActiveClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
+                                                @NonNull PlantDef plantDef) {
+        String path = findPamPath(plantDef);
+        if (path == null) return;
+        pamPlayer.loadSync(path);
+        List<String> available = pamPlayer.clips(path);
+        if (available == null || available.isEmpty()) return;
+
+        for (String prefix : PLANT_FOOD_PREFIXES) {
+            List<String> sequence = buildPlantFoodSequence(available, prefix);
+            if (sequence.isEmpty()) continue;
+
+            Deque<ClipRef> queue = new ArrayDeque<>();
+            for (String clipName : sequence) {
+                ClipRef clip = pamPlayer.getClip(path, clipName);
+                if (clip != null) queue.add(clip);
+            }
+            if (queue.isEmpty()) continue;
+
+            anim.currentClip = queue.poll();
+            anim.stateTime = 0f;
+            anim.upcomingClips = queue;
+            anim.isLooping = queue.isEmpty();
+            return;
+        }
+    }
+
+    /**
+     * Plays the plant's Plant-Food outro ("plantfood_off"/"idle_plantfood_off") if it has one, then
+     * falls back to plain "idle" for plants that only fade back in (Garlic, Sweet Potato, Sun Bean,
+     * Endurian, Pumpkin - none of which have a dedicated outro clip).
+     */
+    public static void applyPlantFoodEndClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
+                                             @NonNull PlantDef plantDef) {
+        String path = findPamPath(plantDef);
+        if (path == null) return;
+        pamPlayer.loadSync(path);
+        List<String> available = pamPlayer.clips(path);
+        if (available == null || available.isEmpty()) return;
+
+        for (String prefix : PLANT_FOOD_PREFIXES) {
+            if (available.contains(prefix + "_off")) {
+                tryPlayOneShotClip(pamPlayer, anim, plantDef, prefix + "_off");
+                return;
+            }
+        }
+        applyClip(pamPlayer, anim, plantDef, "idle");
+    }
+
+    private static @NonNull List<String> buildPlantFoodSequence(@NonNull List<String> available, @NonNull String prefix) {
+        List<String> sequence = new ArrayList<>();
+        if (available.contains(prefix + "_on")) sequence.add(prefix + "_on");
+        if (available.contains(prefix)) sequence.add(prefix);
+        int stage = 2;
+        while (available.contains(prefix + stage)) {
+            sequence.add(prefix + stage);
+            stage++;
+        }
+        return sequence;
     }
 
     public static void applyClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,

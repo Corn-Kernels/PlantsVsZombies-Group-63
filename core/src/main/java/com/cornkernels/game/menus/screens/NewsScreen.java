@@ -118,9 +118,10 @@ public class NewsScreen extends BaseScreen {
         int unreadCount = progress.getUnreadNewsCount();
         countLabel.setText(" Unread: " + unreadCount);
 
-        for (NewsItem news : allNews) {
+        for (int i = allNews.size() - 1; i >= 0; i--) {
+            NewsItem news = allNews.get(i);
             boolean isRead = news.isRead();
-            String status = isRead ? "✅ " : "🔴 ";
+            String status = isRead ? "[Read] " : "[New] ";
             String typeIcon = getTypeIcon(news.getType());
 
             TextButton newsBtn = new TextButton(
@@ -151,8 +152,8 @@ public class NewsScreen extends BaseScreen {
         String typeIcon = getTypeIcon(news.getType());
         detailLabel.setText(
             typeIcon + " " + news.getTitle() + "\n" +
-                "📅 " + news.getDate() + "\n" +
-                "📂 " + news.getType() + "\n\n" +
+                "Date: " + news.getDate() + "\n" +
+                "Type: " + news.getType() + "\n\n" +
                 news.getBody()
         );
     }
@@ -166,9 +167,9 @@ public class NewsScreen extends BaseScreen {
             return;
         }
 
-        StringBuilder sb = new StringBuilder(" 🔴 Unread News:\n\n");
-        for (NewsItem news : unread) {
-            sb.append("🔴 ").append(news.getTitle()).append("\n");
+        StringBuilder sb = new StringBuilder("Unread News:\n\n");
+        for (int i = unread.size() - 1; i >= 0; i--) {
+            sb.append("- ").append(unread.get(i).getTitle()).append("\n");
         }
         detailLabel.setText(sb.toString());
     }
@@ -180,8 +181,9 @@ public class NewsScreen extends BaseScreen {
         }
 
         StringBuilder sb = new StringBuilder(" All News:\n\n");
-        for (NewsItem news : allNews) {
-            String status = news.isRead() ? "✅" : "🔴";
+        for (int i = allNews.size() - 1; i >= 0; i--) {
+            NewsItem news = allNews.get(i);
+            String status = news.isRead() ? "[Read]" : "[New]";
             String icon = getTypeIcon(news.getType());
             sb.append(status).append(" ").append(icon).append(" ").append(news.getTitle()).append("\n");
         }
@@ -191,15 +193,15 @@ public class NewsScreen extends BaseScreen {
     private String getTypeIcon(String type) {
         switch (type) {
             case "ZOMBIE":
-                return "🧟";
+                return "[Zombie]";
             case "PLANT":
-                return "🌱";
+                return "[Plant]";
             case "LEVEL":
-                return "📖";
+                return "[Level]";
             case "MINIGAME":
-                return "🎮";
+                return "[Minigame]";
             default:
-                return "📌";
+                return "[News]";
         }
     }
 

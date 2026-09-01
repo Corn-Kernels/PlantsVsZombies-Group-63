@@ -6,6 +6,7 @@ import com.cornkernels.game.entities.components.ArmorComponent;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.OctoedComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantFoodComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.GraveBeingEatenComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDeathComponent;
@@ -26,11 +27,29 @@ import java.util.List;
 
 public class CombatSystem extends EntitySystem {
 
+    private static float plantDamageMultiplier = 1f;
+
+    public static void setPlantDamageMultiplier(float multiplier) {
+        plantDamageMultiplier = multiplier;
+    }
+
     public static void applyDamage(Entity target, int amount, boolean ignoresArmor) {
         applyDamage(target, amount, ignoresArmor, null);
     }
 
     public static void applyDamage(Entity target, int amount, boolean ignoresArmor, Field field) {
+
+        if (target instanceof PlantInstance && target.has(PlantFoodComponent.class)) {
+            PlantFoodComponent plantFoodComponent = target.get(PlantFoodComponent.class);
+            if (plantFoodComponent.isActive()) {
+                return;
+            }
+        }
+
+        if (target instanceof ZombieInstance) {
+            amount = Math.round(amount * plantDamageMultiplier);
+        }
+
         if (target.has(OctoedComponent.class)) {
             OctoedComponent octo = target.get(OctoedComponent.class);
             octo.currentHealth -= amount;

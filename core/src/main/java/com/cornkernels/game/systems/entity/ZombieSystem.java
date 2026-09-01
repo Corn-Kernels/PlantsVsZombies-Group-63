@@ -25,6 +25,8 @@ import com.cornkernels.game.utility.ZombieAnimationLocator;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
 
+import static com.cornkernels.game.systems.entity.WaveSystem.OFFSCREEN_SPAWN_MARGIN_COLUMNS;
+
 public class ZombieSystem extends EntitySystem {
 
     private static final long BITE_INTERVAL_TICKS = 30;
@@ -38,6 +40,12 @@ public class ZombieSystem extends EntitySystem {
     public void update(float deltaTick) {
         for (ZombieInstance zombie : field.getActiveZombies()) {
             if (zombie.isMarkedForRemoval()) continue;
+
+            PositionComponent positionComponent = zombie.get(PositionComponent.class);
+            if (positionComponent.position.getX() > field.getTotalColumns() + OFFSCREEN_SPAWN_MARGIN_COLUMNS + 1f) {
+                zombie.markForRemoval();
+                continue;
+            }
 
             ZombieStateComponent state = zombie.get(ZombieStateComponent.class);
             if (state.state == ZombieStateComponent.State.DEAD) {
@@ -59,8 +67,6 @@ public class ZombieSystem extends EntitySystem {
             VelocityComponent velComp = zombie.get(VelocityComponent.class);
             PamAnimationComponent pamAnim = zombie.get(PamAnimationComponent.class);
             if (velComp != null && pamAnim != null) {
-                // If velocity X is positive, the zombie is moving right (flipped).
-                // Note: Even if speed is 0, we leave it in the state it was last moving.
                 if (velComp.velocityPerTick.getX() > 0) {
                     pamAnim.flipX = true;
                 } else if (velComp.velocityPerTick.getX() < 0) {

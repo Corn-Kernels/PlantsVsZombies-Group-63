@@ -42,10 +42,10 @@ public class LoginScreen extends BaseScreen {
 
         TextButton loginBtn = new TextButton("Login", skin, "green");
         TextButton registerBtn = new TextButton("Go to Register", skin, "default");
-        TextButton forgetPassBtn = new TextButton("Forget Password", skin, "default");  // ✅ اضافه شد
+        TextButton forgetPassBtn = new TextButton("Forget Password", skin, "default");
 
         table.add(loginBtn).width(200).height(50).padBottom(10).row();
-        table.add(forgetPassBtn).width(200).height(50).padBottom(10).row();  // ✅
+        table.add(forgetPassBtn).width(200).height(50).padBottom(10).row();
         table.add(registerBtn).width(200).height(50).row();
 
         loginBtn.addListener(new ClickListener() {

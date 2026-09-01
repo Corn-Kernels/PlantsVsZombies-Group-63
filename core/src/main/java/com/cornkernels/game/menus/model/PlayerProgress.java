@@ -40,50 +40,11 @@ public class PlayerProgress {
         this.highScore = 0;
         this.unlockedChapters = new ArrayList<>();
         this.unlockedChapters.add("Chapter 1");
+
         this.ownedPlants = new ArrayList<>();
         this.ownedPlants.add(PlantDef.SUNFLOWER1.getPlantName());
-        this.ownedPlants.add(PlantDef.TWIN_SUNFLOWER1.getPlantName());
-        this.ownedPlants.add(PlantDef.PRIMAL_SUNFLOWER1.getPlantName());
-        this.ownedPlants.add(PlantDef.SUN_SHROOM1.getPlantName());
         this.ownedPlants.add(PlantDef.PEASHOOTER1.getPlantName());
-        this.ownedPlants.add(PlantDef.REPEATER1.getPlantName());
-        this.ownedPlants.add(PlantDef.SNOW_PEA1.getPlantName());
-        this.ownedPlants.add(PlantDef.FIRE_PEASHOOTER1.getPlantName());
-        this.ownedPlants.add(PlantDef.MEGA_GATLING_PEA1.getPlantName());
-        this.ownedPlants.add(PlantDef.THREEPEATER1.getPlantName());
-        this.ownedPlants.add(PlantDef.PEA_POD1.getPlantName());
-        this.ownedPlants.add(PlantDef.SPLIT_PEA1.getPlantName());
-        this.ownedPlants.add(PlantDef.SEA_SHROOM1.getPlantName());
-        this.ownedPlants.add(PlantDef.PUFF_SHROOM1.getPlantName());
-        this.ownedPlants.add(PlantDef.STARFRUIT1.getPlantName());
-        this.ownedPlants.add(PlantDef.CITRON1.getPlantName());
-        this.ownedPlants.add(PlantDef.GOO_PEASHOOTER1.getPlantName());
-        this.ownedPlants.add(PlantDef.BOWLING_BULB1.getPlantName());
-        this.ownedPlants.add(PlantDef.CACTUS1.getPlantName());
-        this.ownedPlants.add(PlantDef.FUME_SHROOM1.getPlantName());
-        this.ownedPlants.add(PlantDef.CABBAGE_PULT1.getPlantName());
-        this.ownedPlants.add(PlantDef.KERNEL_PULT1.getPlantName());
-        this.ownedPlants.add(PlantDef.MELON_PULT1.getPlantName());
-        this.ownedPlants.add(PlantDef.WINTER_MELON1.getPlantName());
-        this.ownedPlants.add(PlantDef.PEPPER_PULT1.getPlantName());
-        this.ownedPlants.add(PlantDef.BONK_CHOY1.getPlantName());
-        this.ownedPlants.add(PlantDef.PHAT_BEET1.getPlantName());
-        this.ownedPlants.add(PlantDef.CHOMPER1.getPlantName());
-        this.ownedPlants.add(PlantDef.WASABI_WHIP1.getPlantName());
-        this.ownedPlants.add(PlantDef.KIWIBEAST1.getPlantName());
-        this.ownedPlants.add(PlantDef.PRIMAL_POTATO_MINE1.getPlantName());
-        this.ownedPlants.add(PlantDef.CHERRY_BOMB1.getPlantName());
-        this.ownedPlants.add(PlantDef.JALAPENO1.getPlantName());
-        this.ownedPlants.add(PlantDef.DOOM_SHROOM1.getPlantName());
-        this.ownedPlants.add(PlantDef.ICE_SHROOM1.getPlantName());
-        this.ownedPlants.add(PlantDef.GRAPESHOT1.getPlantName());
-        this.ownedPlants.add(PlantDef.TANGLE_KELP1.getPlantName());
-        this.ownedPlants.add(PlantDef.SQUASH1.getPlantName());
-        this.ownedPlants.add(PlantDef.HOT_POTATO1.getPlantName());
-        this.ownedPlants.add(PlantDef.GRAVE_BUSTER1.getPlantName());
-        this.ownedPlants.add(PlantDef.ELECTRIC_BLUEBERRY1.getPlantName());
-        this.ownedPlants.add(PlantDef.CAULIPOWER1.getPlantName());
-
+        this.ownedPlants.add(PlantDef.WALL_NUT1.getPlantName());
 
         this.seenZombies = new ArrayList<>();
         this.completedLevels = 0;
@@ -159,6 +120,10 @@ public class PlayerProgress {
         this.highScore = highScore;
     }
 
+    public void addHighScore(int amount) {
+        this.highScore += amount;
+    }
+
     public List<String> getUnlockedChapters() {
         return unlockedChapters;
     }
@@ -188,14 +153,18 @@ public class PlayerProgress {
     }
 
     public boolean hasPlant(@NonNull String plant) {
-        String key = plant.toUpperCase().replace("-", "_");
-        return ownedPlants.contains(key);
+        String key = normalizePlantKey(plant);
+        for (String owned : ownedPlants) {
+            if (normalizePlantKey(owned).equals(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addPlant(@NonNull String plant) {
-        String key = plant.toUpperCase().replace("-", "_");
-        if (!hasPlant(key)) {
-            ownedPlants.add(key);
+        if (!hasPlant(plant)) {
+            ownedPlants.add(plant);
         }
     }
 

@@ -132,7 +132,7 @@ public class SettingsScreen extends BaseScreen {
                 speedLabel.setText(String.format("%.1fx", val));
                 speedLabel.setText(String.format("%.1fx", val));
                 statusLabel.setText(" Speed changed to " + String.format("%.1fx", val));
-                System.out.println("🔧 Speed Slider changed to: " + val);
+                System.out.println("Speed Slider changed to: " + val);
             }
         });
 

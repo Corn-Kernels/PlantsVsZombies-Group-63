@@ -23,6 +23,7 @@ import java.util.List;
 public class PlantSelectionScreen extends BaseScreen {
 
     private static final int MAX_PLANTS = 8;
+    private static final int SCROLLBAR_WIDTH = 20;
     private User user;
     private String chapterName;
     private Image backgroundImage;
@@ -35,7 +36,6 @@ public class PlantSelectionScreen extends BaseScreen {
     private Label errorLabel;
     private Label statusLabel;
     private ScrollPane plantScroll;
-
     // ===== Drawable برای کارت‌ها =====
     private Drawable cardDrawable;
 
@@ -63,11 +63,33 @@ public class PlantSelectionScreen extends BaseScreen {
         cardPixmap.dispose();
     }
 
+    private ScrollPane.ScrollPaneStyle createWideScrollPaneStyle() {
+        ScrollPane.ScrollPaneStyle style = new ScrollPane.ScrollPaneStyle(skin.get(ScrollPane.ScrollPaneStyle.class));
+
+        Pixmap trackPixmap = new Pixmap(SCROLLBAR_WIDTH, SCROLLBAR_WIDTH, Pixmap.Format.RGBA8888);
+        trackPixmap.setColor(new Color(0.1f, 0.1f, 0.1f, 0.6f));
+        trackPixmap.fill();
+        Drawable trackDrawable = new TextureRegionDrawable(new Texture(trackPixmap));
+        trackPixmap.dispose();
+
+        Pixmap knobPixmap = new Pixmap(SCROLLBAR_WIDTH, SCROLLBAR_WIDTH, Pixmap.Format.RGBA8888);
+        knobPixmap.setColor(new Color(0.8f, 0.8f, 0.8f, 0.95f));
+        knobPixmap.fill();
+        Drawable knobDrawable = new TextureRegionDrawable(new Texture(knobPixmap));
+        knobPixmap.dispose();
+
+        style.vScroll = trackDrawable;
+        style.vScrollKnob = knobDrawable;
+        style.hScroll = trackDrawable;
+        style.hScrollKnob = knobDrawable;
+        return style;
+    }
+
     private @NonNull List<Plant> getOwnedPlants() {
         List<Plant> result = new ArrayList<>();
         PlayerProgress progress = user.getProgress();
         for (Plant plant : allPlants) {
-            if (progress.hasPlant(plant.getName().toUpperCase())) {
+            if (progress.hasPlant(plant.getName())) {
                 // ===== تغییر: استفاده از متدهای جدید =====
                 boolean isBoosted = plant.getLevel(progress) >= 2;
                 plant.setBoosted(isBoosted);
@@ -126,17 +148,21 @@ public class PlantSelectionScreen extends BaseScreen {
 
         Table splitTable = new Table();
 
+        ScrollPane.ScrollPaneStyle wideScrollStyle = createWideScrollPaneStyle();
+
         plantListTable = new Table();
-        plantScroll = new ScrollPane(plantListTable, skin);
+        plantScroll = new ScrollPane(plantListTable, wideScrollStyle);
         plantScroll.setScrollingDisabled(true, false);
         plantScroll.setHeight(350);
         plantScroll.setWidth(350);
+        plantScroll.setFadeScrollBars(false);
 
         selectedTable = new Table();
-        ScrollPane selectedScroll = new ScrollPane(selectedTable, skin);
+        ScrollPane selectedScroll = new ScrollPane(selectedTable, wideScrollStyle);
         selectedScroll.setScrollingDisabled(true, false);
         selectedScroll.setHeight(350);
         selectedScroll.setWidth(200);
+        selectedScroll.setFadeScrollBars(false);
 
         splitTable.add(plantScroll).width(350).padRight(10);
         splitTable.add(selectedScroll).width(200);
@@ -178,7 +204,7 @@ public class PlantSelectionScreen extends BaseScreen {
         plantListTable.clear();
 
         if (ownedPlants.isEmpty()) {
-            plantListTable.add(new Label("⚠ No plants owned!", skin)).padTop(20).row();
+            plantListTable.add(new Label("No plants owned!", skin)).padTop(20).row();
             return;
         }
 
@@ -240,7 +266,7 @@ public class PlantSelectionScreen extends BaseScreen {
         Label nameLabel = new Label(plant.getName(), skin);
         nameLabel.setFontScale(0.7f);
 
-        Label costLabel = new Label("☀ " + plant.getCost(), skin);
+        Label costLabel = new Label(String.valueOf(plant.getCost()), skin);
         costLabel.setFontScale(0.65f);
 
         Label levelLabel = new Label("Lv." + currentLevel, skin);
@@ -249,7 +275,7 @@ public class PlantSelectionScreen extends BaseScreen {
         Label seedLabel = new Label("Seeds: " + plantSeeds + "/" + neededSeeds, skin);
         seedLabel.setFontScale(0.55f);
 
-        Label statusLabel = new Label(isSelected ? "✅" : (isBoosted ? "⭐" : ""), skin);
+        Label statusLabel = new Label(isSelected ? "Selected" : (isBoosted ? "Boosted" : ""), skin);
         statusLabel.setFontScale(0.8f);
 
         Table buttonTable = new Table();
@@ -291,7 +317,7 @@ public class PlantSelectionScreen extends BaseScreen {
         if (currentLevel < plant.getMaxLevel()) {
             boolean hasEnoughSeeds = plantSeeds >= neededSeeds;
             if (hasEnoughSeeds) {
-                upgradeBtn = new TextButton("⬆", skin, "green");
+                upgradeBtn = new TextButton("Up", skin, "green");
                 upgradeBtn.setWidth(30);
                 upgradeBtn.setHeight(25);
                 upgradeBtn.getLabel().setFontScale(0.8f);
@@ -302,7 +328,7 @@ public class PlantSelectionScreen extends BaseScreen {
                     }
                 });
             } else {
-                upgradeBtn = new TextButton("⬆", skin, "default");
+                upgradeBtn = new TextButton("Up", skin, "default");
                 upgradeBtn.setWidth(30);
                 upgradeBtn.setHeight(25);
                 upgradeBtn.getLabel().setFontScale(0.8f);
@@ -335,17 +361,17 @@ public class PlantSelectionScreen extends BaseScreen {
         int currentLevel = plant.getLevel(progress);
 
         if (progress.getCoins() < upgradeCost) {
-            errorLabel.setText("❌ Not enough coins! Need " + upgradeCost + " coins.");
+            errorLabel.setText("Not enough coins! Need " + upgradeCost + " coins.");
             return;
         }
 
         if (plantSeeds < neededSeeds) {
-            errorLabel.setText("❌ Not enough seed packets! Need " + neededSeeds + " seeds.");
+            errorLabel.setText("Not enough seed packets! Need " + neededSeeds + " seeds.");
             return;
         }
 
         if (currentLevel >= plant.getMaxLevel()) {
-            errorLabel.setText("⭐ Already at max level!");
+            errorLabel.setText("Already at max level!");
             return;
         }
 
@@ -357,7 +383,7 @@ public class PlantSelectionScreen extends BaseScreen {
         updatePlantList();
         updateSelectedList();
 
-        showToast("✅ " + plant.getName() + " upgraded to Lv." + plant.getLevel(progress) + "!", 2f, false);
+        showToast(plant.getName() + " upgraded to Lv." + plant.getLevel(progress) + "!", 2f, false);
     }
 
     private void updateSelectedList() {
@@ -397,10 +423,10 @@ public class PlantSelectionScreen extends BaseScreen {
             Label nameLabel = new Label(plant.getName(), skin);
             nameLabel.setFontScale(0.6f);
 
-            Label costLabel = new Label("☀" + plant.getCost(), skin);
+            Label costLabel = new Label(String.valueOf(plant.getCost()), skin);
             costLabel.setFontScale(0.5f);
 
-            TextButton removeBtn = new TextButton("✕", skin, "default");
+            TextButton removeBtn = new TextButton("X", skin, "default");
             removeBtn.setWidth(25);
             removeBtn.setHeight(25);
             removeBtn.getLabel().setFontScale(0.8f);
@@ -430,14 +456,14 @@ public class PlantSelectionScreen extends BaseScreen {
             Table emptyCard = new Table();
             emptyCard.setBackground(cardDrawable);
             emptyCard.setColor(0.1f, 0.1f, 0.1f, 0.5f);
-            emptyCard.add(new Label("⬜", skin)).pad(5);
+            emptyCard.add(new Label("Empty", skin)).pad(5);
             selectedTable.add(emptyCard).width(60).height(30).pad(2).row();
         }
     }
 
     private void handleStart() {
         if (selectedPlants.isEmpty()) {
-            errorLabel.setText("❌ Select at least one plant!");
+            errorLabel.setText("Select at least one plant!");
             return;
         }
 
@@ -447,7 +473,7 @@ public class PlantSelectionScreen extends BaseScreen {
             plantNames.add(plant.getName().toUpperCase());
         }
 
-        statusLabel.setText("✅ Battle started with " + selectedPlants.size() + " plants!");
+        statusLabel.setText("Battle started with " + selectedPlants.size() + " plants!");
 
         System.out.println("▶ Starting battle in " + chapterName + " with: " + plantNames);
     }

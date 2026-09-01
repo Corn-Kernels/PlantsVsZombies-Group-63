@@ -41,7 +41,7 @@ public final class GameSession {
         this.field = field;
         this.gameAttributes = gameAttributes;
         this.pauseController = new PauseController();
-        this.plantingController = new PlantingController(field, mapData, camera, 1000, pamPlayer);
+        this.plantingController = new PlantingController(field, mapData, camera, 500, pamPlayer);
         this.sunHarvestController = new SunHarvestController(field, mapData, camera, plantingController);
         this.simulation = new GameSimulation(field, gameAttributes, pamPlayer);
         this.renderer = new GameRenderer(batch, pamPlayer, mapData, field, plantingController.getToolState());
@@ -135,7 +135,11 @@ public final class GameSession {
         return plantingController;
     }
 
-    public enum LevelPhase {INTRO_PAN_RIGHT, SEED_SELECTION, INTRO_PAN_LEFT, PLAYING, ENDED}
+    public Field getField() {
+        return field;
+    }
+
+    public enum LevelPhase {INTRO_PAN_RIGHT, SEED_SELECTION, INTRO_PAN_LEFT, READY_SET_PLANT, PLAYING, ENDED}
 
     public interface OnGamePhaseChangedListener {
         void onGamePhaseChanged(LevelPhase phase);

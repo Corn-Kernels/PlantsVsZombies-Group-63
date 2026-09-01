@@ -11,6 +11,7 @@ import com.cornkernels.game.entities.types.projectile.projectiles.specific.TrueP
 import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -172,7 +173,7 @@ public class PlantFoodBehaviors {
         REGISTRY.put(def, new PlantFoodEntry(behavior, time));
     }
 
-    private static int parseDamage(PlantDef def, int fallback) {
+    private static int parseDamage(@NonNull PlantDef def, int fallback) {
         String dmgStr = def.getDamage();
         if (dmgStr == null || dmgStr.isEmpty() || dmgStr.equalsIgnoreCase("Insta-kill")) {
             return fallback;

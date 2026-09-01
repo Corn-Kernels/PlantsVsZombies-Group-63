@@ -29,6 +29,7 @@ public class GameSimulation {
 
         addSystem(new CombatSystem());
         addSystem(new PlantAttackSystem(pamPlayer));
+        addSystem(new PlantFoodEffectSystem());
         addSystem(new SunSystem(random));
         addSystem(new ZombieSystem(pamPlayer));
         addSystem(lawnMowersSystem);

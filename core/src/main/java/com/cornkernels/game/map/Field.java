@@ -4,6 +4,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.GridPositionComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.types.effects.PlantFoodEffect;
 import com.cornkernels.game.entities.types.lawnmower.LawnMower;
 import com.cornkernels.game.entities.types.obstacles.AbstractObstacle;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
@@ -29,6 +30,8 @@ public class Field {
     protected List<AbstractProjectile> activeProjectiles;
     protected List<AbstractZombieProjectile> activeZombieProjectiles;
     protected List<LawnMower> activeLawnMowers;
+    protected int totalLawnMowerCount;
+    protected List<PlantFoodEffect> activeEffects;
 
     protected int totalLanes;
     protected int totalColumns;
@@ -51,6 +54,7 @@ public class Field {
         this.activeProjectiles = new ArrayList<>();
         this.activeLawnMowers = new ArrayList<>(5);
         this.activeZombieProjectiles = new ArrayList<>();
+        this.activeEffects = new ArrayList<>();
         initializeLawnMowers(lawnMowerSlots);
     }
 
@@ -61,6 +65,7 @@ public class Field {
         activeProjectiles.removeIf(AbstractProjectile::isMarkedForRemoval);
         activeLawnMowers.removeIf(LawnMower::isMarkedForRemoval);
         activeObstacles.removeIf(AbstractObstacle::isMarkedForRemoval);
+        activeEffects.removeIf(PlantFoodEffect::isMarkedForRemoval);
 
         for (int i = 0; i < totalLanes; i++) {
             for (int j = 0; j < totalColumns; j++) {
@@ -183,7 +188,16 @@ public class Field {
         entities.addAll(activeLawnMowers);
         entities.addAll(activeObstacles);
         entities.addAll(activeZombieProjectiles);
+        entities.addAll(activeEffects);
         return entities;
+    }
+
+    public void addEffect(@NotNull PlantFoodEffect effect) {
+        activeEffects.add(effect);
+    }
+
+    public List<PlantFoodEffect> getActiveEffects() {
+        return this.activeEffects;
     }
 
     public List<PlantInstance> getActivePlants() {
@@ -215,6 +229,10 @@ public class Field {
         return this.activeLawnMowers;
     }
 
+    public int getTotalLawnMowerCount() {
+        return this.totalLawnMowerCount;
+    }
+
     public int getTotalLanes() {
         return totalLanes;
     }
@@ -233,6 +251,7 @@ public class Field {
             grids[lane][0].provideLawnMower(lawnMower);
             slot.provideLawnMower(lawnMower);
         }
+        this.totalLawnMowerCount = activeLawnMowers.size();
     }
 
 }

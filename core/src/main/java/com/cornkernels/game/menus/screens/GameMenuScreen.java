@@ -34,16 +34,21 @@ public class GameMenuScreen extends BaseScreen {
         table.add(new Label(" Coins: " + progress.getCoins(), skin)).row();
         table.add(new Label(" Diamonds: " + progress.getDiamonds(), skin)).padBottom(30).row();
 
-        TextButton adventureBtn = new TextButton("🗺 Adventure", skin);
+        TextButton adventureBtn = new TextButton("Adventure", skin);
         TextButton collectionBtn = new TextButton(" Collection", skin);
         TextButton greenhouseBtn = new TextButton(" Greenhouse", skin);
         TextButton shopBtn = new TextButton(" Shop", skin);
+
+        int unreadCount = progress.getUnreadNewsCount();
+        TextButton newsBtn = new TextButton(unreadCount > 0 ? "* News *" : " News", skin);
+
         TextButton backBtn = new TextButton(" Back", skin);
 
         table.add(adventureBtn).width(200).height(50).padBottom(10).row();
         table.add(collectionBtn).width(200).height(50).padBottom(10).row();
         table.add(greenhouseBtn).width(200).height(50).padBottom(10).row();
         table.add(shopBtn).width(200).height(50).padBottom(10).row();
+        table.add(newsBtn).width(200).height(50).padBottom(10).row();
         table.add(backBtn).width(200).height(50).row();
 
         adventureBtn.addListener(new ClickListener() {
@@ -71,6 +76,13 @@ public class GameMenuScreen extends BaseScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new ShopScreen(game, user));
+            }
+        });
+
+        newsBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new NewsScreen(game, user));
             }
         });
 

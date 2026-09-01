@@ -23,6 +23,9 @@ public class SeedChooser {
     private final Function<SeedSlot, SeedPacket> packetFactory;
     private final Function<SeedSlot, CursorAttachment> thumbnailFactory;
     private final BooleanSupplier placementMode;
+    private Runnable onInsufficientSun = () -> {
+    };
+    private @Nullable SeedPacket pendingMenuPacket;
 
     public SeedChooser(@NonNull SeedSelectionBar tray,
                        @NonNull PlantSelectionMenu menu,
@@ -58,11 +61,12 @@ public class SeedChooser {
         return menu;
     }
 
-    /**
-     * The scrollable viewport wrapping the menu — add this (not getMenu()) to the HUD stage.
-     */
     public ScrollPane getMenuContainer() {
         return menuScrollPane;
+    }
+
+    public void setOnInsufficientSun(@NonNull Runnable onInsufficientSun) {
+        this.onInsufficientSun = onInsufficientSun;
     }
 
     public List<SeedSlot> getChosenSlots() {
@@ -73,12 +77,35 @@ public class SeedChooser {
         return chosen;
     }
 
+    /**
+     * First click on a plant just marks it "pending" (highlighted, and eligible for the Boost
+     * button) without moving it into a seed slot yet. Clicking that same pending plant again
+     * confirms it, moving it into the first empty tray slot - whatever its boosted status is by
+     * then carries over, since the tray packet is built from the same {@link SeedSlot}.
+     */
     private void onMenuClicked(@NonNull SeedPacket menuPacket) {
         if (menuPacket.isSelected()) return;
-        SeedSlotContainer target = firstEmptyContainer();
-        if (target == null) return;
-        target.setPacket(packetFactory.apply(menuPacket.getSeedSlot()));
-        menuPacket.setSelected(true);
+
+        if (pendingMenuPacket == menuPacket) {
+            SeedSlotContainer target = firstEmptyContainer();
+            if (target == null) return;
+            target.setPacket(packetFactory.apply(menuPacket.getSeedSlot()));
+            menuPacket.setSelected(true);
+            menuPacket.setPending(false);
+            pendingMenuPacket = null;
+            return;
+        }
+
+        if (pendingMenuPacket != null) {
+            pendingMenuPacket.setPending(false);
+        }
+        pendingMenuPacket = menuPacket;
+        menuPacket.setPending(true);
+    }
+
+    /** The plant currently awaiting a confirming click, if any - what the Boost button acts on. */
+    public @Nullable SeedSlot getPendingSlot() {
+        return pendingMenuPacket != null ? pendingMenuPacket.getSeedSlot() : null;
     }
 
     private void onTrayClicked(@NonNull SeedSlotContainer container) {
@@ -94,6 +121,8 @@ public class SeedChooser {
                 clearTraySelection();
                 seedBank.select(slot, thumbnailFactory.apply(slot), null, () -> packet.setSelected(false));
                 packet.setSelected(true);
+            } else if (slot.isReady() && !seedBank.canAfford(slot)) {
+                onInsufficientSun.run();
             }
         } else {
             container.setPacket(null);

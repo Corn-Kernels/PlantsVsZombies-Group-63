@@ -13,12 +13,15 @@ import pvz.libpvz.pam.PamPlayer;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.random.RandomGenerator;
 
 public class WaveSystem extends EntitySystem {
 
     private static final float BASE_SPAWN_DURATION = 3.0f;
     private static final float WAVE_ADVANCE_DAMAGE_FRACTION = 0.5f;
+
+    public static final float OFFSCREEN_SPAWN_MARGIN_COLUMNS = 2f;
 
     private final int[] zombiesPerWave;
     private final List<ZombieDef> eligibleZombies;
@@ -32,12 +35,19 @@ public class WaveSystem extends EntitySystem {
     private float currentWaveMaxHealthTotal = 0f;
     private float currentWaveDamageDealt = 0f;
 
+    private Consumer<ZombieDef> onZombieSpawned = def -> {
+    };
+
     public WaveSystem(int @NotNull [] zombiesPerWave, RandomGenerator rng,
                       List<ZombieDef> eligibleZombies, PamPlayer pamPlayer) {
         this.zombiesPerWave = zombiesPerWave;
         this.eligibleZombies = eligibleZombies;
         this.rng = rng;
         this.pamPlayer = pamPlayer;
+    }
+
+    public void setOnZombieSpawnedListener(@NotNull Consumer<ZombieDef> listener) {
+        this.onZombieSpawned = listener;
     }
 
     public void update(float deltaTick) {
@@ -64,13 +74,14 @@ public class WaveSystem extends EntitySystem {
 
         ZombieDef chosen = pickWeighted(eligibleZombies);
         int lane = rng.nextInt(field.getTotalLanes());
-        Vec2d spawnPosition = new Vec2d(field.getTotalColumns(), lane);
+        Vec2d spawnPosition = new Vec2d(field.getTotalColumns() + OFFSCREEN_SPAWN_MARGIN_COLUMNS, lane);
 
         ZombieInstance zombie = new ZombieInstance(chosen, spawnPosition);
         ZombieAnimationLocator.applyClip(pamPlayer, zombie.get(PamAnimationComponent.class), chosen, "walk");
         ZombieAnimationLocator.applyArmorVisibility(chosen, zombie.get(PamAnimationComponent.class));
         trackWaveHealth(zombie);
         field.addZombie(zombie);
+        onZombieSpawned.accept(chosen);
     }
 
     private void trackWaveHealth(@NotNull ZombieInstance zombie) {
@@ -115,7 +126,6 @@ public class WaveSystem extends EntitySystem {
         if (!isWaveSpawningDone()) return false;
         if (currentWaveMaxHealthTotal <= 0f) return true;
 
-        // Preferred trigger: the player has chipped away at roughly half the wave's total health.
         if (currentWaveDamageDealt >= WAVE_ADVANCE_DAMAGE_FRACTION * currentWaveMaxHealthTotal) return true;
 
         return field.getActiveZombies().isEmpty();
@@ -150,5 +160,18 @@ public class WaveSystem extends EntitySystem {
             spawnedInPastWaves += zombiesPerWave[i];
         }
         return MathUtils.clamp((spawnedInPastWaves + zombiesSpawnedThisWave) / (float) totalZombies, 0f, 1f);
+    }
+
+    public float @NotNull [] getWaveStartProgress() {
+        int totalZombies = Arrays.stream(zombiesPerWave).sum();
+        if (totalZombies <= 0 || zombiesPerWave.length <= 1) return new float[0];
+
+        float[] result = new float[zombiesPerWave.length - 1];
+        int cumulative = 0;
+        for (int i = 0; i < result.length; i++) {
+            cumulative += zombiesPerWave[i];
+            result[i] = MathUtils.clamp(cumulative / (float) totalZombies, 0f, 1f);
+        }
+        return result;
     }
 }

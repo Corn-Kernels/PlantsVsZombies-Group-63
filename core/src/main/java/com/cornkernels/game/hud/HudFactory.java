@@ -8,14 +8,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Scaling;
@@ -39,6 +35,7 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
@@ -57,7 +54,10 @@ public class HudFactory implements Disposable {
     private static final int REWARD_BG_INSET = 20;
     private static final int PAUSE_BG_INSET = 14;
     private static final int MAX_TRAY_SLOTS = 8;
-
+    private static final int BOOST_COST_GEMS = 2;
+    private static final float READY_SET_PLANT_FADE_IN = 0.3f;
+    private static final float READY_SET_PLANT_HOLD = 0.6f;
+    private static final float READY_SET_PLANT_FADE_OUT = 0.3f;
     private final TextureAtlas alwaysLoadedAtlas;
     private final TextureAtlas seedPacketsAtlas;
     private final TextureAtlas pauseMenuAtlas;
@@ -67,12 +67,10 @@ public class HudFactory implements Disposable {
     private final BitmapFont priceFont;
     private final BitmapFont confirmButtonFont;
     private final Texture whitePixel;
-
     private final PamPlayer pamPlayer;
     private final PlantingController plantingController;
     private final PauseController pauseController;
     private final PlayerProgress playerProgress;
-
     private final float hudWidth;
     private final float hudHeight;
 
@@ -199,7 +197,6 @@ public class HudFactory implements Disposable {
                 plantingController.toggleShovel(shovelCursor);
             }
         });
-        // Same row as the pause/2x buttons, one BUTTON_SIZE + 10f gap to the left of the 2x button.
         placeButton(button, hudWidth - 20f - BUTTON_SIZE - 10f - BUTTON_SIZE - 10f - BUTTON_SIZE,
             hudHeight - 20f - BUTTON_SIZE);
         return button;
@@ -253,10 +250,22 @@ public class HudFactory implements Disposable {
         count.setBounds(150f, hudHeight - 14f - 60f - belowSunOffset, 90f, 60f);
 
         Group group = new Group();
-        group.setTouchable(Touchable.disabled);
         group.addActor(background);
         group.addActor(icon);
         group.addActor(count);
+
+        TextureRegion leafRegion = new TextureRegion(alwaysLoadedAtlas.findRegion("leaf_backdrop"));
+        CursorAttachment leafCursor = new RegionCursorAttachment(leafRegion, 69f, 74f);
+
+        group.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (playerProgress.getPlantFood() <= 0) return;
+                plantingController.togglePlantFoodTool(leafCursor,
+                    () -> playerProgress.setPlantFood(playerProgress.getPlantFood() - 1));
+            }
+        });
+
         return group;
     }
 
@@ -327,11 +336,11 @@ public class HudFactory implements Disposable {
         return group;
     }
 
-
     public @NonNull SeedPacket createSeedPacket(@NonNull SeedSlot slot) {
         SeedPacket packet = new SeedPacket(
             slot,
             drawable(seedPacketsAtlas, "modernday"),
+            drawable(seedPacketsAtlas, "boost"),
             plantTextureFinder.getPlantUITextureOf(slot.getPlantDef()),
             drawable(seedPacketsAtlas, "price_tab"),
             priceFont,
@@ -380,6 +389,41 @@ public class HudFactory implements Disposable {
 
     public @NonNull TextButton createConfirmButton(@NonNull Runnable onConfirm) {
         return createTextButton("Let's Go!", "GreenButton", "GreenButton_Down", onConfirm);
+    }
+
+    /**
+     * Beside the plant selection menu: spends {@value BOOST_COST_GEMS} gems to boost whichever
+     * plant is currently "pending" (first-clicked but not yet confirmed into a seed slot). Disabled
+     * (greyed out) whenever nothing is pending, that plant is already boosted, or the player can't
+     * afford it.
+     */
+    public @NonNull TextButton createBoostButton(@NonNull SeedChooser seedChooser) {
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.up = drawable(alwaysLoadedAtlas, "GreenButton");
+        style.down = drawable(alwaysLoadedAtlas, "GreenButton_Down");
+        style.font = confirmButtonFont;
+
+        TextButton button = new TextButton("Boost", style) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                SeedSlot pending = seedChooser.getPendingSlot();
+                boolean canBoost = pending != null && !pending.isBoosted()
+                    && playerProgress.getDiamonds() >= BOOST_COST_GEMS;
+                setDisabled(!canBoost);
+                setColor(canBoost ? Color.WHITE : new Color(0.55f, 0.55f, 0.55f, 1f));
+            }
+        };
+        button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                SeedSlot pending = seedChooser.getPendingSlot();
+                if (pending == null || pending.isBoosted()) return;
+                if (!playerProgress.deductDiamonds(BOOST_COST_GEMS)) return;
+                pending.setBoosted(true);
+            }
+        });
+        return button;
     }
 
     public @NonNull PauseMenu createPauseMenu(@NonNull Runnable onRestart, @NonNull Runnable onExit) {
@@ -456,6 +500,17 @@ public class HudFactory implements Disposable {
         };
         fill.setScaling(Scaling.stretch);
 
+        float waveArrowWidth = 16f;
+        float waveArrowHeight = 17.6f;
+        List<Image> waveArrows = new ArrayList<>();
+        for (float waveStartProgress : waveSystem.getWaveStartProgress()) {
+            float centerX = barX + trackInset + trackWidth * waveStartProgress;
+            Image waveArrow = new Image(drawable(alwaysLoadedAtlas, "Arrow_Down_Orange"));
+            waveArrow.setBounds(centerX - waveArrowWidth / 2f, barY + barHeight - waveArrowHeight,
+                waveArrowWidth, waveArrowHeight);
+            waveArrows.add(waveArrow);
+        }
+
         float flagWidth = 29f;
         float flagHeight = 38f;
         Image flag = new Image(drawable(alwaysLoadedAtlas, "progress_meter_flag_pole"));
@@ -495,10 +550,105 @@ public class HudFactory implements Disposable {
         group.setTouchable(Touchable.disabled);
         group.addActor(track);
         group.addActor(fill);
+        for (Image waveArrow : waveArrows) {
+            group.addActor(waveArrow);
+        }
         group.addActor(flag);
         group.addActor(zombieHead);
         group.addActor(waveLabel);
         return group;
+    }
+
+    public @NonNull Label createReadySetPlantBanner() {
+        Label.LabelStyle style = new Label.LabelStyle(counterFont, Color.WHITE);
+        Label banner = new Label("", style);
+        banner.setAlignment(Align.center);
+        banner.setSize(hudWidth, 80f);
+        banner.setPosition(0, hudHeight / 2f - 40f);
+        banner.getColor().a = 0f;
+        banner.setVisible(false);
+        banner.setTouchable(Touchable.disabled);
+        return banner;
+    }
+
+    public void playReadySetPlant(@NonNull Label banner, Runnable onComplete) {
+        banner.clearActions();
+        banner.setVisible(true);
+        banner.addAction(Actions.sequence(
+            flashText(banner, "Ready", Color.WHITE),
+            flashText(banner, "Set", Color.WHITE),
+            flashText(banner, "Plant!", Color.WHITE),
+            Actions.run(() -> {
+                banner.setVisible(false);
+                if (onComplete != null) onComplete.run();
+            })
+        ));
+    }
+
+
+    public @NonNull Label createErrorBanner() {
+        Label.LabelStyle style = new Label.LabelStyle(counterFont, Color.WHITE);
+        Label banner = new Label("", style);
+        banner.setAlignment(Align.center);
+        banner.setSize(hudWidth, 60f);
+        banner.setPosition(0, hudHeight / 2f - 30f);
+        banner.getColor().a = 0f;
+        banner.setVisible(false);
+        banner.setTouchable(Touchable.disabled);
+        return banner;
+    }
+
+    public void showErrorMessage(@NonNull Label banner, String message) {
+        banner.clearActions();
+        banner.setVisible(true);
+        banner.addAction(Actions.sequence(
+            flashText(banner, message, Color.RED),
+            Actions.run(() -> banner.setVisible(false))
+        ));
+    }
+
+    private @NonNull Action flashText(@NonNull Label banner, String text, @NonNull Color color) {
+        return Actions.sequence(
+            Actions.run(() -> banner.setColor(color.r, color.g, color.b, 0f)),
+            Actions.run(() -> banner.setText(text)),
+            Actions.fadeIn(READY_SET_PLANT_FADE_IN),
+            Actions.delay(READY_SET_PLANT_HOLD),
+            Actions.fadeOut(READY_SET_PLANT_FADE_OUT)
+        );
+    }
+
+    public @NonNull Label createWaveStartBanner(@NonNull WaveSystem waveSystem, @NonNull BooleanSupplier visibleWhen) {
+        Label.LabelStyle style = new Label.LabelStyle(counterFont, Color.WHITE);
+        Label banner = new Label("", style) {
+            private int lastAnnouncedWave = 0;
+
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                if (!visibleWhen.getAsBoolean()) return;
+
+                int currentWave = waveSystem.getWaveNumber();
+                if (currentWave > lastAnnouncedWave) {
+                    lastAnnouncedWave = currentWave;
+                    setText("Wave " + currentWave + " has started!");
+                    clearActions();
+                    setVisible(true);
+                    getColor().a = 0f;
+                    addAction(Actions.sequence(
+                        Actions.fadeIn(0.3f),
+                        Actions.delay(1.5f),
+                        Actions.fadeOut(0.5f)
+                    ));
+                }
+            }
+        };
+        banner.setAlignment(Align.center);
+        banner.setSize(hudWidth, 60f);
+        banner.setPosition(0, hudHeight / 2f - 30f);
+        banner.getColor().a = 0f;
+        banner.setVisible(false);
+        banner.setTouchable(Touchable.disabled);
+        return banner;
     }
 
     private @NonNull TextButton createTextButton(String text, String upRegion, String downRegion, Runnable onClick) {

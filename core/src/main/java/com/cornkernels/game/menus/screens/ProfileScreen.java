@@ -45,7 +45,7 @@ public class ProfileScreen extends BaseScreen {
 
         mainTable.add(infoTable).padBottom(20).row();
 
-        TextButton editBtn = new TextButton("✏ Edit Profile", skin, "default");
+        TextButton editBtn = new TextButton("Edit Profile", skin, "default");
         TextButton backBtn = new TextButton(" Back", skin, "default");
 
         Table buttonTable = new Table();

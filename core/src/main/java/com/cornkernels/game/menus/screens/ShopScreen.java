@@ -115,18 +115,16 @@ public class ShopScreen extends BaseScreen {
         shopItems.add(new ShopItem("RANDOM SEED", "Get a random plant seed", 1000, "Coins",
             "IMAGES/shop/seed_packet.png", false, 0));
 
-        //shopItems.add(new ShopItem("CHOSEN SEED", "Choose a plant seed", 2, "Diamonds",
-        //"IMAGES/shop/seed_packet.png", false, 0));
         addChosenSeedItems();
     }
 
     private void addChosenSeedItems() {
         String[] displayNames = {
             " Sunflower", " Peashooter", " Wall-nut", " Potato Mine",
-            " Cherry Bomb", "❄ Snow Pea", " Repeater", " Fire Peashooter",
+            " Cherry Bomb", " Snow Pea", " Repeater", " Fire Peashooter",
             " Bonk Choy", " Cactus", " Starfruit", " Melon-pult",
             " Fume-shroom", " Magnet-shroom", " Hypno-shroom",
-            " Doom-shroom", " Ice-shroom", "❄ Winter Melon", " Cat-tail"
+            " Doom-shroom", " Ice-shroom", " Winter Melon", " Cat-tail"
         };
         for (int i = 0; i < allPlants.length; i++) {
             String plantName = allPlants[i];
@@ -326,7 +324,7 @@ public class ShopScreen extends BaseScreen {
         descLabel.setColor(0.7f, 0.7f, 0.7f, 1);
 
         // ===== قیمت =====
-        //String priceText = item.currency.equals("Coins") ? "🪙" : "💎";
+        //String priceText = item.currency.equals("Coins") ? "Coins" : "Gems";
         Label priceLabel = new Label(item.price + " " + item.currency, skin);
         priceLabel.setFontScale(1.1f);
         priceLabel.setColor(1, 0.8f, 0, 1);
@@ -341,7 +339,7 @@ public class ShopScreen extends BaseScreen {
         topRow.setFillParent(true);
         // ===== نشان روزانه =====
         if (item.isDaily) {
-            Label dailyLabel = new Label("⭐ DAILY", skin);
+            Label dailyLabel = new Label("DAILY", skin);
             dailyLabel.setFontScale(0.6f);
             dailyLabel.setColor(1, 0.8f, 0, 1);
             topRow.add(dailyLabel).left();
@@ -402,11 +400,11 @@ public class ShopScreen extends BaseScreen {
 
     private void handleBuy() {
         if (selectedItem == null) {
-            showToast("❌ Please select an item first!", 2f, true);
+            showToast("Please select an item first!", 2f, true);
             return;
         }
         if (selectedItem.isDaily && dailyOfferExpired) {
-            showToast("❌ Daily offer expired! Can't buy.", 2f, true);
+            showToast("Daily offer expired! Can't buy.", 2f, true);
             return;
         }
 
@@ -415,12 +413,12 @@ public class ShopScreen extends BaseScreen {
         // ===== بررسی موجودی =====
         if (selectedItem.currency.equals("Coins")) {
             if (progress.getCoins() < selectedItem.price) {
-                showToast("❌ Not enough coins! Need " + selectedItem.price + " coins.", 2f, true);
+                showToast("Not enough coins! Need " + selectedItem.price + " coins.", 2f, true);
                 return;
             }
         } else {
             if (progress.getDiamonds() < selectedItem.price) {
-                showToast("❌ Not enough diamonds! Need " + selectedItem.price + " diamonds.", 2f, true);
+                showToast("Not enough diamonds! Need " + selectedItem.price + " diamonds.", 2f, true);
                 return;
             }
         }
@@ -435,14 +433,14 @@ public class ShopScreen extends BaseScreen {
                 if ((boolean) object) {
                     completePurchase(item);
                 } else {
-                    showToast("❌ Purchase cancelled.", 1.5f, true);
+                    showToast("Purchase cancelled.", 1.5f, true);
                 }
             }
         };
 
         confirmDialog.text("Buy " + item.name + " for " + item.price + " " + item.currency + "?");
-        confirmDialog.button("✅ Yes", true);
-        confirmDialog.button("❌ No", false);
+        confirmDialog.button("Yes", true);
+        confirmDialog.button("No", false);
         confirmDialog.show(stage);
     }
 
@@ -471,15 +469,15 @@ public class ShopScreen extends BaseScreen {
                 progress.addNews(news);
             }
             int totalSeeds = progress.getPlantSeedCount(plantName);
-            showToast("✅ " + plantName + " seed added! (Daily Offer) (Total: " + totalSeeds + ")", 2f, false);
+            showToast(plantName + " seed added! (Daily Offer) (Total: " + totalSeeds + ")", 2f, false);
             dailyOfferExpired = true;
         } else if (item.name.startsWith("SEED:")) {
             String displayName = item.name.replace("SEED: ", "");
             String plantName = extractPlantName(displayName);
             if (plantName != null) {
                 progress.addPlantSeed(plantName, 1);
-                System.out.println("🔍 Shop: added seed for " + plantName + " → total: " + progress.getPlantSeedCount(plantName));
-                System.out.println("🔍 Shop: ownedPlants = " + progress.getOwnedPlants());
+                System.out.println("Shop: added seed for " + plantName + " → total: " + progress.getPlantSeedCount(plantName));
+                System.out.println("Shop: ownedPlants = " + progress.getOwnedPlants());
                 if (!progress.hasPlant(plantName)) {
                     progress.addPlant(plantName);
                     NewsItem news = new NewsItem(
@@ -492,7 +490,7 @@ public class ShopScreen extends BaseScreen {
                     progress.addNews(news);
                 }
                 int totalSeeds = progress.getPlantSeedCount(plantName);
-                showToast("✅ " + plantName + " seed added! (Total: " + totalSeeds + ")", 2f, false);
+                showToast(plantName + " seed added! (Total: " + totalSeeds + ")", 2f, false);
             }
         } else {
             switch (item.name) {
@@ -502,18 +500,18 @@ public class ShopScreen extends BaseScreen {
                         if (pot.isLocked()) {
                             pot.setLocked(false);
                             potUnlocked = true;
-                            showToast("✅ Pot unlocked successfully!", 2f, false);
+                            showToast("Pot unlocked successfully!", 2f, false);
                             break;
                         }
                     }
                     if (!potUnlocked) {
-                        showToast("❌ All pots are already unlocked!", 2f, true);
+                        showToast("All pots are already unlocked!", 2f, true);
                     }
                     break;
 
                 case "PLANT FOOD":
                     progress.setPlantFood(progress.getPlantFood() + 1);
-                    showToast("✅ Plant Food added! Total: " + progress.getPlantFood(), 2f, false);
+                    showToast("Plant Food added! Total: " + progress.getPlantFood(), 2f, false);
                     break;
 
                 case "RANDOM SEED":
@@ -531,7 +529,7 @@ public class ShopScreen extends BaseScreen {
                         progress.addNews(news);
                     }
                     int totalSeeds = progress.getPlantSeedCount(randomPlant);
-                    showToast("✅ Random seed: " + randomPlant + " added! (Total: " + totalSeeds + ")", 2f, false);
+                    showToast("Random seed: " + randomPlant + " added! (Total: " + totalSeeds + ")", 2f, false);
                     break;
             }
         }

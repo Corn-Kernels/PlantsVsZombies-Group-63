@@ -9,6 +9,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 public class LawnMower extends Entity {
 
     private final Rectangle worldBounds;
+    private boolean triggered = false;
 
     public LawnMower(Vec2d position, Rectangle worldBounds) {
         add(new PositionComponent(position));
@@ -18,5 +19,13 @@ public class LawnMower extends Entity {
 
     public Rectangle getWorldBounds() {
         return worldBounds;
+    }
+
+    public boolean isTriggered() {
+        return triggered;
+    }
+
+    public void trigger() {
+        triggered = true;
     }
 }

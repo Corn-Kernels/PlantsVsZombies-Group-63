@@ -28,6 +28,10 @@ public class SeedBank {
         return slot.isReady() && plantingController.canAfford(slot.getPlantDef().getCost());
     }
 
+    public boolean canAfford(@NonNull SeedSlot slot) {
+        return plantingController.canAfford(slot.getPlantDef().getCost());
+    }
+
     public void cancelSelection() {
         plantingController.cancelActiveTool();
     }
@@ -40,8 +44,7 @@ public class SeedBank {
                        Runnable onPlaced) {
         if (!canSelect(slot)) return;
         plantingController.beginPlantPlacement(
-            slot.getPlantDef().getId(),
-            slot.getPlantDef().getCost(),
+            slot,
             thumbnail,
             highlightSet,
             () -> {

@@ -48,32 +48,12 @@ public class CollectionScreen extends BaseScreen {
         allZombies = DataLoader.loadAllZombies();
 
         PlayerProgress progress = user.getProgress();
-        List<String> ownedPlantNames = progress.getOwnedPlants();
         for (Plant plant : allPlants) {
-            if (ownedPlantNames.contains(plant.getName().toUpperCase())) {
+            if (progress.hasPlant(plant.getName())) {
                 plant.setUnlocked(true);
             }
         }
-        boolean newZombieFound = false;
-        for (Zombie z : allZombies) {
-            if (z.getChapter().equals("All Chapters") && !z.isSeen()) {
-                z.setSeen(true);
-                newZombieFound = true;
-
-                NewsItem news = new NewsItem(
-                    "zombie_" + System.currentTimeMillis(),
-                    "New Zombie Discovered: " + z.getName(),
-                    new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
-                    "You have encountered " + z.getName() + "! Study its weaknesses to defeat it.",
-                    "ZOMBIE"
-                );
-                progress.addNews(news);
-            }
-        }
-
-        if (newZombieFound) {
-            game.getStorageService().saveUsers();
-        }
+        refreshZombieSeenStatus();
 
         filteredPlants = new ArrayList<>(allPlants);
 
@@ -258,9 +238,16 @@ public class CollectionScreen extends BaseScreen {
 
     private void refreshPlantUnlockStatus() {
         PlayerProgress progress = user.getProgress();
-        List<String> ownedPlants = progress.getOwnedPlants();
         for (Plant plant : allPlants) {
-            plant.setUnlocked(ownedPlants.contains(plant.getName().toUpperCase()));
+            plant.setUnlocked(progress.hasPlant(plant.getName()));
+        }
+    }
+
+    private void refreshZombieSeenStatus() {
+        PlayerProgress progress = user.getProgress();
+        List<String> seenZombies = progress.getSeenZombies();
+        for (Zombie z : allZombies) {
+            z.setSeen(seenZombies.contains(z.getAlias()));
         }
     }
 
@@ -300,6 +287,7 @@ public class CollectionScreen extends BaseScreen {
     }
 
     private void showZombiesTab() {
+        refreshZombieSeenStatus();
         contentTable.clear();
 
         Table zombiesTable = new Table();
@@ -337,7 +325,7 @@ public class CollectionScreen extends BaseScreen {
         PlayerProgress progress = user.getProgress();
         int plantSeeds = progress.getPlantSeedCount(plant.getName());
         int neededSeeds = plant.getSeedPacketsNeeded(progress);
-        System.out.println("🔍 Collection: " + plant.getName() + " → seeds: " + plantSeeds +
+        System.out.println("Collection: " + plant.getName() + " → seeds: " + plantSeeds +
             " | unlocked: " + plant.isUnlocked());
         int currentLevel = plant.getLevel(progress);
         Table card = new Table();
@@ -370,7 +358,7 @@ public class CollectionScreen extends BaseScreen {
         Label levelLabel = new Label("Lv." + currentLevel, skin);
         levelLabel.setFontScale(0.65f);
 
-        Label costLabel = new Label("☀ " + plant.getCost(), skin);
+        Label costLabel = new Label(String.valueOf(plant.getCost()), skin);
         costLabel.setFontScale(0.65f);
 
         Label seedLabel = new Label("Seeds: " + plantSeeds + "/" + neededSeeds, skin);
@@ -388,7 +376,7 @@ public class CollectionScreen extends BaseScreen {
 
             TextButton upgradeBtn;
             if (canUpgrade) {
-                upgradeBtn = new TextButton("⬆ Lv." + (currentLevel + 1) + " (" + upgradeCost + ")", skin, "green");
+                upgradeBtn = new TextButton("Lv." + (currentLevel + 1) + " (" + upgradeCost + ")", skin, "green");
             } else {
                 upgradeBtn = new TextButton("Need " + plant.getSeedPacketsNeeded(progress) + " seeds", skin, "default");
                 upgradeBtn.setDisabled(true);
@@ -405,7 +393,7 @@ public class CollectionScreen extends BaseScreen {
                     if (canUpgradeFinal) {
                         handleUpgrade(finalPlant);
                     } else {
-                        showToast("❌ Not enough seeds! Need " + finalPlant.getSeedPacketsNeeded(progress) + " seed packets.", 2f, true);
+                        showToast("Not enough seeds! Need " + finalPlant.getSeedPacketsNeeded(progress) + " seed packets.", 2f, true);
                     }
                 }
             });
@@ -430,7 +418,7 @@ public class CollectionScreen extends BaseScreen {
                     if (isPurchasable) {
                         buyPlant(finalPlant);
                     } else {
-                        showToast("❌ This plant is locked until you progress further!", 2f, true);
+                        showToast("This plant is locked until you progress further!", 2f, true);
                     }
                 }
             });
@@ -533,7 +521,7 @@ public class CollectionScreen extends BaseScreen {
         Label nameLabel = new Label(zombie.isSeen() ? zombie.getName() : "???", skin);
         nameLabel.setFontScale(0.75f);
 
-        Label statusLabel = new Label(zombie.isSeen() ? "🧟" : "❓", skin);
+        Label statusLabel = new Label(zombie.isSeen() ? "Seen" : "Unknown", skin);
         statusLabel.setFontScale(0.8f);
 
         Label hpLabel = new Label(zombie.isSeen() ? "HP: " + zombie.getHitpoints() : "", skin);
@@ -568,17 +556,17 @@ public class CollectionScreen extends BaseScreen {
         int currentLevel = plant.getLevel(progress);
 
         if (progress.getCoins() < cost) {
-            showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
+            showToast("Not enough coins! Need " + cost + " coins.", 2f, true);
             return;
         }
         if (plantSeeds < neededSeeds) {
-            showToast("❌ Not enough seeds for " + plant.getName() + "! Need " + neededSeeds + ".", 2f, true);
+            showToast("Not enough seeds for " + plant.getName() + "! Need " + neededSeeds + ".", 2f, true);
             return;
         }
 
 
         if (currentLevel >= plant.getMaxLevel()) {
-            showToast("⭐ Already at max level!", 2f, false);
+            showToast("Already at max level!", 2f, false);
             return;
         }
 
@@ -590,24 +578,24 @@ public class CollectionScreen extends BaseScreen {
         updateCurrencyDisplay();
         applyFilters();
 
-        showToast("✅ " + plant.getName() + " upgraded to Lv." + plant.getLevel(progress) + "!", 2f, false);
+        showToast(plant.getName() + " upgraded to Lv." + plant.getLevel(progress) + "!", 2f, false);
     }
 
     private void buyPlant(Plant plant) {
         PlayerProgress progress = user.getProgress();
         int cost = 100;
         if (!isPlantPurchasable(plant)) {
-            showToast("❌ This plant is locked until you progress further!", 2f, true);
+            showToast("This plant is locked until you progress further!", 2f, true);
             return;
         }
         if (progress.getCoins() < cost) {
-            showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
+            showToast("Not enough coins! Need " + cost + " coins.", 2f, true);
             return;
         }
 
         progress.deductCoins(cost);
         plant.setUnlocked(true);
-        progress.addPlant(plant.getName().toUpperCase());
+        progress.addPlant(plant.getName());
 
         NewsItem news = new NewsItem(
             "plant_" + System.currentTimeMillis(),
@@ -621,7 +609,7 @@ public class CollectionScreen extends BaseScreen {
         updateCurrencyDisplay();
 
         applyFilters();
-        showToast("✅ " + plant.getName() + " purchased successfully!", 2f, false);
+        showToast(plant.getName() + " purchased successfully!", 2f, false);
 
     }
 
@@ -640,7 +628,7 @@ public class CollectionScreen extends BaseScreen {
         int currentLevel = plant.getLevel(progress);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("🌱 ").append(plant.getName()).append("\n");
+        sb.append(plant.getName()).append("\n");
         sb.append("Category: ").append(plant.getCategory()).append("\n");
         sb.append("Cost: ").append(plant.getCost()).append(" sun\n");
         sb.append("HP: ").append(plant.getBaseHp()).append("\n");
@@ -648,7 +636,7 @@ public class CollectionScreen extends BaseScreen {
         sb.append("Recharge: ").append(plant.getRecharge()).append("s\n");
         sb.append("Level: ").append(currentLevel).append("/").append(plant.getMaxLevel()).append("\n");
         sb.append("Seeds: ").append(plantSeeds).append("/").append(neededSeeds).append("\n");
-        sb.append("Status: ").append(plant.isUnlocked() ? "✅ Unlocked" : "🔒 Locked").append("\n");
+        sb.append("Status: ").append(plant.isUnlocked() ? "Unlocked" : "Locked").append("\n");
 
         if (plant.getTags().length > 0) {
             sb.append("Tags: ");
@@ -667,7 +655,7 @@ public class CollectionScreen extends BaseScreen {
     private void showZombieDetail(Zombie zombie) {
         if (!zombie.isSeen()) {
             detailImage.setColor(0.05f, 0.05f, 0.05f, 1);
-            detailLabel.setText("❓ This zombie hasn't been discovered yet!\n\nPlay more levels to find it.");
+            detailLabel.setText("This zombie hasn't been discovered yet!\n\nPlay more levels to find it.");
             return;
         }
 
@@ -681,7 +669,7 @@ public class CollectionScreen extends BaseScreen {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("🧟 ").append(zombie.getName()).append("\n");
+        sb.append(zombie.getName()).append("\n");
         sb.append("Chapter: ").append(zombie.getChapter()).append("\n");
         sb.append("HP: ").append(zombie.getHitpoints()).append("\n");
         sb.append("Speed: ").append(String.format("%.2f", zombie.getSpeed())).append("\n");

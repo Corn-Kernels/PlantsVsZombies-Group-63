@@ -30,7 +30,7 @@ public class MainMenuScreen extends BaseScreen {
         table.add(titleLabel).padBottom(20).row();
 
 
-        table.add(new Label("👤 " + user.getNickname(), skin)).padBottom(5).row();
+        table.add(new Label(user.getNickname(), skin)).padBottom(5).row();
 
         TextButton playBtn = new TextButton(" Play", skin, "default");
         TextButton settingsBtn = new TextButton(" Settings", skin, "default");

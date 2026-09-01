@@ -12,6 +12,7 @@ import com.cornkernels.game.entities.components.zombie_specific.ZombieDeathCompo
 import com.cornkernels.game.entities.types.lawnmower.LawnMower;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
+import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.systems.entity.SunSystem;
@@ -37,6 +38,11 @@ public class PamRenderSystem extends RenderSystem {
         this.mapData = mapData;
     }
 
+    private static float sunVisualScale(@NonNull SunType sunType) {
+        float ratio = sunType.value <= 0 ? 1f : sunType.value / (float) SunType.NORMAL.value;
+        return MathUtils.clamp((float) Math.sqrt(ratio), 0.4f, 2.2f);
+    }
+
     @Override
     public void render(float delta) {
         List<Entity> renderableEntities = field.getEntitiesWith(PositionComponent.class, PamAnimationComponent.class);
@@ -60,7 +66,7 @@ public class PamRenderSystem extends RenderSystem {
             advanceSequence(anim);
 
             Rectangle bounds = entity instanceof LawnMower mower
-                ? mower.getWorldBounds()
+                ? lawnMowerBounds(mower, positionComponent)
                 : entity instanceof AbstractProjectile || entity instanceof ZombieInstance
                 ? continuousWorldPositionOf(positionComponent.position)
                 : worldCellOf(positionComponent.position);
@@ -77,7 +83,11 @@ public class PamRenderSystem extends RenderSystem {
                 if (death != null) alpha = death.getAlpha();
             }
 
-            // 1. Process Debuff Hue (Ignore if perfectly white)
+            float entityScale = scale;
+            if (entity instanceof SunInstance sun) {
+                entityScale *= sunVisualScale(sun.getSunType());
+            }
+
             float r = 1f, g = 1f, b = 1f;
             if (anim.tint != null && (anim.tint.r != 1f || anim.tint.g != 1f || anim.tint.b != 1f)) {
                 r = anim.tint.r;
@@ -86,7 +96,7 @@ public class PamRenderSystem extends RenderSystem {
             }
 
             // 2. Process Flipping (Invert X scale if flipX is true)
-            float currentScaleX = anim.flipX ? -scale : scale;
+            float currentScaleX = anim.flipX ? -entityScale : entityScale;
 
             // Fast path: No scaling and no flipping
             if (currentScaleX == 1.0f && scale == 1.0f) {
@@ -96,21 +106,27 @@ public class PamRenderSystem extends RenderSystem {
                 continue;
             }
 
-            // Matrix path: Apply scaling and/or flipping around the center point
             Matrix4 original = batch.getTransformMatrix().cpy();
             Matrix4 scaled = original.cpy()
                 .translate(x, y, 0)
-                .scale(currentScaleX, scale, 1f)
+                .scale(currentScaleX, entityScale, 1f)
                 .translate(-x, -y, 0);
 
             batch.setTransformMatrix(scaled);
             batch.setColor(r, g, b, alpha);
             pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
-
-            // Reset to pure white and restore matrix
             batch.setColor(1f, 1f, 1f, 1f);
             batch.setTransformMatrix(original);
         }
+    }
+
+    private @NonNull Rectangle lawnMowerBounds(@NonNull LawnMower mower, @NonNull PositionComponent positionComponent) {
+        if (!mower.isTriggered()) {
+            return mower.getWorldBounds();
+        }
+        Rectangle idle = mower.getWorldBounds();
+        Rectangle moving = continuousWorldPositionOf(positionComponent.position);
+        return new Rectangle(moving.x, idle.y + idle.height / 2f, 0f, 0f);
     }
 
     private void assignSunClip(@NonNull PamAnimationComponent anim) {

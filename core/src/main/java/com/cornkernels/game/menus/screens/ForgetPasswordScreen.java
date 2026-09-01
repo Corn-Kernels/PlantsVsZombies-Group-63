@@ -138,7 +138,7 @@ public class ForgetPasswordScreen extends BaseScreen {
 
         // ===== نمایش سوال امنیتی =====
         int qIndex = targetUser.getSecurityQuestionIndex();
-        questionLabel.setText("🔐 " + SECURITY_QUESTIONS[qIndex]);
+        questionLabel.setText(SECURITY_QUESTIONS[qIndex]);
         step2Table.setVisible(true);
         statusLabel.setText(" User verified! Answer the security question.");
         statusLabel.setColor(0, 1, 0, 1);

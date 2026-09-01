@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -29,10 +30,244 @@ public abstract class BaseScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        createSimpleSkin();
-
+        loadSkin();
         loadBackground();
         setupCurrencyDisplay();
+    }
+
+    private void loadSkin() {
+        try {
+            skin = new Skin(Gdx.files.internal("skin/pvz2_skin_backup.json"));
+            TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("skin/pvz2_skin.atlas"));
+            skin.addRegions(atlas);
+            BitmapFont font = new BitmapFont();
+            skin.add("default-font", font);
+            System.out.println(" Skin loaded from backup.json successfully!");
+            return;
+        } catch (Exception e) {
+            System.out.println(" backup.json failed: " + e.getMessage());
+        }
+
+
+        try {
+            TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("skin/pvz2_skin.atlas"));
+            skin = new Skin(atlas);
+            BitmapFont font = new BitmapFont();
+            skin.add("default-font", font);
+
+            setupStyles(font, atlas);
+            System.out.println(" Skin loaded from atlas successfully!");
+            return;
+        } catch (Exception e) {
+            System.out.println("⚠ Atlas failed: " + e.getMessage());
+        }
+
+
+        System.out.println(" Using simple skin...");
+        createSimpleSkin();
+    }
+
+    private void setupStyles(BitmapFont font, TextureAtlas atlas) {
+        TextButton.TextButtonStyle defaultStyle = new TextButton.TextButtonStyle();
+        defaultStyle.font = font;
+        defaultStyle.fontColor = Color.WHITE;
+
+        String[] buttonNames = {
+            "image_ui_generic_greenbutton",
+            "image_ui_generic_bluebutton",
+            "image_ui_generic_brownbutton",
+            "image_ui_generic_buttons_coin_buy_normal"
+        };
+
+        for (String name : buttonNames) {
+            if (atlas.findRegion(name) != null) {
+                defaultStyle.up = new TextureRegionDrawable(atlas.findRegion(name));
+                System.out.println(" Found button: " + name);
+                break;
+            }
+        }
+
+        String[] downNames = {
+            "image_ui_generic_greenbutton_down",
+            "image_ui_generic_bluebutton_down",
+            "image_ui_generic_brownbutton_down",
+            "image_ui_generic_buttons_coin_buy_selected"
+        };
+
+        for (String name : downNames) {
+            if (atlas.findRegion(name) != null) {
+                defaultStyle.down = new TextureRegionDrawable(atlas.findRegion(name));
+                break;
+            }
+        }
+
+        skin.add("default", defaultStyle);
+        skin.add("green", defaultStyle);
+        skin.add("brown", defaultStyle);
+
+        SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
+        selectBoxStyle.font = font;
+        selectBoxStyle.fontColor = Color.BLACK;
+
+        if (atlas.findRegion("image_ui_generic_content_well") != null) {
+            selectBoxStyle.background = new TextureRegionDrawable(atlas.findRegion("image_ui_generic_content_well"));
+        } else {
+            Pixmap whitePixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            whitePixmap.setColor(Color.WHITE);
+            whitePixmap.fill();
+            Texture whiteTexture = new Texture(whitePixmap);
+            whitePixmap.dispose();
+            selectBoxStyle.background = new TextureRegionDrawable(whiteTexture);
+        }
+
+        List.ListStyle listStyle = new List.ListStyle();
+        listStyle.font = font;
+        listStyle.fontColorSelected = Color.WHITE;
+        listStyle.fontColorUnselected = Color.BLACK;
+
+        if (atlas.findRegion("image_ui_generic_bluebutton") != null) {
+            listStyle.selection = new TextureRegionDrawable(atlas.findRegion("image_ui_generic_bluebutton"));
+        } else {
+            Pixmap grayPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            grayPixmap.setColor(Color.LIGHT_GRAY);
+            grayPixmap.fill();
+            Texture grayTexture = new Texture(grayPixmap);
+            grayPixmap.dispose();
+            listStyle.selection = new TextureRegionDrawable(grayTexture);
+        }
+
+        selectBoxStyle.listStyle = listStyle;
+        selectBoxStyle.scrollStyle = new ScrollPane.ScrollPaneStyle();
+        skin.add("default", selectBoxStyle);
+
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.font = font;
+        textFieldStyle.fontColor = Color.BLACK;
+
+        if (atlas.findRegion("image_ui_generic_content_well") != null) {
+            textFieldStyle.background = new TextureRegionDrawable(atlas.findRegion("image_ui_generic_content_well"));
+        } else {
+            Pixmap whitePixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            whitePixmap.setColor(Color.WHITE);
+            whitePixmap.fill();
+            Texture whiteTexture = new Texture(whitePixmap);
+            whitePixmap.dispose();
+            textFieldStyle.background = new TextureRegionDrawable(whiteTexture);
+        }
+
+        Pixmap grayPixmap2 = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        grayPixmap2.setColor(Color.LIGHT_GRAY);
+        grayPixmap2.fill();
+        Texture grayTexture2 = new Texture(grayPixmap2);
+        grayPixmap2.dispose();
+        Drawable grayDrawable2 = new TextureRegionDrawable(grayTexture2);
+
+        textFieldStyle.cursor = grayDrawable2;
+        textFieldStyle.selection = grayDrawable2;
+        skin.add("default", textFieldStyle);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+        labelStyle.fontColor = Color.WHITE;
+        skin.add("default", labelStyle);
+
+        CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
+        checkBoxStyle.font = font;
+        checkBoxStyle.fontColor = Color.WHITE;
+
+        if (atlas.findRegion("checkbox_on") != null) {
+            checkBoxStyle.checkboxOn = new TextureRegionDrawable(atlas.findRegion("checkbox_on"));
+        }
+        if (atlas.findRegion("checkbox_off") != null) {
+            checkBoxStyle.checkboxOff = new TextureRegionDrawable(atlas.findRegion("checkbox_off"));
+        }
+        skin.add("default", checkBoxStyle);
+
+        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
+        scrollPaneStyle.background = grayDrawable2;
+        skin.add("default", scrollPaneStyle);
+
+        Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
+
+
+        if (atlas.findRegion("image_ui_generic_audio_bar") != null) {
+            sliderStyle.background = new TextureRegionDrawable(atlas.findRegion("image_ui_generic_audio_bar"));
+        } else if (atlas.findRegion("image_ui_hud_ingame_progress_meter") != null) {
+            sliderStyle.background = new TextureRegionDrawable(atlas.findRegion("image_ui_hud_ingame_progress_meter"));
+        } else {
+            Pixmap bgPixmap = new Pixmap(1, 12, Pixmap.Format.RGBA8888);
+            bgPixmap.setColor(new Color(0.2f, 0.2f, 0.2f, 1));
+            bgPixmap.fill();
+            Texture bgTexture = new Texture(bgPixmap);
+            bgPixmap.dispose();
+            sliderStyle.background = new TextureRegionDrawable(bgTexture);
+        }
+
+
+        if (atlas.findRegion("image_ui_generic_audio_fill") != null) {
+            sliderStyle.knobBefore = new TextureRegionDrawable(atlas.findRegion("image_ui_generic_audio_fill"));
+        } else if (atlas.findRegion("image_ui_hud_ingame_progress_meter_fill") != null) {
+            sliderStyle.knobBefore = new TextureRegionDrawable(atlas.findRegion("image_ui_hud_ingame_progress_meter_fill"));
+        } else {
+            Pixmap filledPixmap = new Pixmap(1, 12, Pixmap.Format.RGBA8888);
+            filledPixmap.setColor(new Color(0.2f, 0.8f, 0.2f, 1));
+            filledPixmap.fill();
+            Texture filledTexture = new Texture(filledPixmap);
+            filledPixmap.dispose();
+            sliderStyle.knobBefore = new TextureRegionDrawable(filledTexture);
+        }
+
+
+        if (atlas.findRegion("image_ui_generic_bluebutton") != null) {
+
+            Pixmap knobPixmap = new Pixmap(22, 22, Pixmap.Format.RGBA8888);
+            knobPixmap.setColor(Color.WHITE);
+            knobPixmap.fillCircle(11, 11, 10);
+            knobPixmap.setColor(new Color(0.2f, 0.2f, 0.2f, 1));
+            knobPixmap.drawCircle(11, 11, 10);
+            Texture knobTexture = new Texture(knobPixmap);
+            knobPixmap.dispose();
+            sliderStyle.knob = new TextureRegionDrawable(knobTexture);
+        } else {
+            Pixmap knobPixmap = new Pixmap(22, 22, Pixmap.Format.RGBA8888);
+            knobPixmap.setColor(Color.WHITE);
+            knobPixmap.fillCircle(11, 11, 10);
+            knobPixmap.setColor(new Color(0.2f, 0.2f, 0.2f, 1));
+            knobPixmap.drawCircle(11, 11, 10);
+            Texture knobTexture = new Texture(knobPixmap);
+            knobPixmap.dispose();
+            sliderStyle.knob = new TextureRegionDrawable(knobTexture);
+        }
+
+        skin.add("default-horizontal", sliderStyle);
+
+        ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle();
+
+        if (atlas.findRegion("image_ui_generic_xp_progress_bar") != null) {
+            progressBarStyle.background = new TextureRegionDrawable(atlas.findRegion("image_ui_generic_xp_progress_bar"));
+        } else {
+            progressBarStyle.background = grayDrawable2;
+        }
+
+        if (atlas.findRegion("image_ui_generic_xp_progress_bar_fill_green") != null) {
+            progressBarStyle.knobBefore = new TextureRegionDrawable(atlas.findRegion("image_ui_generic_xp_progress_bar_fill_green"));
+        } else {
+            progressBarStyle.knobBefore = grayDrawable2;
+        }
+
+        progressBarStyle.knob = grayDrawable2;
+        skin.add("default-horizontal", progressBarStyle);
+
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.titleFont = font;
+        windowStyle.titleFontColor = Color.WHITE;
+
+        if (atlas.findRegion("image_ui_generic_popup_9slice") != null) {
+            windowStyle.background = new TextureRegionDrawable(atlas.findRegion("image_ui_generic_popup_9slice"));
+        } else {
+            windowStyle.background = grayDrawable2;
+        }
+        skin.add("default", windowStyle);
     }
 
     private void createSimpleSkin() {
@@ -40,17 +275,14 @@ public abstract class BaseScreen implements Screen {
         BitmapFont font = new BitmapFont();
         skin.add("default-font", font);
 
-        // ===== ساخت Drawable سفید برای white_pixel =====
         Pixmap whitePixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         whitePixmap.setColor(Color.WHITE);
         whitePixmap.fill();
         Texture whiteTexture = new Texture(whitePixmap);
         whitePixmap.dispose();
         Drawable whiteDrawable = new TextureRegionDrawable(whiteTexture);
-
         skin.add("white_pixel", whiteDrawable);
 
-        // ===== ساخت Drawable خاکستری =====
         Pixmap grayPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         grayPixmap.setColor(Color.LIGHT_GRAY);
         grayPixmap.fill();
@@ -58,13 +290,11 @@ public abstract class BaseScreen implements Screen {
         grayPixmap.dispose();
         Drawable grayDrawable = new TextureRegionDrawable(grayTexture);
 
-        // ===== LabelStyle =====
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
         labelStyle.fontColor = Color.WHITE;
         skin.add("default", labelStyle);
 
-        // ===== TextButtonStyle =====
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.WHITE;
@@ -74,7 +304,6 @@ public abstract class BaseScreen implements Screen {
         skin.add("green", buttonStyle);
         skin.add("brown", buttonStyle);
 
-        // ===== TextFieldStyle =====
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
         textFieldStyle.font = font;
         textFieldStyle.fontColor = Color.BLACK;
@@ -83,7 +312,6 @@ public abstract class BaseScreen implements Screen {
         textFieldStyle.selection = grayDrawable;
         skin.add("default", textFieldStyle);
 
-        // ===== CheckBoxStyle =====
         CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle();
         checkBoxStyle.font = font;
         checkBoxStyle.fontColor = Color.WHITE;
@@ -91,9 +319,10 @@ public abstract class BaseScreen implements Screen {
         checkBoxStyle.checkboxOff = grayDrawable;
         skin.add("default", checkBoxStyle);
 
-        // ============================================
-        // ===== SelectBoxStyle =====
-        // ============================================
+        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
+        scrollPaneStyle.background = grayDrawable;
+        skin.add("default", scrollPaneStyle);
+
         SelectBox.SelectBoxStyle selectBoxStyle = new SelectBox.SelectBoxStyle();
         selectBoxStyle.font = font;
         selectBoxStyle.fontColor = Color.BLACK;
@@ -109,16 +338,7 @@ public abstract class BaseScreen implements Screen {
         selectBoxStyle.scrollStyle = new ScrollPane.ScrollPaneStyle();
         skin.add("default", selectBoxStyle);
 
-        // ============================================
-        // ===== ScrollPaneStyle =====
-        // ============================================
-        ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle();
-        scrollPaneStyle.background = whiteDrawable;
-        skin.add("default", scrollPaneStyle);
 
-        // ============================================
-        // ===== SliderStyle =====
-        // ============================================
         Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
         Pixmap sliderBgPixmap = new Pixmap(1, 12, Pixmap.Format.RGBA8888);
         sliderBgPixmap.setColor(new Color(0.3f, 0.3f, 0.3f, 1));
@@ -145,23 +365,19 @@ public abstract class BaseScreen implements Screen {
 
         skin.add("default-horizontal", sliderStyle);
 
-        // ============================================
-        // ===== ProgressBarStyle =====
-        // ============================================
         ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle();
         progressBarStyle.background = grayDrawable;
         progressBarStyle.knob = whiteDrawable;
         progressBarStyle.knobBefore = whiteDrawable;
         skin.add("default-horizontal", progressBarStyle);
 
-        // ============================================
-        // ===== WindowStyle =====
-        // ============================================
         Window.WindowStyle windowStyle = new Window.WindowStyle();
         windowStyle.titleFont = font;
         windowStyle.titleFontColor = Color.WHITE;
         windowStyle.background = grayDrawable;
         skin.add("default", windowStyle);
+
+        System.out.println("⚠ Using simple skin (fallback)");
     }
 
     private void loadBackground() {
@@ -205,7 +421,6 @@ public abstract class BaseScreen implements Screen {
 
         coinsLabel.setText("Coins: " + coins);
         diamondsLabel.setText("Diamonds: " + diamonds);
-
 
         coinsLabel.setFontScale(1.2f);
         diamondsLabel.setFontScale(1.2f);
@@ -256,8 +471,7 @@ public abstract class BaseScreen implements Screen {
     }
 
     @Override
-    public void render(float delta) {
-    }
+    public void render(float delta) {}
 
     @Override
     public void resize(int width, int height) {
@@ -270,19 +484,8 @@ public abstract class BaseScreen implements Screen {
         skin.dispose();
     }
 
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
+    @Override public void show() {}
+    @Override public void hide() {}
+    @Override public void pause() {}
+    @Override public void resume() {}
 }

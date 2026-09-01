@@ -7,14 +7,24 @@ public class SeedSlot {
 
     private final PlantDef plantDef;
     private float rechargeRemaining;
+    private boolean boosted;
 
     public SeedSlot(PlantDef plantDef) {
         this.plantDef = plantDef;
         this.rechargeRemaining = 0f;
+        this.boosted = false;
     }
 
     public PlantDef getPlantDef() {
         return plantDef;
+    }
+
+    public boolean isBoosted() {
+        return boosted;
+    }
+
+    public void setBoosted(boolean boosted) {
+        this.boosted = boosted;
     }
 
     public boolean isReady() {

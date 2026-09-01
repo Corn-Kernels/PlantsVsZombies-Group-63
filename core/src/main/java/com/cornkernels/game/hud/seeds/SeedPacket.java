@@ -21,10 +21,13 @@ public class SeedPacket extends WidgetGroup {
     public static final float ASPECT = 119f / 75f;
 
     private static final Color SELECTED_TINT = new Color(1f, 1f, 0.55f, 1f);
+    private static final Color PENDING_TINT = new Color(0.6f, 0.85f, 1f, 1f);
     private static final Color UNAVAILABLE_TINT = new Color(0.55f, 0.55f, 0.55f, 1f);
 
     private final SeedSlot seedSlot;
     private final Image background;
+    private final Drawable normalBackgroundDrawable;
+    private final Drawable boostedBackgroundDrawable;
     private final Image plant;
     private final Image priceTab;
     private final Label priceLabel;
@@ -33,15 +36,19 @@ public class SeedPacket extends WidgetGroup {
 
     private BooleanSupplier availableWhen = () -> true;
     private boolean selected;
+    private boolean pending;
 
     public SeedPacket(@NonNull SeedSlot seedSlot,
                       Drawable backgroundDrawable,
+                      Drawable boostedBackgroundDrawable,
                       TextureRegion plantRegion,
                       Drawable priceTabDrawable,
                       BitmapFont priceFont,
                       Texture whitePixel) {
         this.seedSlot = seedSlot;
         this.priceFont = priceFont;
+        this.normalBackgroundDrawable = backgroundDrawable;
+        this.boostedBackgroundDrawable = boostedBackgroundDrawable;
 
         this.background = new Image(backgroundDrawable);
         this.background.setScaling(Scaling.stretch);
@@ -78,6 +85,15 @@ public class SeedPacket extends WidgetGroup {
         this.selected = selected;
     }
 
+    /** Awaiting a second confirming click (or a Boost) before it actually moves into a seed slot. */
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
+
     public SeedSlot getSeedSlot() {
         return seedSlot;
     }
@@ -86,10 +102,13 @@ public class SeedPacket extends WidgetGroup {
     public void act(float delta) {
         super.act(delta);
         cooldownOverlay.setCooldownRatio(1f - seedSlot.getRechargeProgress());
+        background.setDrawable(seedSlot.isBoosted() ? boostedBackgroundDrawable : normalBackgroundDrawable);
 
         boolean available = seedSlot.isReady() && availableWhen.getAsBoolean();
         if (selected) {
             setColor(SELECTED_TINT);
+        } else if (pending) {
+            setColor(PENDING_TINT);
         } else if (available) {
             setColor(Color.WHITE);
         } else {

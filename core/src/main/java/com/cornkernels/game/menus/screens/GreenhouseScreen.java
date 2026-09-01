@@ -61,17 +61,17 @@ public class GreenhouseScreen extends BaseScreen {
     private void loadPotImages() {
         try {
             potEmptyTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse/pot_empty.png"));
-            System.out.println("✅ pot_empty.png loaded");
+            System.out.println("pot_empty.png loaded");
         } catch (Exception e) {
-            System.out.println("❌ pot_empty.png not found!");
+            System.out.println("pot_empty.png not found!");
             potEmptyTexture = null;
         }
 
         try {
             potLockedTexture = new Texture(Gdx.files.internal("IMAGES/greenhouse/pot_locked.png"));
-            System.out.println("✅ pot_locked.png loaded");
+            System.out.println("pot_locked.png loaded");
         } catch (Exception e) {
-            System.out.println("❌ pot_locked.png not found!");
+            System.out.println("pot_locked.png not found!");
             potLockedTexture = null;
         }
     }
@@ -250,7 +250,7 @@ public class GreenhouseScreen extends BaseScreen {
         card.setBackground(lockedDrawable);
         card.pad(3);
 
-        Label label = new Label("🔒", skin);
+        Label label = new Label("Locked", skin);
         label.setFontScale(2.5f);
         card.add(label).center().row();
 
@@ -290,7 +290,7 @@ public class GreenhouseScreen extends BaseScreen {
                 card.add(plantLabel).center().row();
             }
         } else if (!pot.isLocked() && pot.isEmpty()) {
-            Label emptyLabel = new Label("⬜", skin);
+            Label emptyLabel = new Label("Empty", skin);
             emptyLabel.setFontScale(2.5f);
             card.add(emptyLabel).center().row();
         }
@@ -298,7 +298,7 @@ public class GreenhouseScreen extends BaseScreen {
         // ===== وضعیت (زمان بر حسب ثانیه یا READY) =====
         if (!pot.isEmpty() && !pot.isLocked()) {
             if (pot.isReady()) {
-                Label readyLabel = new Label("✅ READY", skin);
+                Label readyLabel = new Label("READY", skin);
                 readyLabel.setFontScale(0.9f);
                 readyLabel.setColor(0, 1, 0, 1);
                 card.add(readyLabel).center().row();
@@ -321,7 +321,7 @@ public class GreenhouseScreen extends BaseScreen {
         // ===== جایزه =====
         if (pot.isReady()) {
             int reward = 5 + (int) (Math.random() * 15);
-            Label rewardLabel = new Label("💎" + reward, skin);
+            Label rewardLabel = new Label("+" + reward + " gems", skin);
             rewardLabel.setFontScale(0.9f);
             rewardLabel.setColor(1, 0.8f, 0, 1);
             card.add(rewardLabel).center().row();
@@ -344,12 +344,12 @@ public class GreenhouseScreen extends BaseScreen {
     }
 
     private String getShortStatus(GardenPot pot) {
-        if (pot.isLocked()) return "🔒";
-        if (pot.isEmpty()) return "⬜";
-        if (pot.isReady()) return "✅ READY";
+        if (pot.isLocked()) return "Locked";
+        if (pot.isEmpty()) return "Empty";
+        if (pot.isReady()) return "READY";
         long seconds = pot.getSecondsRemaining();
         if (seconds > 0) return seconds + "s left";
-        return "⏳ soon";
+        return "Soon";
     }
 
     private void selectPot(int row, int col) {
@@ -369,7 +369,7 @@ public class GreenhouseScreen extends BaseScreen {
 
     private void handlePlant() {
         if (selectedPot == null || selectedPot.isLocked() || !selectedPot.isEmpty()) {
-            showToast("❌ Select an empty, unlocked pot first!", 2f, true);
+            showToast("Select an empty, unlocked pot first!", 2f, true);
             return;
         }
         PlayerProgress progress = user.getProgress();
@@ -381,7 +381,7 @@ public class GreenhouseScreen extends BaseScreen {
             }
         }
         if (availablePlants.isEmpty()) {
-            showToast("❌ You don't have any plants to grow!", 2f, true);
+            showToast("You don't have any plants to grow!", 2f, true);
             return;
         }
         String plantType;
@@ -397,12 +397,12 @@ public class GreenhouseScreen extends BaseScreen {
         updateInfoDisplay();
 
         String displayName = plantType.length() > 8 ? plantType.substring(0, 8) + ".." : plantType;
-        showToast("✅ Planted " + displayName + " in (" + selectedRow + "," + selectedCol + ")", 2f, false);
+        showToast("Planted " + displayName + " in (" + selectedRow + "," + selectedCol + ")", 2f, false);
     }
 
     private void handleHarvest() {
         if (selectedPot == null || selectedPot.isLocked() || !selectedPot.isReady()) {
-            showToast("❌ Select a ready pot to harvest!", 2f, true);
+            showToast("Select a ready pot to harvest!", 2f, true);
             return;
         }
 
@@ -425,7 +425,7 @@ public class GreenhouseScreen extends BaseScreen {
                 progress.addNews(news);
             }
             int totalSeeds = progress.getPlantSeedCount(plantType);
-            showToast("🌱 +1 " + plantType + " seed packet! (Total: " + totalSeeds + ")", 2f, false);
+            showToast("+1 " + plantType + " seed packet! (Total: " + totalSeeds + ")", 2f, false);
         }
 
         progress.addCoins(coinsReward);
@@ -436,12 +436,12 @@ public class GreenhouseScreen extends BaseScreen {
         updatePotsDisplay();
         updateInfoDisplay();
 
-        showToast("✅ Harvested! +" + coinsReward + " coins" + (!plantType.equals("MARIGOLD") ? " + seed packet" : ""), 2f, false);
+        showToast("Harvested! +" + coinsReward + " coins" + (!plantType.equals("MARIGOLD") ? " + seed packet" : ""), 2f, false);
     }
 
     private void handleSpeedUp() {
         if (selectedPot == null || selectedPot.isLocked() || selectedPot.isEmpty() || selectedPot.isReady()) {
-            showToast("❌ Select a growing pot to speed up!", 2f, true);
+            showToast("Select a growing pot to speed up!", 2f, true);
             return;
         }
 
@@ -449,7 +449,7 @@ public class GreenhouseScreen extends BaseScreen {
 
         long seconds = selectedPot.getSecondsRemaining();
         if (seconds <= 0) {
-            showToast("❌ Plant is almost ready! Just wait a bit.", 2f, true);
+            showToast("Plant is almost ready! Just wait a bit.", 2f, true);
             return;
         }
 
@@ -458,7 +458,7 @@ public class GreenhouseScreen extends BaseScreen {
         if (diamondsNeeded < 1) diamondsNeeded = 1;
 
         if (progress.getDiamonds() < diamondsNeeded) {
-            showToast("❌ Not enough diamonds! Need " + diamondsNeeded + " 💎", 2f, true);
+            showToast("Not enough diamonds! Need " + diamondsNeeded, 2f, true);
             return;
         }
 
@@ -470,7 +470,7 @@ public class GreenhouseScreen extends BaseScreen {
         updatePotsDisplay();
         updateInfoDisplay();
 
-        showToast("✅ Growth accelerated! Plant is now ready. (Cost: " + diamondsNeeded + " 💎)", 2f, false);
+        showToast("Growth accelerated! Plant is now ready. (Cost: " + diamondsNeeded + ")", 2f, false);
     }
 
     private void handleBuyPot() {
@@ -481,12 +481,12 @@ public class GreenhouseScreen extends BaseScreen {
         int totalPots = garden.getTotalPotCount();
 
         if (unlockedPots >= totalPots) {
-            showToast("❌ All pots are already unlocked!", 2f, true);
+            showToast("All pots are already unlocked!", 2f, true);
             return;
         }
 
         if (progress.getCoins() < cost) {
-            showToast("❌ Not enough coins! Need " + cost + " coins.", 2f, true);
+            showToast("Not enough coins! Need " + cost + " coins.", 2f, true);
             return;
         }
 
@@ -498,7 +498,7 @@ public class GreenhouseScreen extends BaseScreen {
                 updateCurrencyDisplay();
                 updatePotsDisplay();
                 updateInfoDisplay();
-                showToast("✅ Pot unlocked successfully!", 2f, false);
+                showToast("Pot unlocked successfully!", 2f, false);
                 return;
             }
         }

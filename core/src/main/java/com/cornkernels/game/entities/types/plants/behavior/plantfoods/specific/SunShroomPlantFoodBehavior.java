@@ -9,6 +9,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantFoodBehavior;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class SunShroomPlantFoodBehavior implements PlantFoodBehavior {
 
@@ -21,7 +22,7 @@ public class SunShroomPlantFoodBehavior implements PlantFoodBehavior {
     }
 
     @Override
-    public boolean plantFood(PlantInstance plant, Field field) {
+    public boolean plantFood(@NonNull PlantInstance plant, Field field) {
         PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
         if (pf == null) return false;
 

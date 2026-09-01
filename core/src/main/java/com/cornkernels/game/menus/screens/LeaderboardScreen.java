@@ -103,7 +103,7 @@ public class LeaderboardScreen extends BaseScreen {
 
         for (LeaderboardEntry entry : entries) {
             boolean isCurrentUser = entry.getUsername().equals(currentUser.getUsername());
-            String color = isCurrentUser ? "⭐ " : "";
+            String color = isCurrentUser ? "> " : "";
 
             leaderboardTable.add(new Label(color + entry.getUsername(), skin)).width(120).padBottom(3);
             leaderboardTable.add(new Label(entry.getLastLevel(), skin)).width(120).padBottom(3);

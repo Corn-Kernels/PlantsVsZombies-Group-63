@@ -5,7 +5,8 @@ import com.cornkernels.engine.renderer.camera.GameplayCamera;
 import com.cornkernels.engine.utility.InputSnapshot;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
-import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
+import com.cornkernels.game.entities.components.plant_specific.PlantFoodComponent;
+import com.cornkernels.game.entities.types.plants.PlantCategory;
 import com.cornkernels.game.entities.types.plants.PlantDef;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehaviors;
@@ -55,8 +56,9 @@ public class PlantingController {
         return currentSun >= sunCost;
     }
 
-    public void beginPlantPlacement(int plantTypeId, int sunCost, CursorAttachment thumbnail,
+    public void beginPlantPlacement(@NonNull SeedSlot slot, CursorAttachment thumbnail,
                                     HighlightAnimationSet highlightSet, Runnable onPlanted) {
+        int sunCost = slot.getPlantDef().getCost();
         toolState.active = true;
         toolState.attachment = thumbnail;
         toolState.highlightSet = highlightSet;
@@ -66,7 +68,7 @@ public class PlantingController {
         };
         toolState.onConfirm = gridPosition -> {
             if (field.getPlantAt(gridPosition.lane(), gridPosition.column()) == null) {
-                PlantDef plantDef = PlantDef.getPlantTypeOfId(String.valueOf(plantTypeId));
+                PlantDef plantDef = slot.getPlantDef();
                 if (plantDef != null) {
                     PlantInstance plant = new PlantInstance(plantDef, gridPosition);
                     applyIdleAnimation(plant, plantDef);
@@ -74,6 +76,19 @@ public class PlantingController {
                     field.addPlant(plant);
                     currentSun -= sunCost;
                     toolState.active = false;
+
+                    // Boost is a one-time-use perk: the first plant placed from a boosted slot
+                    // gets Plant Food applied immediately for free, then the boost is spent (its
+                    // seed packet reverts to its default texture on its own, since that's driven
+                    // live off SeedSlot.isBoosted()).
+                    if (slot.isBoosted()) {
+                        PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
+                        if (pf != null) {
+                            pf.activate();
+                        }
+                        slot.setBoosted(false);
+                    }
+
                     if (onPlanted != null) onPlanted.run();
                 } else {
                     throw new NullPointerException("plantDef is null.");
@@ -96,7 +111,7 @@ public class PlantingController {
     }
 
     private void wireDamageStageAnimation(@NonNull PlantInstance plant, @NonNull PlantDef plantDef) {
-        if (plant.get(PlantAttackComponent.class) != null) return;
+        if (plantDef.getCategory() != PlantCategory.WALL_NUT) return;
         HealthComponent health = plant.get(HealthComponent.class);
         if (health == null) return;
 
@@ -132,6 +147,37 @@ public class PlantingController {
             };
         }
 
+    }
+
+    public void togglePlantFoodTool(CursorAttachment leafIcon, Runnable onUsed) {
+        if (toolState.active) {
+            toolState.active = false;
+            toolState.attachment = null;
+            toolState.highlightSet = null;
+            toolState.eligibility = null;
+            toolState.onConfirm = null;
+        } else {
+            toolState.active = true;
+            toolState.attachment = leafIcon;
+            toolState.highlightSet = null;
+            toolState.eligibility = cell -> {
+                PlantInstance plant = field.getPlantAt(cell.getPosition().lane(), cell.getPosition().column());
+                if (plant == null) return false;
+                PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
+                return pf != null && !pf.isActive();
+            };
+            toolState.onConfirm = gridPosition -> {
+                PlantInstance plant = field.getPlantAt(gridPosition.lane(), gridPosition.column());
+                if (plant != null) {
+                    PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
+                    if (pf != null && !pf.isActive()) {
+                        pf.activate();
+                        if (onUsed != null) onUsed.run();
+                    }
+                }
+                toolState.active = false;
+            };
+        }
     }
 
     public void cancelActiveTool() {
