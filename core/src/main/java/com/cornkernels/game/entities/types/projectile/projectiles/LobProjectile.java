@@ -4,6 +4,7 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
+import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
@@ -43,9 +44,7 @@ public class LobProjectile extends AbstractProjectile {
 
     @Override
     public boolean hit(@NonNull Entity target, Field field) {
-        // Calculate only the X-axis distance[cite: 18, 19]
-        double xDistance = Math.abs(target.get(PositionComponent.class).position.getX() - this.get(PositionComponent.class).position.getX());
-        boolean isHit = xDistance <= HIT_DISTANCE;
+        boolean isHit = this.get(PositionComponent.class).position.getX()>target.get(PositionComponent.class).position.getX()-0.3f;
 
         if (this.target != null && target == this.target && isHit) {
 

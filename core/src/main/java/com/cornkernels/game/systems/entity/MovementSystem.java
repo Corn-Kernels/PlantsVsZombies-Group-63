@@ -187,6 +187,10 @@ public class MovementSystem extends EntitySystem {
                 continue;
             }
 
+            if(e instanceof LobProjectile){
+                e.get(VelocityComponent.class).velocityPerTick.set((0.5f*(((LobProjectile) e).target.get(PositionComponent.class).position.getX()-((LobProjectile) e).startPosition.getX()-0.3f)/9f),0);
+            }
+
             // 4. Standard Movement Logic
             float vx = velComp.velocityPerTick.getX();
             float vy = velComp.velocityPerTick.getY();
