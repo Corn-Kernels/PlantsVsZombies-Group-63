@@ -39,10 +39,8 @@ public class SunShroomBehavior implements PlantAttackBehavior {
         // --- Growth Logic ---
         if (shroomState.currentStage == 1 && shroomState.ticksAlive >= ticksToStage2) {
             shroomState.currentStage = 2;
-            // TODO: Update your PamAnimationComponent here to show the medium sprite
         } else if (shroomState.currentStage == 2 && shroomState.ticksAlive >= ticksToStage3) {
             shroomState.currentStage = 3;
-            // TODO: Update your PamAnimationComponent here to show the large sprite
         }
 
         // --- Sun Production Logic ---

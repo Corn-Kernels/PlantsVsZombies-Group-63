@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceCompo
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 public class AreaOfDamage extends AbstractProjectile {
 
@@ -29,7 +30,7 @@ public class AreaOfDamage extends AbstractProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         this.used = true;
 
         if (super.hit(target, field) && target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position) < radius) {

@@ -10,6 +10,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 public class AreaMeleeBehavior implements PlantAttackBehavior {
     private final int[] damages;
@@ -50,9 +51,9 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, Field field) {
         int stage = getStage(self);
-        int index = stage - 1; // Adjust the 1-based stage to a 0-based array index
+        int index = stage - 1;
 
         float currentRange = ranges[index];
 
@@ -88,7 +89,6 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
             float hpPercent = (float) hc.currentHealth / hc.maxHealth;
 
             int newStage = 1;
-            // If it drops below threshold[0], it becomes stage 2. If it drops below threshold[1], it becomes stage 3.
             for (int i = 0; i < hpThresholds.length; i++) {
                 if (hpPercent <= hpThresholds[i]) {
                     newStage = i + 2;
@@ -97,7 +97,6 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
 
             if (newStage != growth.stage) {
                 growth.stage = newStage;
-                // TODO: Update your PamAnimationComponent here to show Kiwibeast getting bigger!
             }
         }
         return growth.stage;

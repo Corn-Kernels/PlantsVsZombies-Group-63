@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.components.plant_specific.OctoedComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class OctopusProjectile extends AbstractZombieProjectile {
 
@@ -22,7 +23,7 @@ public class OctopusProjectile extends AbstractZombieProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         // Only evaluate a hit if the CombatSystem is checking against our specific target plant
         if (target != targetPlant) return false;
 

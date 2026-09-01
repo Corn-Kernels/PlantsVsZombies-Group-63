@@ -6,7 +6,6 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantFoodComponent;
-import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.plants.behavior.PlantFoodBehavior;
@@ -16,6 +15,7 @@ import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 public class LobberPlantFoodBehavior implements PlantFoodBehavior {
 
     @Override
-    public boolean plantFood(PlantInstance plant, Field field) {
+    public boolean plantFood(@NonNull PlantInstance plant, Field field) {
         PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
         if (pf == null) return false;
 
@@ -37,8 +37,7 @@ public class LobberPlantFoodBehavior implements PlantFoodBehavior {
                 if (attack != null) {
                     if (attack.behavior instanceof LobShotBehavior lobBehavior) {
                         projectileToClone = lobBehavior.getProjectile();
-                    }
-                    else if (attack.behavior instanceof KernelPultBehavior kernelPultBehavior){
+                    } else if (attack.behavior instanceof KernelPultBehavior kernelPultBehavior) {
                         projectileToClone = kernelPultBehavior.getSpecialProjectile();
                     }
                     // Add an 'else if' here for KernelPultBehavior if it doesn't extend LobShotBehavior
@@ -77,7 +76,7 @@ public class LobberPlantFoodBehavior implements PlantFoodBehavior {
         return true;
     }
 
-    private List<Entity> getValidTargets(Field field) {
+    private @NonNull List<Entity> getValidTargets(@NonNull Field field) {
         List<Entity> targets = new ArrayList<>();
 
         for (Entity e : field.getEntities()) {

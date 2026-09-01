@@ -10,6 +10,7 @@ import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -44,7 +45,6 @@ public class ChomperBehavior implements PlantAttackBehavior {
             state.digestTimerTicks--;
             if (state.digestTimerTicks <= 0) {
                 state.isDigesting = false;
-                // TODO: Update your PamAnimationComponent here to show the IDLE state again
             }
             return; // Can't attack while full
         }
@@ -80,21 +80,17 @@ public class ChomperBehavior implements PlantAttackBehavior {
                 // Chomp heavy target (Gargantuars, Mecha-Football, etc.)
                 CombatSystem.applyDamage(target, chompDamage, false);
                 state.biteCooldownTicks = this.biteCooldownTicks;
-                // TODO: Trigger bite animation
             } else {
                 // Swallow normal target
                 CombatSystem.applyDamage(target, 99999, false); // Massive damage to ensure death and process armor properly
                 state.isDigesting = true;
                 state.digestTimerTicks = this.digestTicks;
-                // TODO: Trigger eating/digesting animation
             }
         }
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
-        // Always return true so the engine continuously calls execute().
-        // This ensures the digest and bite timers tick down even when no zombies are around.
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         return true;
     }
 }

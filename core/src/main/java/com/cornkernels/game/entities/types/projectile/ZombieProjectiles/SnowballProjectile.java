@@ -5,6 +5,7 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class SnowballProjectile extends AbstractZombieProjectile {
 
@@ -14,7 +15,7 @@ public class SnowballProjectile extends AbstractZombieProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         if (super.hit(target, field)) {
             PlantFreezeComponent freeze = target.get(PlantFreezeComponent.class);
             if (freeze == null) {

@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class AbstractZombieProjectile extends Entity {
 
@@ -25,7 +26,7 @@ public class AbstractZombieProjectile extends Entity {
         return null;
     }
 
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         double distance = Math.abs(target.get(PositionComponent.class).position.distance(this.get(PositionComponent.class).position));
 
         return (target instanceof PlantInstance) && distance <= HIT_DISTANCE;

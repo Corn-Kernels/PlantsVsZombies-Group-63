@@ -14,7 +14,7 @@ public class RapidFirePlantFoodBehavior implements PlantFoodBehavior {
         PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
         if (pf == null) return false;
 
-        if (pf.timerTicks > 0&&pf.timerTicks%2==0) {
+        if (pf.timerTicks > 0 && pf.timerTicks % 2 == 0) {
             // Retrieve the attack component to trigger the normal attack logic
             PlantAttackComponent attack = plant.get(PlantAttackComponent.class);
             if (attack != null) {

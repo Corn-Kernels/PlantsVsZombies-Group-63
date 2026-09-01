@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 public class JugglerReflectedProjectile extends AbstractZombieProjectile {
 
@@ -23,7 +24,7 @@ public class JugglerReflectedProjectile extends AbstractZombieProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         if (super.hit(target, field)) {
             DamageComponent dmg = this.get(DamageComponent.class);
             if (dmg != null) {

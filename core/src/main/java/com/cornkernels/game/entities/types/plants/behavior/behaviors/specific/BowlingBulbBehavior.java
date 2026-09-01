@@ -47,7 +47,7 @@ public class BowlingBulbBehavior implements PlantAttackBehavior {
         }
 
         // 3. Fire logic
-        if (state.bulbsReady > 0 && hasTarget(self, field)) {
+        if (state.bulbsReady > 0 && hasRealTarget(self, field)) {
             Vec2d origin = self.get(PositionComponent.class).position;
             Vec2d spawnPos = new Vec2d((float) (origin.getX() + 0.5), origin.getY());
 
@@ -66,6 +66,10 @@ public class BowlingBulbBehavior implements PlantAttackBehavior {
 
     @Override
     public boolean hasTarget(Entity self, Field field) {
+        return true;
+    }
+
+    private boolean hasRealTarget(Entity self, Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
         int lane = GridPosition.fromContinuous(origin).lane();
 

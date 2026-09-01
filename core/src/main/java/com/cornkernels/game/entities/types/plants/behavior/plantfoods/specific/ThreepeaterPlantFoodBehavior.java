@@ -22,7 +22,7 @@ public class ThreepeaterPlantFoodBehavior implements PlantFoodBehavior {
         PlantFoodComponent pf = plant.get(PlantFoodComponent.class);
         if (pf == null) return false;
 
-        if (pf.timerTicks > 0&&pf.timerTicks%2==0) {
+        if (pf.timerTicks > 0 && pf.timerTicks % 2 == 0) {
             Vec2d origin = plant.get(PositionComponent.class).position;
             Vec2d spawnPos = new Vec2d((float) (origin.getX() + 0.5), origin.getY());
 

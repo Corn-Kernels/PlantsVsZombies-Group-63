@@ -19,14 +19,6 @@ public class CitronBehavior implements PlantAttackBehavior {
         Vec2d origin = self.get(PositionComponent.class).position;
         Vec2d spawnPos = new Vec2d((float) (origin.getX() + 0.5), origin.getY());
 
-        // Fires its massive damage projectile when explicitly called by an external system
         field.addProjectile(projectile.clone(spawnPos));
-    }
-
-    @Override
-    public boolean hasTarget(Entity self, Field field) {
-        // Return false so the standard PlantAttackComponent auto-cycle ignores it.
-        // Your external ChargeComponent/System will be responsible for calling execute().
-        return false;
     }
 }

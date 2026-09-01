@@ -1,5 +1,7 @@
 package com.cornkernels.game.menus.model;
 
+import org.jspecify.annotations.NonNull;
+
 public class Plant {
     private int id;
     private String name;
@@ -16,7 +18,8 @@ public class Plant {
     private float actionInterval;
     private float recharge;
     private String imagePath;
-    private int level;
+    //private int level;
+    private int seedPackets;
     private int seedPacketsNeeded;
     private boolean isUnlocked;
     private String description;
@@ -44,7 +47,8 @@ public class Plant {
         this.actionInterval = actionInterval;
         this.recharge = recharge;
         this.imagePath = imagePath;
-        this.level = 1;
+        //this.level = 1;
+        this.seedPackets = 0;
         this.seedPacketsNeeded = 10;
         this.isUnlocked = false;
         this.description = baseAbility;
@@ -114,23 +118,20 @@ public class Plant {
         return imagePath;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    // ===== Setters =====
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public int getSeedPacketsNeeded() {
-        return seedPacketsNeeded + (level - 1) * 2;
+    //public int getLevel() { return level; }
+    public int getSeedPackets() {
+        return seedPackets;
     }
 
     public boolean isUnlocked() {
         return isUnlocked;
     }
 
+    // ===== Setters =====
+    //public void setLevel(int level) { this.level = level; }
+    //public void setSeedPackets(int seedPackets) { this.seedPackets = seedPackets; }
+    //public void setUnlocked(boolean unlocked) { isUnlocked = unlocked; }
+    //public void addSeedPacket() { this.seedPackets++; }
     public void setUnlocked(boolean unlocked) {
         isUnlocked = unlocked;
     }
@@ -167,21 +168,46 @@ public class Plant {
         this.maxLevel = maxLevel;
     }
 
-    // ===== متدهای ارتقا =====
-    public boolean canUpgrade(int ownedSeedPackets) {
-        return isUnlocked && level < maxLevel && ownedSeedPackets >= getSeedPacketsNeeded();
+    public int getLevel(@NonNull PlayerProgress progress) {
+        return progress.getPlantLevel(this.name);
     }
 
-    public int getUpgradeCost() {
-        return 50 + (level * 10);
+    public void setLevel(@NonNull PlayerProgress progress, int level) {
+        progress.setPlantLevel(this.name, level);
     }
 
-    public void performUpgrade(int ownedSeedPackets) {
-        if (canUpgrade(ownedSeedPackets)) {
-            level++;
-            // افزایش قدرت
-            baseHp += 50;
-            damage += 5;
+    public int getSeedPacketsNeeded(PlayerProgress progress) {
+        int currentLevel = getLevel(progress);
+        return currentLevel + 1;
+    }
+
+    public int getUpgradeCost(PlayerProgress progress) {
+        int currentLevel = getLevel(progress);
+        return 50 + (currentLevel * 10);
+    }
+
+    public boolean canUpgrade(@NonNull PlayerProgress progress) {
+        int currentLevel = getLevel(progress);
+        return isUnlocked && currentLevel < maxLevel;
+    }
+
+    public void performUpgrade(PlayerProgress progress) {
+        if (canUpgrade(progress)) {
+            int needed = getSeedPacketsNeeded(progress);
+            int currentLevel = getLevel(progress);
+
+            // ===== کم کردن بذر =====
+            progress.removePlantSeed(this.name, needed);
+
+            // ===== افزایش سطح =====
+            setLevel(progress, currentLevel + 1);
+
+            // ===== افزایش قدرت (بر اساس سطح جدید) =====
+            int newLevel = getLevel(progress);
+            baseHp = 300 + (newLevel - 1) * 50;
+            damage = 20 + (newLevel - 1) * 5;
+            cost = Math.max(25, 50 - (newLevel - 1) * 5);
+            recharge = Math.max(1.0f, 5.0f - (newLevel - 1) * 0.5f);
         }
     }
 }

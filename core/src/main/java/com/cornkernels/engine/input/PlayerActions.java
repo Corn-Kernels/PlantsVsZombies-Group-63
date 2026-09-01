@@ -2,6 +2,7 @@ package com.cornkernels.engine.input;
 
 import com.badlogic.gdx.Input;
 import com.cornkernels.engine.settings.InputSettings;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class PlayerActions {
         }
     }
 
-    public void exportBinding(InputSettings settings) {
+    public void exportBinding(@NonNull InputSettings settings) {
         settings.keyBindings.clear();
         for (GameAction action : all) {
             settings.keyBindings.put(action.getName(), action.getKeyCode());

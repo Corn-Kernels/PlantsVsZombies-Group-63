@@ -35,7 +35,6 @@ public class TrapExplosiveBehavior implements PlantAttackBehavior {
             state.armTimeElapsed += (1.0f / 20.0f);
             if (state.armTimeElapsed >= armTimeSeconds) {
                 state.isArmed = true;
-                // TODO: Update PamAnimationComponent to show it popping up fully armed!
             }
         }
 

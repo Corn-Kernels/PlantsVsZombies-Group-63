@@ -13,7 +13,6 @@ public enum ArmorType {
     TALL_PLANT_ARMOR(12000, false);
 
 
-
     private final int armorDamage;
     private final boolean isMetallic;
 

@@ -73,6 +73,7 @@ public class GameManager extends Game {
 
     @Override
     public void dispose() {
+        batch.dispose();
     }
 
     public User getCurrentUser() {

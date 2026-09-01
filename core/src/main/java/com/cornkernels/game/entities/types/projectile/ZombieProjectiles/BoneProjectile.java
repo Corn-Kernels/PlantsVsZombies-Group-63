@@ -7,13 +7,14 @@ import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 public class BoneProjectile extends AbstractZombieProjectile {
 
     private final GridPosition targetTile;
     private final double targetX;
 
-    public BoneProjectile(Vec2d startPosition, GridPosition targetTile) {
+    public BoneProjectile(Vec2d startPosition, @NonNull GridPosition targetTile) {
         // Moves left at 2.0 speed, 0 damage (it just spawns a grave)
         super(0, new Vec2d(-2.0f, 0), startPosition);
         this.targetTile = targetTile;
@@ -21,7 +22,7 @@ public class BoneProjectile extends AbstractZombieProjectile {
     }
 
     @Override
-    public boolean hit(Entity target, Field field) {
+    public boolean hit(@NonNull Entity target, Field field) {
         Vec2d currentPos = get(PositionComponent.class).position;
 
         // Since it travels left, it hits when its X is less than or equal to the target X

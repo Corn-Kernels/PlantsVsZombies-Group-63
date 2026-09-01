@@ -5,6 +5,7 @@ public class ProspectorComponent {
     public int tickCounter = 0;
     public boolean dynamiteDefused = false;
     public Phase phase = Phase.PRE_JUMP;
+
     public enum Phase {
         PRE_JUMP,
         JUMPING,

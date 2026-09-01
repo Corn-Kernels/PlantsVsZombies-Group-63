@@ -1,7 +1,7 @@
 package com.cornkernels.game.entities.types.plants.behavior.plantfoods;
 
+import com.cornkernels.game.entities.components.ArmorComponent;
 import com.cornkernels.game.entities.components.HealthComponent;
-import com.cornkernels.game.entities.components.ArmorComponent; // Adjust import to match your generic component
 import com.cornkernels.game.entities.components.plant_specific.PlantFoodComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.plants.behavior.PlantFoodBehavior;

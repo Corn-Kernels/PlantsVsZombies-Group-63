@@ -13,6 +13,7 @@ import com.cornkernels.game.entities.types.projectile.projectiles.specific.Hypno
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.TruePeaProjectile;
 import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class PlantAttackBehaviors {
         }
 
         @Override
-        public boolean hasTarget(Entity self, Field field) {
+        public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
             return false;
         }
     };
@@ -420,7 +421,7 @@ public class PlantAttackBehaviors {
     /**
      * Helper to parse and register Kernel-pult levels, supporting random butter lob calculations.
      */
-    private static void registerKernelPult(PlantDef def, int defaultNormal, int defaultButter, double butterChance) {
+    private static void registerKernelPult(@NonNull PlantDef def, int defaultNormal, int defaultButter, double butterChance) {
         int normalDmg = defaultNormal;
         int butterDmg = defaultButter;
 
@@ -456,7 +457,7 @@ public class PlantAttackBehaviors {
     /**
      * Extracts numerical damage safely from PlantDef strings like "Insta-kill", "20", or "40/120".
      */
-    private static int parseDamage(PlantDef def, int fallback) {
+    private static int parseDamage(@NonNull PlantDef def, int fallback) {
         String dmgStr = def.getDamage();
         if (dmgStr == null || dmgStr.isEmpty() || dmgStr.equalsIgnoreCase("Insta-kill")) {
             return fallback;
@@ -472,7 +473,7 @@ public class PlantAttackBehaviors {
     /**
      * Extracts numeric shot counts (multipliers) from strings like "20x2" or "30x4".
      */
-    private static int parseShotCount(PlantDef def, int fallback) {
+    private static int parseShotCount(@NonNull PlantDef def, int fallback) {
         String dmgStr = def.getDamage();
         if (dmgStr != null && dmgStr.contains("x")) {
             String[] parts = dmgStr.split("x");
