@@ -1,4 +1,3 @@
-// OctoZombieBehavior.java
 package com.cornkernels.game.entities.types.zombies.behavior.behaviors;
 
 import com.cornkernels.engine.utility.math.Vec2d;
@@ -63,19 +62,47 @@ public class OctoZombieBehavior implements ZombieBehavior {
         comp.tickCounter++;
 
         if (comp.tickCounter >= cooldownTicks && state.state == ZombieStateComponent.State.WALKING) {
-            List<PlantInstance> validTargets = new ArrayList<>();
-            for (PlantInstance plant : field.getActivePlants()) {
-                if (!plant.has(OctoedComponent.class)) {
-                    validTargets.add(plant);
+            List<PlantInstance> rightMostPlants = new ArrayList<>();
+            List<PlantInstance> secondRightPlants = new ArrayList<>();
+
+            // Apply the exact same dynamic frontline scanning logic
+            for (int col = field.getTotalColumns() - 1; col >= 0; col--) {
+                List<PlantInstance> validInCol = getValidPlantsInColumn(field, col);
+                if (!validInCol.isEmpty()) {
+                    if (rightMostPlants.isEmpty()) {
+                        rightMostPlants = validInCol;
+                    } else if (secondRightPlants.isEmpty()) {
+                        secondRightPlants = validInCol;
+                        break;
+                    }
                 }
             }
 
-            if (!validTargets.isEmpty()) {
-                comp.currentTargetPlant = validTargets.get(rng.nextInt(validTargets.size()));
+            List<PlantInstance> chosenList = null;
+
+            if (!rightMostPlants.isEmpty() && !secondRightPlants.isEmpty()) {
+                chosenList = rng.nextDouble() < 0.75 ? rightMostPlants : secondRightPlants;
+            } else if (!rightMostPlants.isEmpty()) {
+                chosenList = rightMostPlants;
+            }
+
+            if (chosenList != null && !chosenList.isEmpty()) {
+                comp.currentTargetPlant = chosenList.get(rng.nextInt(chosenList.size()));
                 state.changeState(ZombieStateComponent.State.ACTION);
                 vel.velocityPerTick = new Vec2d(0, 0);
                 comp.tickCounter = 0;
             }
         }
+    }
+
+    private List<PlantInstance> getValidPlantsInColumn(Field field, int col) {
+        List<PlantInstance> valid = new ArrayList<>();
+        for (int lane = 0; lane < field.getTotalLanes(); lane++) {
+            PlantInstance plant = field.getPlantAt(lane, col);
+            if (plant != null && !plant.has(OctoedComponent.class)) {
+                valid.add(plant);
+            }
+        }
+        return valid;
     }
 }

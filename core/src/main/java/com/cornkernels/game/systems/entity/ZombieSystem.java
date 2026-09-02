@@ -1,10 +1,7 @@
 package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.game.entities.Entity;
-import com.cornkernels.game.entities.components.HealthComponent;
-import com.cornkernels.game.entities.components.PamAnimationComponent;
-import com.cornkernels.game.entities.components.PositionComponent;
-import com.cornkernels.game.entities.components.VelocityComponent;
+import com.cornkernels.game.entities.components.*;
 import com.cornkernels.game.entities.components.plant_specific.OctoedComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantDefComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantFreezeComponent;
@@ -20,6 +17,8 @@ import com.cornkernels.game.entities.components.zombie_specific.specific_specifi
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+import com.cornkernels.game.entities.types.zombies.ZombieLimbs;
+import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
 import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.utility.ZombieAnimationLocator;
 import org.jspecify.annotations.NonNull;
@@ -30,7 +29,7 @@ import static com.cornkernels.game.systems.entity.WaveSystem.OFFSCREEN_SPAWN_MAR
 public class ZombieSystem extends EntitySystem {
 
     private static final long BITE_INTERVAL_TICKS = 30;
-    private final PamPlayer pamPlayer;
+    private static PamPlayer pamPlayer;
 
     public ZombieSystem(PamPlayer pamPlayer) {
         this.pamPlayer = pamPlayer;
@@ -54,6 +53,32 @@ public class ZombieSystem extends EntitySystem {
             }
 
             state.stateTicks++;
+
+            // Force walking animation on tick 1
+            if (state.stateTicks == 1 && state.state == ZombieStateComponent.State.WALKING) {
+                applyClip(zombie);
+            }
+
+            // Newspaper break check
+            ArmorComponent armor = zombie.get(ArmorComponent.class);
+            if (armor != null && armor.armorType == ArmorType.NEWSPAPER) {
+                if (armor.isDestroyed() && !zombie.has(EnragedComponent.class)) {
+                    EnragedComponent enraged = new EnragedComponent();
+                    enraged.damageMultiplier = 2;
+                    enraged.speedMultiplier = 2;
+                    zombie.add(enraged);
+                    applyClip(zombie);
+                }
+            }
+
+            // Arm loss check
+            HealthComponent hc = zombie.get(HealthComponent.class);
+            if (hc != null && hc.currentHealth <= hc.maxHealth / 2) {
+                ZombieLimbs arm = ZombieAnimationLocator.applyArmLossVisibility(zombie, pamPlayer);
+                if (arm != null) {
+                    field.addEntity(arm);
+                }
+            }
 
             ZombieBehaviorComponent behaviorComp = zombie.get(ZombieBehaviorComponent.class);
             if (behaviorComp != null) {
@@ -116,7 +141,7 @@ public class ZombieSystem extends EntitySystem {
                 if (state.state == ZombieStateComponent.State.EATING) {
                     state.changeState(ZombieStateComponent.State.WALKING);
                     state.targetEntity = null;
-                    applyClip(zombie, "walk");
+                    applyClip(zombie);
                 }
                 continue;
             }
@@ -125,7 +150,7 @@ public class ZombieSystem extends EntitySystem {
                 state.changeState(ZombieStateComponent.State.EATING);
                 state.targetEntity = target;
                 state.ticksUntilNextBite = BITE_INTERVAL_TICKS;
-                applyClip(zombie, "eat");
+                applyClip(zombie);
             }
 
             state.ticksUntilNextBite--;
@@ -152,7 +177,6 @@ public class ZombieSystem extends EntitySystem {
                             IceComponent ice = zombie.get(IceComponent.class);
                             if (ice != null) {
                                 ice.freezeLevel = 2; // Frozen solid
-                                // Base freeze: ~10s (200 ticks). Level 3+ gets +2s (40 ticks).
                                 ice.applyFreeze((level >= 3) ? 240 : 200,(level >= 3) ? 240 : 200);
                             }
                             instantConsume = true;
@@ -165,16 +189,16 @@ public class ZombieSystem extends EntitySystem {
                                 vel.velocityPerTick.setX(Math.abs(vel.velocityPerTick.getX())); // Force walk right
                             }
 
-                            HealthComponent hc = zombie.get(HealthComponent.class);
-                            if (hc != null) {
+                            HealthComponent healthComp = zombie.get(HealthComponent.class);
+                            if (healthComp != null) {
                                 if (level == 3) {
-                                    hc.currentHealth *= 2;
+                                    healthComp.currentHealth *= 2;
                                 } else if (level >= 4) {
-                                    hc.currentHealth *= 2;
-                                    EnragedComponent rage =new EnragedComponent();
+                                    healthComp.currentHealth *= 2;
+                                    EnragedComponent rage = new EnragedComponent();
                                     zombie.add(rage);
-                                    rage.damageMultiplier=2;
-                                    rage.speedMultiplier=1;
+                                    rage.damageMultiplier = 2;
+                                    rage.speedMultiplier = 1;
                                 }
                             }
                             instantConsume = true;
@@ -189,7 +213,7 @@ public class ZombieSystem extends EntitySystem {
                         plantTarget.markForRemoval();
                         state.changeState(ZombieStateComponent.State.WALKING);
                         state.targetEntity = null;
-                        applyClip(zombie, "walk");
+                        applyClip(zombie);
                         continue;
                     }
                 }
@@ -200,9 +224,29 @@ public class ZombieSystem extends EntitySystem {
         }
     }
 
-    private void applyClip(@NonNull ZombieInstance zombie, String clipName) {
+    public static void applyClip(@NonNull ZombieInstance zombie) {
+        ZombieStateComponent state = zombie.get(ZombieStateComponent.class);
+        if (state == null) return;
+
+        String baseClip;
+        switch (state.state) {
+            case EATING -> baseClip = "eat";
+            case WALKING -> baseClip = "walk";
+            default -> {
+                return;
+            }
+        }
+
+        ArmorComponent armor = zombie.get(ArmorComponent.class);
+        boolean hasNewspaper = armor != null
+            && armor.armorType == ArmorType.NEWSPAPER
+            && !armor.isDestroyed()
+            && !zombie.has(EnragedComponent.class);
+
+        String resolvedClipName = hasNewspaper ? baseClip + "_newspaper" : baseClip;
+
         ZombieDef def = zombie.get(ZombieDefComponent.class).def();
-        ZombieAnimationLocator.applyClip(pamPlayer, zombie.get(PamAnimationComponent.class), def, clipName);
+        ZombieAnimationLocator.applyClip(pamPlayer, zombie.get(PamAnimationComponent.class), def, resolvedClipName);
     }
 
     private void updateDying(@NonNull ZombieInstance zombie, float deltaTick) {
@@ -217,6 +261,11 @@ public class ZombieSystem extends EntitySystem {
             ZombieDef def = zombie.get(ZombieDefComponent.class).def();
             death.deathClipDuration = ZombieAnimationLocator.applyDeathClip(
                 pamPlayer, zombie.get(PamAnimationComponent.class), def);
+
+            // Spawn the head particle
+            PositionComponent pos = zombie.get(PositionComponent.class);
+            ZombieLimbs head = new ZombieLimbs(ZombieLimbs.LimbType.HEAD, pos.position, pos.position.getY(), def, pamPlayer);
+            field.addEntity(head);
         }
 
         death.elapsed += deltaTick;

@@ -2,6 +2,7 @@ package com.cornkernels.game.entities.types.obstacles;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.HealthComponent;
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -16,6 +17,7 @@ public class Glacier extends PushableObstacle {
     public Glacier(Vec2d position, ZombieDef containedZombie) {
         super(position, 600);
         this.containedZombie = containedZombie;
+        add(new PamAnimationComponent());
     }
 
     @Override
@@ -28,7 +30,6 @@ public class Glacier extends PushableObstacle {
             Vec2d currentPos = this.get(PositionComponent.class).position;
             GridPosition gridPos = GridPosition.fromContinuous(currentPos);
 
-            // Spawn the freed zombie exactly where the glacier broke
             field.addZombie(new ZombieInstance(containedZombie, currentPos));
             this.markForRemoval();
         }

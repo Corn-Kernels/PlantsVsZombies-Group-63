@@ -2,10 +2,12 @@ package com.cornkernels.game.entities.types.zombies.behavior.behaviors;
 
 import com.cornkernels.game.entities.components.ArmorComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieBehaviorComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.specific_specific.EnragedComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehavior;
 import com.cornkernels.game.map.Field;
+import com.cornkernels.game.systems.entity.ZombieSystem;
 
 public class NewspaperBehavior implements ZombieBehavior {
 
@@ -29,6 +31,8 @@ public class NewspaperBehavior implements ZombieBehavior {
 
             // 3. Destroy this behavior component so this update loop ceases to run[cite: 8]
             zombie.removeAll(ZombieBehaviorComponent.class);
+
+            ZombieSystem.applyClip(zombie);
         }
     }
 }

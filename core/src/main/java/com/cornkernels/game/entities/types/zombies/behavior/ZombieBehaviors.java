@@ -16,7 +16,7 @@ public class ZombieBehaviors {
         // King Zombie: Promotes a peasant every 3.5 seconds
         register(ZombieDef.DARK_KING, new KingBehavior(3.5f));
         // Cooldown 7s, Windup 1s, Recovery 0.5s
-        register(ZombieDef.TOMB_RAISER, new TombRaiserBehavior(7.0f, 1.0f, 0.5f));
+        register(ZombieDef.TOMB_RAISER, new TombRaiserBehavior(30.0f, 1.0f, 0.5f));
         // Dodo: Walks for 12 seconds, then flies over plants for 12 seconds at half speed
         register(ZombieDef.ICE_AGE_DODO, new DodoBehavior(12.0f, 12.0f, 0.5f));
         // Hunter Zombie: Throws a snowball every 6 seconds
@@ -38,7 +38,7 @@ public class ZombieBehaviors {
         // Bully Zombies: Pushes stack of obstacles, 1.5s push time, 0.5s pause
         register(ZombieDef.ICE_AGE_TROGLOBITE, new BullyBehavior(1.5f, 0.5f));
         register(ZombieDef.ARCADE, new BullyBehavior(1.5f, 0.5f));
-
+        register(ZombieDef.BEACH_OCTOPUS,new OctoZombieBehavior(36f,1f,1f));
         // Piano Zombie: 1-second windup, 1-second recovery, insta-kill damage
         register(ZombieDef.PIANO, new CustomMeleeBehavior(20, 20, 9999));
 

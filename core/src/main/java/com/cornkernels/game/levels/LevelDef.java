@@ -11,7 +11,7 @@ public enum LevelDef {
         List.of(ZombieDef.DEFAULT),
         new int[]{3, 4, 6}),
     CHAPTER1_LEVEL2(1, 2,
-        List.of(ZombieDef.DEFAULT, ZombieDef.ARMOR1),
+        List.of(ZombieDef.BEACH_OCTOPUS,ZombieDef.TOMB_RAISER),
         new int[]{4, 5, 5, 8}),
     CHAPTER1_LEVEL3(1, 3,
         List.of(ZombieDef.DEFAULT, ZombieDef.ARMOR1, ZombieDef.ARMOR2),
@@ -47,7 +47,7 @@ public enum LevelDef {
         new int[]{9, 11, 13, 20}),
 
     CHAPTER4_LEVEL1(4, 1,
-        List.of(ZombieDef.DARK_IMP_DRAGON),
+        List.of(ZombieDef.DARK_ARMOR3,ZombieDef.DEFAULT,ZombieDef.DARK_KING),
         new int[]{10, 12, 14, 18}),
     CHAPTER4_LEVEL2(4, 2,
         List.of(ZombieDef.DARK_IMP_DRAGON, ZombieDef.DARK_JUGGLER),

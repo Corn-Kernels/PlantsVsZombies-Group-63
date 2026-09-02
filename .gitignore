@@ -166,3 +166,4 @@ Thumbs.db
 
 
 /core/src/main/java/com/cornkernels/game/entities/types/plants/behavior/behaviors/Asset/
+/core/src/main/java/com/cornkernels/GameManager.java

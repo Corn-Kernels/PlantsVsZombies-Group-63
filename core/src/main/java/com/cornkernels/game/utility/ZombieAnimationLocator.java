@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.cornkernels.game.entities.components.ArmorComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
+import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+import com.cornkernels.game.entities.types.zombies.ZombieLimbs;
 import com.cornkernels.game.entities.types.zombies.armors.ArmorType;
 import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.ClipRef;
@@ -54,10 +56,13 @@ public final class ZombieAnimationLocator {
     private static final String[] FALLBACK_CLIP_NAMES = {"idle", "loop"};
     private static final String[] DEATH_CLIP_NAMES = {"death", "die", "dying", "Death", "Die", "Dying"};
 
-    private static final Map<ArmorType, String> ARMOR_PART_PREFIXES = Map.of(
-        ArmorType.CONE, "zombie_armor_cone",
-        ArmorType.BUCKET, "zombie_armor_bucket",
-        ArmorType.BRICK, "zombie_armor_brick"
+    private static final Map<ArmorType, String[]> ARMOR_NODES = Map.of(
+        ArmorType.CONE, new String[]{"zombie_armor_cone_norm", "zombie_armor_cone_damage_01", "zombie_armor_cone_damage_02"},
+        ArmorType.BUCKET, new String[]{"zombie_armor_bucket_norm", "zombie_armor_bucket_damage_01", "zombie_armor_bucket_damage_02"},
+        ArmorType.BRICK, new String[]{"zombie_armor_brick_norm", "zombie_armor_brick_damage_01", "zombie_armor_brick_damage_02"},
+        ArmorType.CROWN, new String[]{"zombie_armor_crown_norm", "zombie_armor_crown_damage_01", "zombie_armor_crown_damage_02"},
+        ArmorType.SHOULDER, new String[]{"zombie_shoulder_armor_norm", "zombie_shoulder_armor_damage_01", "zombie_shoulder_armor_damage_02"},
+        ArmorType.NEWSPAPER, new String[]{"_zombie_newspaper", "_zombie_newspaper_dmg1", "_zombie_newspaper_dmg2"}
     );
 
     private ZombieAnimationLocator() {
@@ -65,41 +70,9 @@ public final class ZombieAnimationLocator {
 
     public static void applyArmorVisibility(@NonNull ZombieDef zombieDef, @NonNull PamAnimationComponent anim) {
         for (ArmorType armorType : zombieDef.armors) {
-            String prefix = ARMOR_PART_PREFIXES.get(armorType);
-            if (prefix != null) {
-                anim.visibilityMap.put(prefix + "_norm", true);
-            }
-        }
-    }
-
-    /**
-     * Dynamically checks the zombie's current components and updates PAM visibility.
-     * Call this from CombatSystem when an ArmorComponent is removed.
-     */
-    public static void updateArmorVisibility(@NonNull ZombieInstance zombie) {
-        PamAnimationComponent anim = zombie.get(PamAnimationComponent.class);
-        ZombieDefComponent defComp = zombie.get(ZombieDefComponent.class);
-        if (anim == null || defComp == null) return;
-
-        ZombieDef def = defComp.def();
-
-        // 1. Hide all base armors assigned to this zombie definition
-        for (ArmorType armorType : def.armors) {
-            String prefix = ARMOR_PART_PREFIXES.get(armorType);
-            if (prefix != null) {
-                anim.visibilityMap.put(prefix + "_norm", false);
-                anim.visibilityMap.put(prefix + "_dmg1", false);
-                anim.visibilityMap.put(prefix + "_dmg2", false);
-            }
-        }
-
-        // 2. Re-enable visibility for armors the zombie STILL possesses
-        for (ArmorComponent armorComp : zombie.getAll(ArmorComponent.class)) {
-            String prefix = ARMOR_PART_PREFIXES.get(armorComp.armorType);
-            if (prefix != null) {
-                anim.visibilityMap.put(prefix + "_norm", true);
-                // Note: If you add damaged texture logic based on armor HP later,
-                // you would toggle _dmg1 or _dmg2 here instead of _norm.
+            String[] nodes = ARMOR_NODES.get(armorType);
+            if (nodes != null) {
+                anim.visibilityMap.put(nodes[0], true);
             }
         }
     }
@@ -123,6 +96,12 @@ public final class ZombieAnimationLocator {
     public static void applyClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
                                  @NonNull ZombieDef zombieDef, @NonNull String preferredClip) {
         String path = findPamPath(zombieDef);
+        applyClip(pamPlayer, anim, path, preferredClip);
+    }
+
+    // Secondary overload to load clips directly using a custom PAM file path string
+    public static void applyClip(@NonNull PamPlayer pamPlayer, @NonNull PamAnimationComponent anim,
+                                 @NonNull String path, @NonNull String preferredClip) {
         pamPlayer.loadSync(path);
 
         List<String> available = pamPlayer.clips(path);
@@ -185,21 +164,67 @@ public final class ZombieAnimationLocator {
         return builder.toString();
     }
 
-    /**
-     * Hides the specific PAM sprite nodes associated with the zombie's arm.
-     */
-    public static void applyArmLossVisibility(@NonNull ZombieInstance zombie) {
+    private static void toggleNodeSafe(@NonNull PamAnimationComponent anim, @NonNull String node, boolean state) {
+        anim.visibilityMap.put(node, state);
+    }
+
+    public static ZombieLimbs applyArmLossVisibility(@NonNull ZombieInstance zombie, PamPlayer pamPlayer) {
         PamAnimationComponent anim = zombie.get(PamAnimationComponent.class);
-        if (anim == null) return;
+        if (anim == null) return null;
 
-        // Turn off the standard left arm nodes.
-        // Note: You may need to adjust these string keys depending on your exact PAM naming conventions.
-        anim.visibilityMap.put("zombie_leftarm", false);
-        anim.visibilityMap.put("zombie_leftarm_lower", false);
-        anim.visibilityMap.put("zombie_leftarm_upper", false);
-        anim.visibilityMap.put("zombie_leftarm_hand", false);
+        if (Boolean.TRUE.equals(anim.visibilityMap.get("zombie_arm_outer_upper_bone"))) {
+            return null;
+        }
 
-        // Ensure the "lost arm" stump texture is turned ON if the skeleton uses one
-        anim.visibilityMap.put("zombie_leftarm_stump", true);
+        toggleNodeSafe(anim, "zombie_hand_outer_01", false);
+        toggleNodeSafe(anim, "zombie_arm_outer_lower", false);
+        toggleNodeSafe(anim, "zombie_arm_outer_upper", false);
+        toggleNodeSafe(anim, "zombie_arm_outer_upper_bone", true);
+
+        ZombieDef def = zombie.get(ZombieDefComponent.class).def();
+        PositionComponent pos = zombie.get(PositionComponent.class);
+        return new ZombieLimbs(ZombieLimbs.LimbType.ARM, pos.position, pos.position.getY(), def, pamPlayer);
+    }
+
+    public static void updateArmorVisibility(@NonNull ZombieInstance zombie) {
+        PamAnimationComponent anim = zombie.get(PamAnimationComponent.class);
+        ZombieDefComponent defComp = zombie.get(ZombieDefComponent.class);
+        if (anim == null || defComp == null) return;
+
+        ZombieDef def = defComp.def();
+
+        for (ArmorType armorType : def.armors) {
+            String[] nodes = ARMOR_NODES.get(armorType);
+            if (nodes != null) {
+                toggleNodeSafe(anim, nodes[0], false);
+                toggleNodeSafe(anim, nodes[1], false);
+                toggleNodeSafe(anim, nodes[2], false);
+
+                if (armorType == ArmorType.NEWSPAPER) {
+                    toggleNodeSafe(anim, "_zombie_newspaper_flame", false);
+                }
+            }
+        }
+
+        for (ArmorComponent armorComp : zombie.getAll(ArmorComponent.class)) {
+            if (armorComp.currentArmorHealth <= 0) continue;
+
+            String[] nodes = ARMOR_NODES.get(armorComp.armorType);
+            if (nodes != null) {
+                float healthRatio = (float) armorComp.currentArmorHealth / armorComp.armorType.getArmorDamage();
+
+                if (healthRatio > 0.66f) {
+                    toggleNodeSafe(anim, nodes[0], true);
+                } else if (healthRatio > 0.33f) {
+                    toggleNodeSafe(anim, nodes[1], true);
+                } else {
+                    toggleNodeSafe(anim, nodes[2], true);
+
+                    if (armorComp.armorType == ArmorType.NEWSPAPER) {
+                        toggleNodeSafe(anim, "_zombie_newspaper_flame", true);
+                    }
+                }
+            }
+        }
     }
 }

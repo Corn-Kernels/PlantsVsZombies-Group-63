@@ -15,8 +15,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class ZombieInstance extends Entity {
 
+    private static final float DARK_KING_FRONT_OFFSET = 3f;
+
     public ZombieInstance(@NotNull ZombieDef def, Vec2d position) {
         super();
+
+        if (def == ZombieDef.DARK_KING) {
+            position = new Vec2d(position.getX() - DARK_KING_FRONT_OFFSET, position.getY());
+        }
 
         add(new ZombieDefComponent(def));
         add(new PositionComponent(position));
@@ -39,20 +45,7 @@ public class ZombieInstance extends Entity {
 
         ZombieAnimationLocator.updateArmorVisibility(this);
 
-        // Add a listener to monitor health and handle the arm-loss visual state
-        health.addListener(new HealthComponent.OnHealthChangedListener() {
-            @Override
-            public void OnHealthChanged(int currentHealth, int maxHealth, int delta) {
-                // If health drops to 50% or below, strip the arm
-                if (currentHealth <= (maxHealth / 2)) {
-                    ZombieAnimationLocator.applyArmLossVisibility(ZombieInstance.this);
-                }
-            }
-
-            @Override
-            public void onMaxHealthChanged(int maxHealth, int delta) {
-            }
-        });
+        // The redundant health listener that was prematurely hiding the arm has been removed
 
         ZombieBehavior behavior = ZombieBehaviors.get(def);
         if (behavior != null) {

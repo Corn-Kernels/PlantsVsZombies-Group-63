@@ -1,5 +1,6 @@
 package com.cornkernels.game.entities.types.sun;
 
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.random.RandomGenerator;

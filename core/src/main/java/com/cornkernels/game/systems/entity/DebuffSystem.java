@@ -48,20 +48,16 @@ public class DebuffSystem extends EntitySystem {
                 float r = 0f, g = 0f, b = 0f;
                 int activeCount = 0;
 
-                if (zombie.has(ButterComponent.class)) {
-                    r += 1.0f; g += 1.0f; b += 0.4f; // Yellow
-                    activeCount++;
-                }
                 if (zombie.has(HypnoComponent.class)) {
-                    r += 0.8f; g += 0.2f; b += 1.0f; // Purple
+                    r += 1.0f; g += 0.4f; b += 0.7f; // Pink
                     activeCount++;
                 }
                 if (zombie.has(PoisonComponent.class)) {
-                    r += 0.4f; g += 1.0f; b += 0.4f; // Green
+                    r += 0.8f; g += 0.2f; b += 1.0f; // Purple
                     activeCount++;
                 }
                 if (zombie.has(SunInfectedComponent.class)) {
-                    r += 1.0f; g += 0.4f; b += 0.4f; // Red
+                    r += 1.0f; g += 1.0f; b += 0.4f; // Yellow
                     activeCount++;
                 }
 

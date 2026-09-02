@@ -12,6 +12,7 @@ import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+import com.cornkernels.game.entities.types.zombies.ZombieLimbs;
 import com.cornkernels.game.map.data.LawnMowerSlot;
 import com.cornkernels.game.map.grid.GridObject;
 import com.cornkernels.game.map.grid.GridPosition;
@@ -32,6 +33,7 @@ public class Field {
     protected List<LawnMower> activeLawnMowers;
     protected int totalLawnMowerCount;
     protected List<PlantFoodEffect> activeEffects;
+    protected List<Entity> extras;
 
     protected int totalLanes;
     protected int totalColumns;
@@ -55,6 +57,7 @@ public class Field {
         this.activeLawnMowers = new ArrayList<>(5);
         this.activeZombieProjectiles = new ArrayList<>();
         this.activeEffects = new ArrayList<>();
+        this.extras=new ArrayList<>();
         initializeLawnMowers(lawnMowerSlots);
     }
 
@@ -189,6 +192,7 @@ public class Field {
         entities.addAll(activeObstacles);
         entities.addAll(activeZombieProjectiles);
         entities.addAll(activeEffects);
+        entities.addAll(extras);
         return entities;
     }
 
@@ -254,4 +258,11 @@ public class Field {
         this.totalLawnMowerCount = activeLawnMowers.size();
     }
 
+    public void addEntity(Entity entity) {
+        extras.add(entity);
+    }
+
+    public void removeZombieProjectile(AbstractZombieProjectile projectile) {
+        activeZombieProjectiles.remove(projectile);
+    }
 }

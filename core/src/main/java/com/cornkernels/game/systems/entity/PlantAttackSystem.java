@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.components.plant_specific.specific_specific
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.GrowthComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.InstaTrapComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.SunShroomComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.types.effects.PlantFoodEffect;
 import com.cornkernels.game.entities.types.plants.PlantCategory;
 import com.cornkernels.game.entities.types.plants.PlantDef;
@@ -30,15 +31,30 @@ public class PlantAttackSystem extends EntitySystem {
         for (PlantInstance plant : field.getActivePlants()) {
             if (plant.isMarkedForRemoval()) continue;
 
+            // --- DEBUFF CHECKS ---
+
+            // 1. Sheep Reversion Logic
+            SheepedComponent sheep = plant.get(SheepedComponent.class);
+            if (sheep != null) {
+                boolean wizardDead = sheep.wizard == null
+                    || sheep.wizard.isMarkedForRemoval()
+                    || (sheep.wizard.has(ZombieStateComponent.class) && sheep.wizard.get(ZombieStateComponent.class).state == ZombieStateComponent.State.DEAD);
+
+                if (wizardDead) {
+                    plant.removeAll(SheepedComponent.class); // Spell broken!
+                } else {
+                    continue; // Still a sheep, skip normal plant logic
+                }
+            }
+
+            // 2. Octopus Logic (Must be destroyed by other plants)
             if (plant.has(OctoedComponent.class)) {
                 continue;
             }
-            if (plant.get(PlantFreezeComponent.class).freezeLayers >= 3) {
-                continue;
-            }
 
+            // 3. Freeze Logic
             PlantFreezeComponent freezeComp = plant.get(PlantFreezeComponent.class);
-            if (freezeComp != null && freezeComp.frozenHp > 0) {
+            if (freezeComp != null && (freezeComp.freezeLayers >= 3 || freezeComp.frozenHp > 0)) {
                 continue;
             }
 

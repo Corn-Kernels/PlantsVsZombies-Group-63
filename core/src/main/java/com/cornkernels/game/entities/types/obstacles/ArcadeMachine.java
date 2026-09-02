@@ -2,6 +2,7 @@ package com.cornkernels.game.entities.types.obstacles;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.HealthComponent;
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -15,24 +16,21 @@ public class ArcadeMachine extends PushableObstacle {
 
     public ArcadeMachine(Vec2d position, int maxHp, float spawnIntervalSeconds) {
         super(position, maxHp);
-        this.spawnIntervalTicks = (int) (spawnIntervalSeconds * 20); // 20 ticks = 1 second
+        this.spawnIntervalTicks = (int) (spawnIntervalSeconds * 20);
+        add(new PamAnimationComponent());
     }
 
     @Override
     public void update(Field field) {
         HealthComponent hp = this.get(HealthComponent.class);
         if (hp.currentHealth <= 0 || this.isMarkedForRemoval()) {
-            return; // Stop spawning if destroyed
+            return;
         }
 
         tickCounter++;
         if (tickCounter >= spawnIntervalTicks) {
             tickCounter = 0;
-
             Vec2d currentPos = this.get(PositionComponent.class).position;
-            GridPosition gridPos = GridPosition.fromContinuous(currentPos);
-
-            // Spawn an 8-bit basic zombie
             field.addZombie(new ZombieInstance(ZombieDef.DEFAULT, currentPos));
         }
     }

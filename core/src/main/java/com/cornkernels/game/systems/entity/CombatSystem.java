@@ -50,6 +50,7 @@ public class CombatSystem extends EntitySystem {
             amount = Math.round(amount * plantDamageMultiplier);
         }
 
+        // 1. Intercept damage for Octopus
         if (target.has(OctoedComponent.class)) {
             OctoedComponent octo = target.get(OctoedComponent.class);
             octo.currentHealth -= amount;
@@ -59,13 +60,36 @@ public class CombatSystem extends EntitySystem {
             return; // Exit early so the plant's health is completely shielded
         }
 
+        // 2. Intercept damage for Frozen Blocks
+        PlantFreezeComponent freezeComp = target.get(PlantFreezeComponent.class);
+        if (freezeComp != null && freezeComp.frozenHp > 0) {
+            freezeComp.frozenHp -= amount;
+            if (freezeComp.frozenHp <= 0) {
+                freezeComp.frozenHp = 0;
+                freezeComp.freezeLayers = 0; // Ice block destroyed, plant freed!
+            }
+            return; // Exit early so the plant's health is completely shielded
+        }
+
         int remaining = amount;
         int initialRemaining = remaining;
 
         if (!ignoresArmor) {
+            List<ArmorComponent> destroyedArmors = new ArrayList<>();
+
             for (ArmorComponent armor : target.getAll(ArmorComponent.class)) {
                 if (remaining <= 0) break;
                 remaining = armor.absorbDamage(remaining);
+
+                // Track armors that have no health left
+                if (armor.currentArmorHealth <= 0) {
+                    destroyedArmors.add(armor);
+                }
+            }
+
+            // Remove the destroyed armors safely after the loop
+            for (ArmorComponent brokenArmor : destroyedArmors) {
+                target.remove(ArmorComponent.class,brokenArmor);
             }
         }
 
@@ -74,6 +98,7 @@ public class CombatSystem extends EntitySystem {
 
         if (remaining > 0 && health != null) {
             healthDamage = Math.min(health.currentHealth, remaining);
+
             health.adjustHealth(-remaining);
 
             if (health.isDead()) {
@@ -122,8 +147,12 @@ public class CombatSystem extends EntitySystem {
             if (!e.isMarkedForRemoval() && (isLiveZombie || e instanceof Grave)) {
                 validTargets.add(e);
             }
-            if (!e.isMarkedForRemoval() && e instanceof PlantInstance && (e.has(OctoedComponent.class) || e.get(PlantFreezeComponent.class).freezeLayers >= 3)) {
-                validTargets.add(e);
+            if (!e.isMarkedForRemoval() && e instanceof PlantInstance) {
+                PlantFreezeComponent freezeComp = e.get(PlantFreezeComponent.class);
+                // Safe check preventing NullPointerException if a plant doesn't have the freeze component
+                if (e.has(OctoedComponent.class) || (freezeComp != null && freezeComp.frozenHp > 0)) {
+                    validTargets.add(e);
+                }
             }
         }
 
@@ -149,6 +178,7 @@ public class CombatSystem extends EntitySystem {
                 break;
             }
         }
+
         validTargets = new ArrayList<>();
         for (Entity e : field.getEntities()) {
             if (!e.isMarkedForRemoval() && (e instanceof PlantInstance)) {
@@ -175,11 +205,10 @@ public class CombatSystem extends EntitySystem {
                 if (!projectile.hit(target, field)) {
                     continue;
                 }
-
+                field.removeZombieProjectile(projectile);
                 projectile.markForRemoval();
                 break;
             }
         }
-
     }
 }

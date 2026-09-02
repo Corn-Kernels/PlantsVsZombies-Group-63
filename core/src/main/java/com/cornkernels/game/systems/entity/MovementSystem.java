@@ -20,6 +20,7 @@ import com.cornkernels.game.entities.types.projectile.projectiles.specific.AreaO
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.GrapeshotProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.LightningCloudProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
+import com.cornkernels.game.entities.types.zombies.ZombieLimbs;
 
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +30,12 @@ public class MovementSystem extends EntitySystem {
     @Override
     public void update(float delta) {
         for (Entity e : field.getEntities()) {
+
+            if(e instanceof ZombieLimbs){
+                ((ZombieLimbs) e).update(delta);
+                continue;
+            }
+
             if (!e.has(PositionComponent.class) || !e.has(VelocityComponent.class)) {
                 continue;
             }
@@ -142,7 +149,7 @@ public class MovementSystem extends EntitySystem {
 
                 // Dynamic Tracking (Adjust speedMag as needed for throw speed)
                 double desiredAngle = Math.atan2(targetY - pos.getY(), targetX - pos.getX());
-                double speedMag = 0.15;
+                double speedMag = 0.05;
 
                 velComp.velocityPerTick = new Vec2d(
                     (float) (Math.cos(desiredAngle) * speedMag),
@@ -173,7 +180,7 @@ public class MovementSystem extends EntitySystem {
 
                 // Dynamic Tracking
                 double desiredAngle = Math.atan2(targetY - pos.getY(), targetX - pos.getX());
-                double speedMag = 0.15;
+                double speedMag = 0.05;
 
                 velComp.velocityPerTick = new Vec2d(
                     (float) (Math.cos(desiredAngle) * speedMag),
