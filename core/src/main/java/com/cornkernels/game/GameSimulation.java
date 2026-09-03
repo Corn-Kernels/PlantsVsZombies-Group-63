@@ -24,8 +24,13 @@ public class GameSimulation {
         this.attributes = gameAttributes;
         this.random = new Random();
         this.lawnMowersSystem = new LawnMowersSystem();
-        this.waveSystem = new WaveSystem(gameAttributes.levelDef.zombiesPerWave, random,
-            gameAttributes.levelDef.eligibleZombies, pamPlayer);
+        this.waveSystem = new WaveSystem(
+            gameAttributes.levelDef.waveBudgets,
+            random,
+            gameAttributes.levelDef.eligibleZombies,
+            gameAttributes.levelDef.obstacles,
+            pamPlayer
+        );
 
         addSystem(new CombatSystem());
         addSystem(new PlantAttackSystem(pamPlayer));

@@ -14,6 +14,7 @@ import com.cornkernels.game.entities.components.zombie_specific.ZombieStateCompo
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.SunInfectedComponent;
 import com.cornkernels.game.entities.types.obstacles.Grave;
+import com.cornkernels.game.entities.types.obstacles.PushableObstacle;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
@@ -153,6 +154,9 @@ public class CombatSystem extends EntitySystem {
                 if (e.has(OctoedComponent.class) || (freezeComp != null && freezeComp.frozenHp > 0)) {
                     validTargets.add(e);
                 }
+            }
+            if(e instanceof PushableObstacle){
+                validTargets.add(e);
             }
         }
 

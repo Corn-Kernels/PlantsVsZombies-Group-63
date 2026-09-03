@@ -281,7 +281,7 @@ public class PamRenderSystem extends RenderSystem {
 
     private void assignObstacleClip(PamAnimationComponent anim, AbstractObstacle obstacle) {
         if (obstacle instanceof Glacier) {
-            anim.currentClip = getSafeClip(GLACIER_PAM, "armor1");
+            anim.currentClip = getSafeClip(GLACIER_PAM, "idle");
             anim.isLooping = true;
         } else if (obstacle instanceof ArcadeMachine) {
             anim.currentClip = getSafeClip(ARCADE_PAM, "idle");

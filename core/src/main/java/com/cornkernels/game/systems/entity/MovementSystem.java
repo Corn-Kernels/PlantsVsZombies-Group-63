@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.components.zombie_specific.ZombieStateCompo
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.components.zombie_specific.specific_specific.EnragedComponent;
+import com.cornkernels.game.entities.types.obstacles.Redirector;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.BoneProjectile;
@@ -86,7 +87,6 @@ public class MovementSystem extends EntitySystem {
 
                     continue;
                 }
-
 
                 // 2. Straight-Line Tracking (Electric Blueberry)
                 // Bypasses the rotation limit to snap directly towards the target
@@ -216,6 +216,48 @@ public class MovementSystem extends EntitySystem {
 
             if(e instanceof ZombieInstance){
                 ZombieInstance zombie=(ZombieInstance) e;
+
+                // 1. Tile Slider Logic (Redirectors)
+                for (Entity ent : field.getEntities()) {
+                    if (ent instanceof Redirector r && r.has(PositionComponent.class)) {
+                        Vec2d rPos = r.get(PositionComponent.class).position;
+
+                        // Check if within the horizontal capture window
+                        if (Math.abs(posComp.position.getX() - rPos.getX()) < 0.15f) {
+
+                            // Check if sliding UP (+Y)
+                            if (r.direction == Redirector.Direction.UP
+                                && posComp.position.getY() >= rPos.getY() - 0.05f
+                                && posComp.position.getY() < rPos.getY() + 1.0f) {
+
+                                vx = 0; // Stop walking forward
+                                vy = 1.5f * delta; // Slide speed
+                                posComp.position.setX(rPos.getX()); // Snap to exact column center to cleanly ride the slide
+
+                                // Snap cleanly to target lane exactly to prevent overshooting
+                                if (posComp.position.getY() + vy > rPos.getY() + 1.0f) {
+                                    vy = (float) (rPos.getY() + 1.0f - posComp.position.getY());
+                                }
+                                break;
+
+                                // Check if sliding DOWN (-Y)
+                            } else if (r.direction == Redirector.Direction.DOWN
+                                && posComp.position.getY() <= rPos.getY() + 0.05f
+                                && posComp.position.getY() > rPos.getY() - 1.0f) {
+
+                                vx = 0;
+                                vy = -1.5f * delta;
+                                posComp.position.setX(rPos.getX());
+
+                                if (posComp.position.getY() + vy < rPos.getY() - 1.0f) {
+                                    vy = (float) (rPos.getY() - 1.0f - posComp.position.getY());
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 // 2. Process Ice (Freeze & Slow)
                 IceComponent ice = zombie.get(IceComponent.class);
                 if (ice != null && ice.freezeLevel > 0) {
