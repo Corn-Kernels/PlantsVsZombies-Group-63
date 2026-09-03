@@ -307,27 +307,37 @@ public class MovementSystem extends EntitySystem {
                 posComp.position.getY() + vy
             );
 
-            if(e instanceof LobProjectile){
-                float startX = ((LobProjectile) e).startPosition.getX();
+            if(e instanceof LobProjectile lobProj){
+                float startX = lobProj.startPosition.getX();
                 float endX;
-                if(((LobProjectile) e).target!=null)
-                    endX= ((LobProjectile) e).target.get(PositionComponent.class).position.getX();
-                else
-                    endX=14;
+                float endY;
+
+                if (lobProj.target != null) {
+                    endX = lobProj.target.get(PositionComponent.class).position.getX();
+                    endY = lobProj.target.get(PositionComponent.class).position.getY();
+                } else {
+                    endX = 14;
+                    endY = lobProj.startPosition.getY();
+                }
+
                 float currentX = posComp.position.getX();
-
                 float totalDistance = endX - startX;
-
                 float progress = (totalDistance == 0) ? 1.0f : (currentX - startX) / totalDistance;
-
                 progress = Math.max(0.0f, Math.min(1.0f, progress));
 
+                // 16.0f determines the apex height of the arc
                 float heightOffset = 16.0f * progress * (1.0f - progress);
 
-                float baseY = ((LobProjectile) e).startPosition.getY();
+                // Linearly interpolate the base Y between the start lane and target lane
+                float startY = lobProj.startPosition.getY();
+                float baseY = startY + (endY - startY) * progress;
+
+                // Combine the interpolated Y with the parabolic height offset
                 e.get(PositionComponent.class).position.setY(baseY + heightOffset);
-                if(currentX>endX)
+
+                if(currentX > endX) {
                     e.get(PositionComponent.class).position.setY(20);
+                }
             }
 
         }
