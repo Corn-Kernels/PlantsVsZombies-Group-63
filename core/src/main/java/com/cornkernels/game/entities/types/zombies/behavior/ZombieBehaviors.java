@@ -38,7 +38,7 @@ public class ZombieBehaviors {
         // Bully Zombies: Pushes stack of obstacles, 1.5s push time, 0.5s pause
         register(ZombieDef.ICE_AGE_TROGLOBITE, new BullyBehavior(1.5f, 0.5f));
         register(ZombieDef.ARCADE, new BullyBehavior(1.5f, 0.5f));
-        register(ZombieDef.BEACH_OCTOPUS,new OctoZombieBehavior(36f,1f,1f));
+        register(ZombieDef.BEACH_OCTOPUS, new OctoZombieBehavior(36f, 1f, 1f));
         // Piano Zombie: 1-second windup, 1-second recovery, insta-kill damage
         register(ZombieDef.PIANO, new CustomMeleeBehavior(20, 20, 9999));
 

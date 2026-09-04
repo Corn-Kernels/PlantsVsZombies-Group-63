@@ -7,7 +7,6 @@ import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
-import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
 
@@ -28,12 +27,12 @@ public class SplitPeaBehavior implements PlantAttackBehavior {
         boolean targetBackward = false;
 
         for (Entity z : getAllValidTargets(field)) {
-                double zX = z.get(PositionComponent.class).position.getX();
-                if (zX >= origin.getX()) {
-                    targetForward = true;
-                } else {
-                    targetBackward = true;
-                }
+            double zX = z.get(PositionComponent.class).position.getX();
+            if (zX >= origin.getX()) {
+                targetForward = true;
+            } else {
+                targetBackward = true;
+            }
         }
 
         if (targetForward) {

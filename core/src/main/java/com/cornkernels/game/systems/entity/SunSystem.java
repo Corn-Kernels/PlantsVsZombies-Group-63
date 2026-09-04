@@ -1,6 +1,5 @@
 package com.cornkernels.game.systems.entity;
 
-import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.sun_specific.SunComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;

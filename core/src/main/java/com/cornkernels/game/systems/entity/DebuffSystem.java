@@ -51,24 +51,34 @@ public class DebuffSystem extends EntitySystem {
         int activeCount = 0;
 
         if (zombie.has(HypnoComponent.class)) {
-            r += 1.0f; g += 0.4f; b += 0.7f;
+            r += 1.0f;
+            g += 0.4f;
+            b += 0.7f;
             activeCount++;
         }
         if (zombie.has(PoisonComponent.class)) {
-            r += 0.8f; g += 0.2f; b += 1.0f;
+            r += 0.8f;
+            g += 0.2f;
+            b += 1.0f;
             activeCount++;
         }
         if (zombie.has(SunInfectedComponent.class)) {
-            r += 1.0f; g += 1.0f; b += 0.4f;
+            r += 1.0f;
+            g += 1.0f;
+            b += 0.4f;
             activeCount++;
         }
 
         IceComponent ice = zombie.get(IceComponent.class);
         if (ice != null && ice.freezeLevel > 0) {
             if (ice.freezeLevel == 2) {
-                r += 0.2f; g += 0.5f; b += 1.0f;
+                r += 0.2f;
+                g += 0.5f;
+                b += 1.0f;
             } else {
-                r += 0.6f; g += 0.8f; b += 1.0f;
+                r += 0.6f;
+                g += 0.8f;
+                b += 1.0f;
             }
             activeCount++;
         }

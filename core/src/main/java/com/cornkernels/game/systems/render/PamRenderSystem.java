@@ -15,11 +15,7 @@ import com.cornkernels.game.entities.components.zombie_specific.ZombieDeathCompo
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.PoisonComponent;
 import com.cornkernels.game.entities.types.lawnmower.LawnMower;
-import com.cornkernels.game.entities.types.obstacles.AbstractObstacle;
-import com.cornkernels.game.entities.types.obstacles.ArcadeMachine;
-import com.cornkernels.game.entities.types.obstacles.Glacier;
-import com.cornkernels.game.entities.types.obstacles.Grave;
-import com.cornkernels.game.entities.types.obstacles.Redirector;
+import com.cornkernels.game.entities.types.obstacles.*;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
@@ -32,7 +28,6 @@ import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieLimbs;
 import com.cornkernels.game.map.data.MapData;
-import com.cornkernels.game.systems.entity.SunSystem;
 import com.cornkernels.game.utility.LawnMowerAnimationLocator;
 import com.cornkernels.game.utility.ProjectileAnimationLocator;
 import com.cornkernels.game.utility.SunAnimationLocator;
@@ -48,29 +43,24 @@ import java.util.Map;
 
 public class PamRenderSystem extends RenderSystem {
 
-    private final PamPlayer pamPlayer;
-    private final MapData mapData;
-    private float scale = 0.5f;
-
-    private final Map<Entity, Float> zombieProjectileTimes = new HashMap<>();
-
     private static final String CHILL_PAM = "768/FULL/EFFECTS/FROSTBITE_CHILL_PLANT/FROSTBITE_CHILL_PLANT.PAM";
     private static final String FREEZE_PAM = "768/FULL/EFFECTS/FROSTBITE_ICE_BLOCK_PLANT/FROSTBITE_ICE_BLOCK_PLANT.PAM";
     private static final String SHEEP_PAM = "768/FULL/EFFECTS/DARK_WIZARD_SHEEPENING/DARK_WIZARD_SHEEPENING.PAM";
     private static final String OCTOPUS_PAM = "768/FULL/EFFECTS/ZOMBIE_OCTOPUS_PROJECTILE/ZOMBIE_OCTOPUS_PROJECTILE.PAM";
-
     private static final String GLACIER_PAM = "768/FULL/EFFECTS/FROSTBITE_ICE_BLOCK_ZOMBIE/FROSTBITE_ICE_BLOCK_ZOMBIE.PAM";
     private static final String ARCADE_PAM = "768/FULL/EFFECTS/80S_ARCADE_CABINET/80S_ARCADE_CABINET.PAM";
     private static final String REDIRECTOR_UP_PAM = "768/FULL/EFFECTS/TILESLIDER_ICEAGE_UP/TILESLIDER_ICEAGE_UP.PAM";
     private static final String REDIRECTOR_DOWN_PAM = "768/FULL/EFFECTS/TILESLIDER_ICEAGE_DOWN/TILESLIDER_ICEAGE_DOWN.PAM";
-
     private static final String GRAVE_PAM = "768/INITIAL/GRAVESTONES/TUTORIAL_GRAVESTONE/TUTORIAL_GRAVESTONE.PAM";
     private static final String SUN_BOMB_PAM = "768/FULL/EFFECTS/SUN_BOMB/SUN_BOMB.PAM";
     private static final String ELECTROBALL_PAM = "768/INITIAL/EFFECTS/ELECTRIC_PEASHOOTER_ELECTROBALL/ELECTRIC_PEASHOOTER_ELECTROBALL.PAM";
-
     private static final String FIRE_PEA_PAM = "768/INITIAL/EFFECTS/T_FIRE_PEA/T_FIRE_PEA.PAM";
     private static final String SNOW_PEA_PAM = "768/INITIAL/EFFECTS/T_SNOW_PEA/T_SNOW_PEA.PAM";
     private static final String NORMAL_PEA_PAM = "768/INITIAL/EFFECTS/T_PEA_PROJECTILE/T_PEA_PROJECTILE.PAM";
+    private final PamPlayer pamPlayer;
+    private final MapData mapData;
+    private final Map<Entity, Float> zombieProjectileTimes = new HashMap<>();
+    private float scale = 0.5f;
 
     public PamRenderSystem(SpriteBatch batch, PamPlayer pamPlayer, MapData mapData) {
         super(batch);

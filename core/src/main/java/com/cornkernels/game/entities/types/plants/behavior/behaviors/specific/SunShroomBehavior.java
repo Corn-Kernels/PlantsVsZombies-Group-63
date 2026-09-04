@@ -11,11 +11,11 @@ import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.map.Field;
 
 public class SunShroomBehavior implements PlantAttackBehavior {
+    private static final float RANDOM_OFFSET_RANGE = 0.5f;
     private final int ticksToStage2;
     private final int ticksToStage3;
     private final int produceIntervalTicks;
     private final double doubleSunChance;
-    private static final float RANDOM_OFFSET_RANGE = 0.5f;
 
     public SunShroomBehavior(float secondsToStage2, float secondsToStage3, float produceIntervalSeconds, double doubleSunChance) {
         this.ticksToStage2 = (int) (secondsToStage2 * 20);
@@ -61,7 +61,7 @@ public class SunShroomBehavior implements PlantAttackBehavior {
 
             Vec2d pos = self.get(PositionComponent.class).position;
             for (int i = 0; i < amountToSpawn; i++) {
-                float offsetLane = (float)(Math.random() -1.2) / 2 ;
+                float offsetLane = (float) (Math.random() - 1.2) / 2;
 
                 // Spawns precisely on the shroom, then arcs out to the endY/velocityX trajectory
                 float startY = pos.getY() + 0.5f;

@@ -5,9 +5,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantAttackComponent;
 import com.cornkernels.game.entities.components.plant_specific.PlantFoodComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
-import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.plants.behavior.PlantFoodBehavior;
-import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.map.Field;
 import org.jspecify.annotations.NonNull;
@@ -33,7 +31,7 @@ public class SunProducerPlantFoodBehavior implements PlantFoodBehavior {
             if (pf.timerTicks % 10 == 0) {
                 Vec2d origin = plant.get(PositionComponent.class).position;
 
-                plant.get(PlantAttackComponent.class).behavior.execute(plant,field);
+                plant.get(PlantAttackComponent.class).behavior.execute(plant, field);
             }
 
             pf.timerTicks--;

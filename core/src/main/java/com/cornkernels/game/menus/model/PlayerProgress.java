@@ -47,7 +47,7 @@ public class PlayerProgress {
         this.ownedPlants = new ArrayList<>();
         if (true) {
             for (PlantDef def : PlantDef.values()) {
-                if (def.getId()/1000==1) {
+                if (def.getId() / 1000 == 1) {
                     this.ownedPlants.add(def.getPlantName());
                 }
             }

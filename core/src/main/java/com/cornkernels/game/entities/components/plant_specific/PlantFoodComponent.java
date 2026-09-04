@@ -10,7 +10,6 @@ public class PlantFoodComponent {
     public int timerTicks = 0;
     public int normalTime = 0;
 
-    /** The sparkle/glow overlay currently playing over this plant, if Plant Food is active. */
     public PlantFoodEffect effectEntity;
 
     public PlantFoodComponent(PlantFoodBehavior behavior, int time) {
@@ -23,6 +22,6 @@ public class PlantFoodComponent {
     }
 
     public void activate() {
-        if(timerTicks==0)timerTicks = normalTime;
+        if (timerTicks == 0) timerTicks = normalTime;
     }
 }

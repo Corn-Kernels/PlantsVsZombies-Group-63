@@ -37,7 +37,7 @@ public class SunBehavior implements PlantAttackBehavior {
             float baseLane = sunSpawnPos.getY();
             float baseColumn = sunSpawnPos.getX();
 
-            float offsetLane = (float)(Math.random() -1.2) / 2 ;
+            float offsetLane = (float) (Math.random() - 1.2) / 2;
 
             // Start EXACTLY at the plant (plus the 0.5f vertical hop offset)
             float startY = baseLane + 0.5f;

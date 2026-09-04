@@ -85,7 +85,6 @@ public class SeedPacket extends WidgetGroup {
         this.selected = selected;
     }
 
-    /** Awaiting a second confirming click (or a Boost) before it actually moves into a seed slot. */
     public boolean isPending() {
         return pending;
     }

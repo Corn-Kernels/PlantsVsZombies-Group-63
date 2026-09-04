@@ -257,14 +257,18 @@ public class MovementSystem extends EntitySystem {
 
                 if (Math.abs(posComp.position.getX() - rPos.getX()) < 0.15f) {
                     if (r.direction == Redirector.Direction.UP && posComp.position.getY() >= rPos.getY() - 0.05f && posComp.position.getY() < rPos.getY() + 1.0f) {
-                        vx = 0; vy = 1.5f * delta;
+                        vx = 0;
+                        vy = 1.5f * delta;
                         posComp.position.setX(rPos.getX());
-                        if (posComp.position.getY() + vy > rPos.getY() + 1.0f) vy = (float) (rPos.getY() + 1.0f - posComp.position.getY());
+                        if (posComp.position.getY() + vy > rPos.getY() + 1.0f)
+                            vy = (float) (rPos.getY() + 1.0f - posComp.position.getY());
                         break;
                     } else if (r.direction == Redirector.Direction.DOWN && posComp.position.getY() <= rPos.getY() + 0.05f && posComp.position.getY() > rPos.getY() - 1.0f) {
-                        vx = 0; vy = -1.5f * delta;
+                        vx = 0;
+                        vy = -1.5f * delta;
                         posComp.position.setX(rPos.getX());
-                        if (posComp.position.getY() + vy < rPos.getY() - 1.0f) vy = (float) (rPos.getY() - 1.0f - posComp.position.getY());
+                        if (posComp.position.getY() + vy < rPos.getY() - 1.0f)
+                            vy = (float) (rPos.getY() - 1.0f - posComp.position.getY());
                         break;
                     }
                 }
@@ -276,8 +280,14 @@ public class MovementSystem extends EntitySystem {
     private Vec2d applyIceDebuff(ZombieInstance zombie, float vx, float vy) {
         IceComponent ice = zombie.get(IceComponent.class);
         if (ice != null && ice.freezeLevel > 0) {
-            if (ice.freezeLevel == 2) { vx = 0; vy = 0; }
-            if (ice.freezeLevel == 1) { vx /= 2; vy /= 2; }
+            if (ice.freezeLevel == 2) {
+                vx = 0;
+                vy = 0;
+            }
+            if (ice.freezeLevel == 1) {
+                vx /= 2;
+                vy /= 2;
+            }
 
             if (ice.freezeTicksRemaining > 0) {
                 ice.freezeTicksRemaining--;
@@ -299,7 +309,8 @@ public class MovementSystem extends EntitySystem {
             while (iterator.hasNext()) {
                 ButterComponent stun = iterator.next();
                 stun.stunTicksRemaining--;
-                vx = 0; vy = 0;
+                vx = 0;
+                vy = 0;
                 if (stun.stunTicksRemaining <= 0) iterator.remove();
             }
         }
@@ -314,7 +325,7 @@ public class MovementSystem extends EntitySystem {
 
             float currentX = posComp.position.getX();
             float totalDistance = endX - startX;
-            float progress = Math.max(0.0f, Math.min(1.0f, (totalDistance == 0) ? 1.0f : (currentX - startX) / totalDistance));
+            float progress = Math.clamp((totalDistance == 0) ? 1.0f : (currentX - startX) / totalDistance, 0.0f, 1.0f);
 
             float heightOffset = 16.0f * progress * (1.0f - progress);
             float baseY = lobProj.startPosition.getY() + (endY - lobProj.startPosition.getY()) * progress;

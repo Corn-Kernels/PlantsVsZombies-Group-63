@@ -1,12 +1,11 @@
 package com.cornkernels.game.entities.types.sun;
 
-import com.cornkernels.game.entities.components.PamAnimationComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.random.RandomGenerator;
 
 public enum SunType {
-    SMALL(0, 5),     // Spawned exclusively by Sun Bean infections
+    SMALL(0, 5),
     NORMAL(80, 25),
     BIG(0, 50),
     LARGE(0, 75),

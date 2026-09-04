@@ -391,12 +391,6 @@ public class HudFactory implements Disposable {
         return createTextButton("Let's Go!", "GreenButton", "GreenButton_Down", onConfirm);
     }
 
-    /**
-     * Beside the plant selection menu: spends {@value BOOST_COST_GEMS} gems to boost whichever
-     * plant is currently "pending" (first-clicked but not yet confirmed into a seed slot). Disabled
-     * (greyed out) whenever nothing is pending, that plant is already boosted, or the player can't
-     * afford it.
-     */
     public @NonNull TextButton createBoostButton(@NonNull SeedChooser seedChooser) {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.up = drawable(alwaysLoadedAtlas, "GreenButton");

@@ -3,11 +3,8 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
-import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
-import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
-import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.systems.entity.CombatSystem;
@@ -55,14 +52,14 @@ public class MeleeAttackBehavior implements PlantAttackBehavior {
         int lane = GridPosition.fromContinuous(origin).lane();
 
         for (Entity e : getAllValidTargets(field)) {
-                if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
-                    double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
+            if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
+                double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
 
-                    if ((targetX >= plantX && targetX - plantX <= frontRange) ||
-                        (targetX < plantX && plantX - targetX <= backRange)) {
-                        validTargets.add(e);
-                    }
+                if ((targetX >= plantX && targetX - plantX <= frontRange) ||
+                    (targetX < plantX && plantX - targetX <= backRange)) {
+                    validTargets.add(e);
                 }
+            }
         }
 
         validTargets.sort((e1, e2) -> {

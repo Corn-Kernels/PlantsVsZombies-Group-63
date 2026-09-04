@@ -37,10 +37,10 @@ public class KernelPultBehavior implements PlantAttackBehavior {
         List<Entity> laneTargets = new ArrayList<>();
 
         for (Entity z : getAllValidTargets(field)) {
-                Vec2d targetPos = z.get(PositionComponent.class).position;
-                if (targetPos.getX() >= origin.getX()) {
-                    laneTargets.add(z);
-                }
+            Vec2d targetPos = z.get(PositionComponent.class).position;
+            if (targetPos.getX() >= origin.getX()) {
+                laneTargets.add(z);
+            }
         }
 
         // Fetch Graves (as they likely aren't returned by getZombiesInLane)
@@ -100,10 +100,10 @@ public class KernelPultBehavior implements PlantAttackBehavior {
             }
         }
         for (Entity e : getAllValidTargets(field)) {
-                Vec2d targetPos = e.get(PositionComponent.class).position;
-                if (targetPos.getY() == origin.getY() && targetPos.getX() >= origin.getX()) {
-                    return true;
-                }
+            Vec2d targetPos = e.get(PositionComponent.class).position;
+            if (targetPos.getY() == origin.getY() && targetPos.getX() >= origin.getX()) {
+                return true;
+            }
         }
         return false;
     }

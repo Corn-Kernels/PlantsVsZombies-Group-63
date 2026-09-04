@@ -46,21 +46,21 @@ public class RotobagaBehavior implements PlantAttackBehavior {
 
         for (Entity e : getAllValidTargets(field)) {
 
-                Vec2d pos = e.get(PositionComponent.class).position;
-                double dx = pos.getX() - centerX;
-                double dy = pos.getY() - centerY;
+            Vec2d pos = e.get(PositionComponent.class).position;
+            double dx = pos.getX() - centerX;
+            double dy = pos.getY() - centerY;
 
-                if (Math.hypot(dx, dy) <= length) {
-                    if (dx >= 0 && dy <= 0 && Math.abs(dx + dy) <= diagThreshold) {
-                        shootTopRight = true;
-                    } else if (dx >= 0 && dy >= 0 && Math.abs(dy - dx) <= diagThreshold) {
-                        shootBottomRight = true;
-                    } else if (dx <= 0 && dy <= 0 && Math.abs(dy - dx) <= diagThreshold) {
-                        shootTopLeft = true;
-                    } else if (dx <= 0 && dy >= 0 && Math.abs(dx + dy) <= diagThreshold) {
-                        shootBottomLeft = true;
-                    }
+            if (Math.hypot(dx, dy) <= length) {
+                if (dx >= 0 && dy <= 0 && Math.abs(dx + dy) <= diagThreshold) {
+                    shootTopRight = true;
+                } else if (dx >= 0 && dy >= 0 && Math.abs(dy - dx) <= diagThreshold) {
+                    shootBottomRight = true;
+                } else if (dx <= 0 && dy <= 0 && Math.abs(dy - dx) <= diagThreshold) {
+                    shootTopLeft = true;
+                } else if (dx <= 0 && dy >= 0 && Math.abs(dx + dy) <= diagThreshold) {
+                    shootBottomLeft = true;
                 }
+            }
         }
 
         if (shootTopRight) spawnProjectiles(field, centerX, centerY, diagSpeed, -diagSpeed, 1, -1);

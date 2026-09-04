@@ -40,13 +40,13 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
 
         for (Entity target : getAllValidTargets(field)) {
 
-                Vec2d targetPos = target.get(PositionComponent.class).position;
-                double targetX = targetPos.getX() + 0.5;
-                double targetY = targetPos.getY();
+            Vec2d targetPos = target.get(PositionComponent.class).position;
+            double targetX = targetPos.getX() + 0.5;
+            double targetY = targetPos.getY();
 
-                if (Math.abs(targetX - originX) <= currentRange && Math.abs(targetY - originY) <= currentRange) {
-                    CombatSystem.applyDamage(target, currentDamage, false);
-                }
+            if (Math.abs(targetX - originX) <= currentRange && Math.abs(targetY - originY) <= currentRange) {
+                CombatSystem.applyDamage(target, currentDamage, false);
+            }
 
         }
     }

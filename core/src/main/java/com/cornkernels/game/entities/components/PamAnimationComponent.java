@@ -8,7 +8,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PamAnimationComponent{
+public class PamAnimationComponent {
     public ClipRef currentClip;
     public float stateTime = 0f;
     public boolean isLooping = true;
