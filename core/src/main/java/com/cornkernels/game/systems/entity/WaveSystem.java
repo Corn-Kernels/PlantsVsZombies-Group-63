@@ -4,9 +4,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PamAnimationComponent;
-import com.cornkernels.game.entities.types.obstacles.Grave;
-import com.cornkernels.game.entities.types.obstacles.Glacier;
 import com.cornkernels.game.entities.types.obstacles.ArcadeMachine;
+import com.cornkernels.game.entities.types.obstacles.Glacier;
+import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.obstacles.Redirector;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -14,6 +14,7 @@ import com.cornkernels.game.levels.LevelDef;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.utility.ZombieAnimationLocator;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import pvz.libpvz.pam.PamPlayer;
 
 import java.util.Arrays;
@@ -23,26 +24,24 @@ import java.util.random.RandomGenerator;
 
 public class WaveSystem extends EntitySystem {
 
+    public static final float OFFSCREEN_SPAWN_MARGIN_COLUMNS = 2f;
     private static final float BASE_SPAWN_DURATION = 3.0f;
     private static final float WAVE_ADVANCE_DAMAGE_FRACTION = 0.5f;
-
-    public static final float OFFSCREEN_SPAWN_MARGIN_COLUMNS = 2f;
-
+    private static final int ARCADE_MACHINE_HP = 600;
+    private static final float ARCADE_MACHINE_SPAWN_INTERVAL_SECONDS = 18f;
     private final int[] waveBudgets;
     private final List<ZombieDef> eligibleZombies;
     private final List<LevelDef.ObstacleSpawn> obstacles;
     private final RandomGenerator rng;
     private final PamPlayer pamPlayer;
-
     private float spawnTimer = 0f;
     private int waveNumber = 0;
     private int currentWaveValueSpawned = 0;
-
     private float currentWaveMaxHealthTotal = 0f;
     private float currentWaveDamageDealt = 0f;
     private boolean obstaclesSpawned = false;
-
-    private Consumer<ZombieDef> onZombieSpawned = def -> {};
+    private Consumer<ZombieDef> onZombieSpawned = def -> {
+    };
 
     public WaveSystem(int @NotNull [] waveBudgets, RandomGenerator rng, List<ZombieDef> eligibleZombies, List<LevelDef.ObstacleSpawn> obstacles, PamPlayer pamPlayer) {
         this.waveBudgets = waveBudgets;
@@ -78,12 +77,17 @@ public class WaveSystem extends EntitySystem {
 
     private void spawnLevelObstacles(Field field) {
         for (LevelDef.ObstacleSpawn spawn : obstacles) {
-            switch (spawn.type) {
-                case GRAVE -> field.addObstacle(new Grave(new Vec2d(spawn.column, spawn.lane)), spawn.lane, spawn.column);
-                case GLACIER -> field.addObstacle(new Glacier(new Vec2d(spawn.column,spawn.lane),ZombieDef.IMP), spawn.lane, spawn.column);
-                case ARCADE -> field.addObstacle(new ArcadeMachine(new Vec2d(spawn.column,spawn.lane),600,18), spawn.lane, spawn.column);
-                case REDIRECTOR_UP -> field.addObstacle(new Redirector(new Vec2d(spawn.column,spawn.lane),Redirector.Direction.UP), spawn.lane, spawn.column);
-                case REDIRECTOR_DOWN -> field.addObstacle(new Redirector(new Vec2d(spawn.column,spawn.lane),Redirector.Direction.DOWN), spawn.lane, spawn.column);
+            switch (spawn.type()) {
+                case GRAVE ->
+                    field.addObstacle(new Grave(new Vec2d(spawn.column(), spawn.lane())), spawn.lane(), spawn.column());
+                case GLACIER ->
+                    field.addObstacle(new Glacier(new Vec2d(spawn.column(), spawn.lane()), ZombieDef.IMP), spawn.lane(), spawn.column());
+                case ARCADE ->
+                    field.addObstacle(new ArcadeMachine(new Vec2d(spawn.column(), spawn.lane()), 600, 18), spawn.lane(), spawn.column());
+                case REDIRECTOR_UP ->
+                    field.addObstacle(new Redirector(new Vec2d(spawn.column(), spawn.lane()), Redirector.Direction.UP), spawn.lane(), spawn.column());
+                case REDIRECTOR_DOWN ->
+                    field.addObstacle(new Redirector(new Vec2d(spawn.column(), spawn.lane()), Redirector.Direction.DOWN), spawn.lane(), spawn.column());
             }
         }
     }
@@ -92,7 +96,7 @@ public class WaveSystem extends EntitySystem {
         return BASE_SPAWN_DURATION / Math.max(1, waveNumber);
     }
 
-    private void spawnZombie(Field field, @NotNull ZombieDef chosen) {
+    private void spawnZombie(@NonNull Field field, @NotNull ZombieDef chosen) {
         int lane = rng.nextInt(field.getTotalLanes());
         Vec2d spawnPosition = new Vec2d(field.getTotalColumns() + OFFSCREEN_SPAWN_MARGIN_COLUMNS, lane);
 
@@ -101,6 +105,13 @@ public class WaveSystem extends EntitySystem {
         ZombieAnimationLocator.applyArmorVisibility(chosen, zombie.get(PamAnimationComponent.class));
         trackWaveHealth(zombie);
         field.addZombie(zombie);
+
+        if (chosen == ZombieDef.ARCADE) {
+            int machineColumn = field.getTotalColumns() - 1;
+            Vec2d machinePosition = new Vec2d(machineColumn, lane);
+            field.addObstacle(new ArcadeMachine(machinePosition, ARCADE_MACHINE_HP, ARCADE_MACHINE_SPAWN_INTERVAL_SECONDS), lane, machineColumn);
+        }
+
         onZombieSpawned.accept(chosen);
     }
 
@@ -114,8 +125,10 @@ public class WaveSystem extends EntitySystem {
             public void OnHealthChanged(int currentHealth, int maxHealth, int delta) {
                 currentWaveDamageDealt -= delta;
             }
+
             @Override
-            public void onMaxHealthChanged(int maxHealth, int delta) {}
+            public void onMaxHealthChanged(int maxHealth, int delta) {
+            }
         });
     }
 
@@ -164,9 +177,17 @@ public class WaveSystem extends EntitySystem {
         return waveNumber == waveBudgets.length;
     }
 
-    public int getWaveNumber() { return waveNumber; }
-    public int getTotalWaves() { return waveBudgets.length; }
-    public boolean isGameFinished(Field field) { return isFinalWave() && isWaveSpawningDone() && field.getActiveZombies().isEmpty(); }
+    public int getWaveNumber() {
+        return waveNumber;
+    }
+
+    public int getTotalWaves() {
+        return waveBudgets.length;
+    }
+
+    public boolean isGameFinished(Field field) {
+        return isFinalWave() && isWaveSpawningDone() && field.getActiveZombies().isEmpty();
+    }
 
     public float getProgress() {
         int totalBudget = Arrays.stream(waveBudgets).sum();

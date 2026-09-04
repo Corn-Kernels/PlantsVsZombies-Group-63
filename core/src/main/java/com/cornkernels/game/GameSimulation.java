@@ -32,10 +32,14 @@ public class GameSimulation {
             pamPlayer
         );
 
+        SunSystem sunSystem = new SunSystem(random);
+        sunSystem.setSpawningEnabled(gameAttributes.levelDef.chapter != 4);
+
         addSystem(new CombatSystem());
         addSystem(new PlantAttackSystem(pamPlayer));
         addSystem(new PlantFoodEffectSystem());
-        addSystem(new SunSystem(random));
+        addSystem(new ObstacleSystem());
+        addSystem(sunSystem);
         addSystem(new ZombieSystem(pamPlayer));
         addSystem(lawnMowersSystem);
         addSystem(waveSystem);

@@ -6,7 +6,6 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
-import com.cornkernels.game.map.grid.GridPosition;
 import org.jetbrains.annotations.NotNull;
 
 public class CitronBehavior implements PlantAttackBehavior {

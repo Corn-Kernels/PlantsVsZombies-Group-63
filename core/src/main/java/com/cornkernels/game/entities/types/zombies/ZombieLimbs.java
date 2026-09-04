@@ -9,38 +9,22 @@ import pvz.libpvz.pam.PamPlayer;
 
 public class ZombieLimbs extends Entity {
 
-    public enum LimbType {
-        HEAD("particle_head", 0.07f),
-        ARM("particle_arm", 0.05f);
-
-        public final String nodeName;
-        public final float initialYVelocity;
-
-        LimbType(String nodeName, float initialYVelocity) {
-            this.nodeName = nodeName;
-            this.initialYVelocity = initialYVelocity;
-        }
-    }
-
+    private static final float GRAVITY = -0.01f;
+    private static final float WAIT_DURATION = 10f;
+    private static final float FADE_DURATION = 8f;
+    private final float rotationSpeed;
+    private final float groundY;
+    public float rotation;
+    public float alpha = 1.0f;
     private float velocityY;
     private float velocityX;
-    public float rotation;
-    private final float rotationSpeed;
-
-    private static final float GRAVITY = -0.01f;
-    private final float groundY;
     private boolean hasLanded = false;
     private float waitTimer = 0f;
     private float fadeTimer = 0f;
-    public float alpha = 1.0f;
-
-    // LOWERED TIMERS to fix the long disappear time
-    private static final float WAIT_DURATION = 10f;
-    private static final float FADE_DURATION = 8f;
 
     public ZombieLimbs(LimbType type, Vec2d spawnPosition, float groundY, ZombieDef def, PamPlayer pamPlayer) {
         super();
-        if(type==LimbType.HEAD)
+        if (type == LimbType.HEAD)
             this.groundY = groundY - 0.8f;
         else
             this.groundY = groundY - 0.4f;
@@ -89,6 +73,19 @@ public class ZombieLimbs extends Entity {
                     markForRemoval();
                 }
             }
+        }
+    }
+
+    public enum LimbType {
+        HEAD("particle_head", 0.07f),
+        ARM("particle_arm", 0.05f);
+
+        public final String nodeName;
+        public final float initialYVelocity;
+
+        LimbType(String nodeName, float initialYVelocity) {
+            this.nodeName = nodeName;
+            this.initialYVelocity = initialYVelocity;
         }
     }
 }

@@ -5,15 +5,15 @@ import com.cornkernels.game.entities.components.PamAnimationComponent;
 
 public class Redirector extends AbstractObstacle {
 
-    public enum Direction {
-        UP, DOWN
-    }
-
     public final Direction direction;
 
     public Redirector(Vec2d position, Direction direction) {
         super(position);
         this.direction = direction;
         add(new PamAnimationComponent());
+    }
+
+    public enum Direction {
+        UP, DOWN
     }
 }

@@ -12,7 +12,6 @@ import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
-import com.cornkernels.game.entities.types.zombies.ZombieLimbs;
 import com.cornkernels.game.map.data.LawnMowerSlot;
 import com.cornkernels.game.map.grid.GridObject;
 import com.cornkernels.game.map.grid.GridPosition;
@@ -57,7 +56,7 @@ public class Field {
         this.activeLawnMowers = new ArrayList<>(5);
         this.activeZombieProjectiles = new ArrayList<>();
         this.activeEffects = new ArrayList<>();
-        this.extras=new ArrayList<>();
+        this.extras = new ArrayList<>();
         initializeLawnMowers(lawnMowerSlots);
     }
 
@@ -73,6 +72,7 @@ public class Field {
         for (int i = 0; i < totalLanes; i++) {
             for (int j = 0; j < totalColumns; j++) {
                 grids[i][j].clearZombies();
+                grids[i][j].removeObstacle();
             }
         }
 
@@ -82,6 +82,14 @@ public class Field {
                 continue;
             }
             grids[pos.lane()][pos.column()].addZombie(zombie);
+        }
+
+        for (AbstractObstacle obstacle : activeObstacles) {
+            GridPosition pos = GridPosition.fromContinuous(obstacle.get(PositionComponent.class).position);
+            if (pos.lane() < 0 || pos.lane() >= totalLanes || pos.column() < 0 || pos.column() >= totalColumns) {
+                continue;
+            }
+            grids[pos.lane()][pos.column()].provideObstacle(obstacle);
         }
 
         for (int i = 0; i < totalLanes; i++) {
@@ -121,6 +129,10 @@ public class Field {
     public void addObstacle(AbstractObstacle obstacle, int lane, int column) {
         activeObstacles.add(obstacle);
         grids[lane][column].provideObstacle(obstacle);
+    }
+
+    public void addObstacle(AbstractObstacle obstacle) {
+        activeObstacles.add(obstacle);
     }
 
     public void addProjectile(AbstractProjectile projectile) {
@@ -185,11 +197,11 @@ public class Field {
     public List<Entity> getEntities() {
         List<Entity> entities = new ArrayList<>();
         entities.addAll(activePlants);
+        entities.addAll(activeObstacles);
         entities.addAll(activeZombies);
         entities.addAll(activeProjectiles);
         entities.addAll(activeSuns);
         entities.addAll(activeLawnMowers);
-        entities.addAll(activeObstacles);
         entities.addAll(activeZombieProjectiles);
         entities.addAll(activeEffects);
         entities.addAll(extras);

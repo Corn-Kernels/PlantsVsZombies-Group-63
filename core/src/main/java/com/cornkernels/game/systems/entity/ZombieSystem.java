@@ -35,6 +35,21 @@ public class ZombieSystem extends EntitySystem {
         this.pamPlayer = pamPlayer;
     }
 
+    public static void applyClip(@NonNull ZombieInstance zombie) {
+        ZombieStateComponent state = zombie.get(ZombieStateComponent.class);
+        if (state == null) return;
+
+        String baseClip = state.state == ZombieStateComponent.State.EATING ? "eat" : state.state == ZombieStateComponent.State.WALKING ? "walk" : null;
+        if (baseClip == null) return;
+
+        ArmorComponent armor = zombie.get(ArmorComponent.class);
+        boolean hasNewspaper = armor != null && armor.armorType == ArmorType.NEWSPAPER && !armor.isDestroyed() && !zombie.has(EnragedComponent.class);
+        String resolvedClipName = hasNewspaper ? baseClip + "_newspaper" : baseClip;
+
+        ZombieDef def = zombie.get(ZombieDefComponent.class).def();
+        ZombieAnimationLocator.applyClip(pamPlayer, zombie.get(PamAnimationComponent.class), def, resolvedClipName);
+    }
+
     @Override
     public void update(float deltaTick) {
         for (ZombieInstance zombie : field.getActiveZombies()) {
@@ -203,21 +218,6 @@ public class ZombieSystem extends EntitySystem {
             return true;
         }
         return false;
-    }
-
-    public static void applyClip(@NonNull ZombieInstance zombie) {
-        ZombieStateComponent state = zombie.get(ZombieStateComponent.class);
-        if (state == null) return;
-
-        String baseClip = state.state == ZombieStateComponent.State.EATING ? "eat" : state.state == ZombieStateComponent.State.WALKING ? "walk" : null;
-        if (baseClip == null) return;
-
-        ArmorComponent armor = zombie.get(ArmorComponent.class);
-        boolean hasNewspaper = armor != null && armor.armorType == ArmorType.NEWSPAPER && !armor.isDestroyed() && !zombie.has(EnragedComponent.class);
-        String resolvedClipName = hasNewspaper ? baseClip + "_newspaper" : baseClip;
-
-        ZombieDef def = zombie.get(ZombieDefComponent.class).def();
-        ZombieAnimationLocator.applyClip(pamPlayer, zombie.get(PamAnimationComponent.class), def, resolvedClipName);
     }
 
     private void updateDying(@NonNull ZombieInstance zombie, float deltaTick) {

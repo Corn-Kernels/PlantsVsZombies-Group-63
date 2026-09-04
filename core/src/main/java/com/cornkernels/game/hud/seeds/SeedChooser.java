@@ -77,12 +77,6 @@ public class SeedChooser {
         return chosen;
     }
 
-    /**
-     * First click on a plant just marks it "pending" (highlighted, and eligible for the Boost
-     * button) without moving it into a seed slot yet. Clicking that same pending plant again
-     * confirms it, moving it into the first empty tray slot - whatever its boosted status is by
-     * then carries over, since the tray packet is built from the same {@link SeedSlot}.
-     */
     private void onMenuClicked(@NonNull SeedPacket menuPacket) {
         if (menuPacket.isSelected()) return;
 
@@ -103,7 +97,6 @@ public class SeedChooser {
         menuPacket.setPending(true);
     }
 
-    /** The plant currently awaiting a confirming click, if any - what the Boost button acts on. */
     public @Nullable SeedSlot getPendingSlot() {
         return pendingMenuPacket != null ? pendingMenuPacket.getSeedSlot() : null;
     }
