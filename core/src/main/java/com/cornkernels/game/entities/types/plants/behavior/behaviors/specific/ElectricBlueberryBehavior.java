@@ -27,13 +27,7 @@ public class ElectricBlueberryBehavior implements PlantAttackBehavior {
 
     @Override
     public void execute(Entity self, Field field) {
-        List<Entity> validTargets = new ArrayList<>();
-        for (Entity e : field.getEntities()) {
-            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
-                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
-                validTargets.add(e);
-            }
-        }
+        List<Entity> validTargets = new ArrayList<>(getAllValidTargets(field));
 
         if (validTargets.isEmpty()) return;
 

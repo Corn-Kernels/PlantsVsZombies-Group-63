@@ -6,6 +6,8 @@ import com.cornkernels.game.entities.components.HealthComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.plant_specific.specific_specific.ChomperComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
+import com.cornkernels.game.entities.types.obstacles.Grave;
+import com.cornkernels.game.entities.types.obstacles.PushableObstacle;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
@@ -58,13 +60,11 @@ public class ChomperBehavior implements PlantAttackBehavior {
         int lane = GridPosition.fromContinuous(origin).lane();
 
         List<Entity> frontTargets = new ArrayList<>();
-        for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
+        for (Entity z : getAllValidTargets(field)) {
                 double targetX = z.get(PositionComponent.class).position.getX() + 0.5;
                 if (targetX > originX && targetX - originX <= frontRange) {
                     frontTargets.add(z);
                 }
-            }
         }
 
         if (!frontTargets.isEmpty()) {
@@ -73,7 +73,7 @@ public class ChomperBehavior implements PlantAttackBehavior {
             Entity target = frontTargets.get(0);
             HealthComponent hc = target.get(HealthComponent.class);
 
-            if (hc != null && hc.maxHealth >= heavyThreshold) {
+            if (hc != null && hc.maxHealth >= heavyThreshold || frontTargets.get(0) instanceof PushableObstacle || frontTargets.get(0) instanceof Grave) {
                 CombatSystem.applyDamage(target, chompDamage, false);
                 state.biteCooldownTicks = this.biteCooldownTicks;
             } else {

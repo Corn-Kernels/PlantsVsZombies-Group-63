@@ -30,6 +30,8 @@ public class HomingProjectile extends AbstractProjectile {
 
     @Override
     public boolean hit(@NonNull Entity target, Field field) {
+        if(!field.getEntities().contains(target))
+            return true;
         if (target == this.target){
             elapsedTime ++;
             if (elapsedTime >= TIMEOUT_SECONDS) {

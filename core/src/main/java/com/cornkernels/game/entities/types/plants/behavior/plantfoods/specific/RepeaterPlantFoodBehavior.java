@@ -33,7 +33,7 @@ public class RepeaterPlantFoodBehavior implements PlantFoodBehavior {
             }
             // 2. Ticks 20 down to 2: Do nothing (Dramatic pause)
             // 3. Tick 1: Fire the massive finishing pea
-            else if (pf.timerTicks == 1) {
+            else if (pf.timerTicks == 2) {
                 field.addProjectile(bigProjectile.clone(spawnPos));
             }
 

@@ -4,11 +4,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.cornkernels.engine.renderer.camera.GameplayCamera;
 import com.cornkernels.engine.utility.InputSnapshot;
+import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.data.MapData;
-import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.systems.controller.plants.PlantingController;
 import com.cornkernels.game.systems.entity.SunSystem;
 import org.jspecify.annotations.NonNull;
@@ -43,22 +43,26 @@ public class SunHarvestController {
     }
 
     private boolean containsPoint(@NonNull SunInstance sun, float worldX, float worldY) {
-        GridPosition landingPosition = GridPosition.fromContinuous(sun.get(PositionComponent.class).position);
-        int lane = landingPosition.lane();
-        int column = landingPosition.column();
-        if (lane < 0 || lane >= mapData.cellBounds.length) return false;
-        Rectangle[] row = mapData.cellBounds[lane];
-        if (column < 0 || column >= row.length) return false;
+        Vec2d continuousPos = sun.get(PositionComponent.class).position;
 
-        Rectangle landedBounds = row[column];
-        float landedY = landedBounds.y + landedBounds.height / 2f;
-        float currentY = SunSystem.currentDrawY(sun, landedY, landedBounds.height, mapData);
+        // Calculate the exact world bounds based on the sun's physical continuous position
+        Rectangle origin = mapData.cellBounds[0][0];
 
-        float halfWidth = landedBounds.width / 2f;
-        float halfHeight = landedBounds.height / 2f;
-        float centerX = landedBounds.x + halfWidth;
+        float columnStep = mapData.cellBounds[0].length > 1
+            ? mapData.cellBounds[0][1].x - origin.x
+            : origin.width;
+
+        float laneStep = mapData.cellBounds.length > 1
+            ? mapData.cellBounds[1][0].y - origin.y
+            : origin.height;
+
+        float centerX = origin.x + origin.width / 2f + continuousPos.getX() * columnStep;
+        float centerY = origin.y + origin.height / 2f + continuousPos.getY() * laneStep;
+
+        float halfWidth = origin.width / 2f;
+        float halfHeight = origin.height / 2f;
 
         return worldX >= centerX - halfWidth && worldX <= centerX + halfWidth
-            && worldY >= currentY - halfHeight && worldY <= currentY + halfHeight;
+            && worldY >= centerY - halfHeight && worldY <= centerY + halfHeight;
     }
 }

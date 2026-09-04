@@ -54,10 +54,7 @@ public class MeleeAttackBehavior implements PlantAttackBehavior {
         double plantX = origin.getX() + 0.5;
         int lane = GridPosition.fromContinuous(origin).lane();
 
-        for (Entity e : field.getEntities()) {
-            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
-                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
-
+        for (Entity e : getAllValidTargets(field)) {
                 if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
                     double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
 
@@ -66,7 +63,6 @@ public class MeleeAttackBehavior implements PlantAttackBehavior {
                         validTargets.add(e);
                     }
                 }
-            }
         }
 
         validTargets.sort((e1, e2) -> {

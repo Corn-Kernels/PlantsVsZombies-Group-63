@@ -44,9 +44,7 @@ public class RotobagaBehavior implements PlantAttackBehavior {
         boolean shootTopLeft = false;
         boolean shootBottomLeft = false;
 
-        for (Entity e : field.getEntities()) {
-            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
-                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+        for (Entity e : getAllValidTargets(field)) {
 
                 Vec2d pos = e.get(PositionComponent.class).position;
                 double dx = pos.getX() - centerX;
@@ -63,7 +61,6 @@ public class RotobagaBehavior implements PlantAttackBehavior {
                         shootBottomLeft = true;
                     }
                 }
-            }
         }
 
         if (shootTopRight) spawnProjectiles(field, centerX, centerY, diagSpeed, -diagSpeed, 1, -1);

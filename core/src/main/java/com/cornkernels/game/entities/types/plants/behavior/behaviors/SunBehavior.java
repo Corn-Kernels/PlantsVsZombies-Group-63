@@ -13,14 +13,11 @@ public class SunBehavior implements PlantAttackBehavior {
     private final int sunCount;
     private final SunType sunType;
     private final double doubleSunChance;
-    private static final float RANDOM_OFFSET_RANGE = 0.5f; // in grid cells
 
-    // Standard constructor for 0% double chance
     public SunBehavior(int sunCount, SunType sunType) {
         this(sunCount, sunType, 0.0);
     }
 
-    // Overloaded constructor for leveled plants with a double sun chance
     public SunBehavior(int sunCount, SunType sunType, double doubleSunChance) {
         this.sunCount = sunCount;
         this.sunType = sunType;
@@ -32,30 +29,37 @@ public class SunBehavior implements PlantAttackBehavior {
         Vec2d sunSpawnPos = self.get(PositionComponent.class).position;
 
         int actualSunCount = this.sunCount;
-
-        // Roll for double sun
         if (this.doubleSunChance > 0 && Math.random() < this.doubleSunChance) {
             actualSunCount *= 2;
         }
 
         for (int i = 0; i < actualSunCount; i++) {
-            // Base grid position (lane = Y, column = X)
             float baseLane = sunSpawnPos.getY();
             float baseColumn = sunSpawnPos.getX();
 
-            // Add small random offsets
-            float offsetLane = (float)(Math.random() - 0.5) * 2 * RANDOM_OFFSET_RANGE;
-            float offsetColumn = (float)(Math.random() - 0.5) * 3.5f * RANDOM_OFFSET_RANGE;
+            float offsetLane = (float)(Math.random() -1.2) / 2 ;
 
-            // Create sun at the integer cell, then adjust position with offsets
-            SunInstance sun = new SunInstance(sunType,baseLane+offsetLane,baseColumn+offsetColumn, 0.05f);
-            sun.get(SunComponent.class).state= SunComponent.State.LANDED;
+            // Start EXACTLY at the plant (plus the 0.5f vertical hop offset)
+            float startY = baseLane + 0.5f;
+            float startX = baseColumn;
+
+            // End Y incorporates the random spread so it lands uniquely
+            float endY = baseLane + offsetLane;
+
+            SunInstance sun = new SunInstance(sunType, startY, startX, endY);
+            SunComponent sunComp = sun.get(SunComponent.class);
+            sunComp.state = SunComponent.State.SUN_FLOWER;
+
+            // The velocityX creates the horizontal random spread as it arcs
+            sunComp.velocityY = 0.05f;
+            sunComp.velocityX = (float) (Math.random() * 0.06 - 0.03);
+
             field.getActiveSuns().add(sun);
         }
     }
 
     @Override
     public boolean hasTarget(Entity self, Field field) {
-        return true; // You always make sun when you can, duh;
+        return true;
     }
 }

@@ -2,8 +2,10 @@ package com.cornkernels.game.systems.entity;
 
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
+import com.cornkernels.game.entities.components.PamAnimationComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
+import com.cornkernels.game.entities.components.sun_specific.SunComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
@@ -20,6 +22,9 @@ import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.AreaOfIceDamage;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.GrapeshotProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.LightningCloudProjectile;
+import com.cornkernels.game.entities.types.projectile.projectiles.specific.TruePeaProjectile;
+import com.cornkernels.game.entities.types.sun.SunInstance;
+import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.entities.types.zombies.ZombieLimbs;
 
@@ -37,6 +42,42 @@ public class MovementSystem extends EntitySystem {
                 continue;
             }
 
+            // New Physics-Based Sun Logic
+            if (e instanceof SunInstance sun) {
+                SunComponent sunComp = sun.get(SunComponent.class);
+                if (sunComp.state != SunComponent.State.LANDED) {
+                    PositionComponent pComp = sun.get(PositionComponent.class);
+                    float dt = delta * 20f;
+
+                    if (sunComp.state == SunComponent.State.SUN_FLOWER) {
+                        sunComp.velocityY += -0.01f * dt; // Gravity arc
+                    } else if (sunComp.state == SunComponent.State.FALLING) {
+                        sunComp.velocityY = -0.035f; // Constant steady drop from the sky
+                    }
+
+                    float newX = pComp.position.getX() + (sunComp.velocityX * dt);
+                    float newY = pComp.position.getY() + (sunComp.velocityY * dt);
+
+                    // Stop on landing
+                    if (newY <= sunComp.endY) {
+                        newY = sunComp.endY;
+                        sunComp.state = SunComponent.State.LANDED;
+                        sunComp.velocityX = 0f;
+                        sunComp.velocityY = 0f;
+
+                        // Defuse unclicked Radioactive suns upon landing
+                        if (sunComp.type == SunType.RADIOACTIVE) {
+                            sunComp.type = SunType.NORMAL;
+                            if (sun.has(PamAnimationComponent.class)) {
+                                sun.get(PamAnimationComponent.class).tint.set(1f, 1f, 1f, 1f);
+                            }
+                        }
+                    }
+                    pComp.position = new Vec2d(newX, newY);
+                }
+                continue;
+            }
+
             if (!e.has(PositionComponent.class) || !e.has(VelocityComponent.class)) {
                 continue;
             }
@@ -50,6 +91,9 @@ public class MovementSystem extends EntitySystem {
             VelocityComponent velComp = e.get(VelocityComponent.class);
 
             switch (e) {
+                case TruePeaProjectile pea -> {
+                    pea.checkTorchwood(field);
+                }
                 case HomingProjectile homingProj -> {
                     if (homingProj.target != null && homingProj.target.has(PositionComponent.class)) {
                         Vec2d pos = posComp.position;

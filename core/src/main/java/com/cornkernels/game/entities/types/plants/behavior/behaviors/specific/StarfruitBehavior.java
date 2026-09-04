@@ -66,9 +66,7 @@ public class StarfruitBehavior implements PlantAttackBehavior {
         float diagThreshold = (float) (halfWidth * Math.sqrt(2));
         float length = 12.0f;
 
-        for (Entity e : field.getEntities()) {
-            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
-                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+        for (Entity e : getAllValidTargets(field)) {
 
                 Vec2d pos = e.get(PositionComponent.class).position;
                 double dx = pos.getX() - centerX;
@@ -81,7 +79,6 @@ public class StarfruitBehavior implements PlantAttackBehavior {
                     if (dx >= 0 && dy <= 0 && Math.abs(dx + dy) <= diagThreshold) return true;
                     if (dx >= 0 && dy >= 0 && Math.abs(dy - dx) <= diagThreshold) return true;
                 }
-            }
         }
         return false;
     }

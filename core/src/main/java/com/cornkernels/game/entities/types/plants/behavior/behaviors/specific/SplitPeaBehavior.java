@@ -27,15 +27,13 @@ public class SplitPeaBehavior implements PlantAttackBehavior {
         boolean targetForward = false;
         boolean targetBackward = false;
 
-        for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
+        for (Entity z : getAllValidTargets(field)) {
                 double zX = z.get(PositionComponent.class).position.getX();
                 if (zX >= origin.getX()) {
                     targetForward = true;
                 } else {
                     targetBackward = true;
                 }
-            }
         }
 
         if (targetForward) {

@@ -19,6 +19,8 @@ public class HypnoHomingProjectile extends HomingProjectile {
 
     @Override
     public boolean hit(@NonNull Entity target, Field field) {
+        if(!field.getEntities().contains(target))
+            return true;
         if(super.hit(target, field) && target instanceof ZombieInstance){
             target.add(new HypnoComponent());
             VelocityComponent vel = target.get(VelocityComponent.class);

@@ -67,13 +67,11 @@ public class PuffShotBehavior extends DirectShotBehavior {
         Vec2d origin = self.get(PositionComponent.class).position;
         int lane = GridPosition.fromContinuous(origin).lane();
 
-        for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
+        for (Entity z : getAllValidTargets(field)) {
                 double zX = z.get(PositionComponent.class).position.getX();
                 if (zX >= origin.getX() && zX <= origin.getX() + maxRangeTiles) {
                     return true;
                 }
-            }
         }
 
         for (Entity e : field.getEntities()) {

@@ -26,6 +26,7 @@ import com.cornkernels.game.entities.types.projectile.AbstractZombieProjectile;
 import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.BoneProjectile;
 import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.OctopusProjectile;
 import com.cornkernels.game.entities.types.projectile.ZombieProjectiles.SnowballProjectile;
+import com.cornkernels.game.entities.types.projectile.projectiles.specific.TruePeaProjectile;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
@@ -67,6 +68,10 @@ public class PamRenderSystem extends RenderSystem {
     private static final String SUN_BOMB_PAM = "768/FULL/EFFECTS/SUN_BOMB/SUN_BOMB.PAM";
     private static final String ELECTROBALL_PAM = "768/INITIAL/EFFECTS/ELECTRIC_PEASHOOTER_ELECTROBALL/ELECTRIC_PEASHOOTER_ELECTROBALL.PAM";
 
+    private static final String FIRE_PEA_PAM = "768/INITIAL/EFFECTS/T_FIRE_PEA/T_FIRE_PEA.PAM";
+    private static final String SNOW_PEA_PAM = "768/INITIAL/EFFECTS/T_SNOW_PEA/T_SNOW_PEA.PAM";
+    private static final String NORMAL_PEA_PAM = "768/INITIAL/EFFECTS/T_PEA_PROJECTILE/T_PEA_PROJECTILE.PAM";
+
     public PamRenderSystem(SpriteBatch batch, PamPlayer pamPlayer, MapData mapData) {
         super(batch);
         this.pamPlayer = pamPlayer;
@@ -84,6 +89,10 @@ public class PamRenderSystem extends RenderSystem {
         pamPlayer.loadSync(GRAVE_PAM);
         pamPlayer.loadSync(SUN_BOMB_PAM);
         pamPlayer.loadSync(ELECTROBALL_PAM);
+
+        pamPlayer.loadSync(FIRE_PEA_PAM);
+        pamPlayer.loadSync(SNOW_PEA_PAM);
+        pamPlayer.loadSync(NORMAL_PEA_PAM);
     }
 
     private static float sunVisualScale(@NonNull SunType sunType) {
@@ -109,8 +118,14 @@ public class PamRenderSystem extends RenderSystem {
             if (anim.currentClip == null && entity instanceof AbstractObstacle obstacle) {
                 assignObstacleClip(anim, obstacle);
             }
+
             if (anim.currentClip == null && entity instanceof AbstractProjectile projectile) {
-                ProjectileAnimationLocator.assignClip(pamPlayer, anim, projectile);
+                if (projectile instanceof TruePeaProjectile pea) {
+                    anim.currentClip = getSafeClip(pea.pamPath, pea.clipName);
+                    anim.isLooping = true;
+                } else {
+                    ProjectileAnimationLocator.assignClip(pamPlayer, anim, projectile);
+                }
             }
 
             anim.stateTime += delta;
@@ -122,10 +137,6 @@ public class PamRenderSystem extends RenderSystem {
 
             float x = bounds.x + bounds.width / 2f;
             float y = bounds.y + bounds.height / 2f;
-
-            if (entity instanceof SunInstance sun) {
-                y = SunSystem.currentDrawY(sun, y, bounds.height, mapData);
-            }
 
             float alpha = 1f;
             if (entity instanceof ZombieInstance zombie) {

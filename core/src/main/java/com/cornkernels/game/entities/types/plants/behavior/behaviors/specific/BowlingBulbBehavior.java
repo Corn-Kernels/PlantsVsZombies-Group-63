@@ -66,16 +66,13 @@ public class BowlingBulbBehavior implements PlantAttackBehavior {
         Vec2d origin = self.get(PositionComponent.class).position;
         int lane = GridPosition.fromContinuous(origin).lane();
 
-        for (Entity e : field.getEntities()) {
-            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
-                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+        for (Entity e : getAllValidTargets(field)) {
 
                 if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
                     if (e.get(PositionComponent.class).position.getX() >= origin.getX()) {
                         return true;
                     }
                 }
-            }
         }
         return false;
     }

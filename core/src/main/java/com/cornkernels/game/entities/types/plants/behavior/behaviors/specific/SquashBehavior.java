@@ -71,9 +71,7 @@ public class SquashBehavior implements PlantAttackBehavior {
         Entity closestTarget = null;
         double minDistance = Double.MAX_VALUE;
 
-        for (Entity e : field.getEntities()) {
-            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
-                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+        for (Entity e : getAllValidTargets(field)) {
 
                 if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
                     double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
@@ -84,7 +82,6 @@ public class SquashBehavior implements PlantAttackBehavior {
                         closestTarget = e;
                     }
                 }
-            }
         }
 
         if (closestTarget != null) {
