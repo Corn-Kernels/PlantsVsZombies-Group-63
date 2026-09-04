@@ -11,4 +11,5 @@ public class PlantFoodEffectSystem extends EntitySystem {
         }
     }
     //shortened
+    /// kill
 }
