@@ -10,4 +10,5 @@ public class PlantFoodEffectSystem extends EntitySystem {
             effect.tickEnding(delta);
         }
     }
+    //shortened
 }

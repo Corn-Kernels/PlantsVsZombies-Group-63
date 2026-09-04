@@ -39,101 +39,99 @@ public class CombatSystem extends EntitySystem {
     }
 
     public static void applyDamage(Entity target, int amount, boolean ignoresArmor, Field field) {
+        if (isInvulnerable(target)) return;
+        if (target instanceof ZombieInstance) amount = Math.round(amount * plantDamageMultiplier);
+        if (handleShields(target, amount)) return;
 
+        int initialRemaining = amount;
+        int remaining = ignoresArmor ? amount : handleArmor(target, amount);
+        int healthDamage = handleHealthDamage(target, remaining);
+
+        applySunInfection(target, field, initialRemaining, remaining, healthDamage);
+    }
+
+    private static boolean isInvulnerable(Entity target) {
         if (target instanceof PlantInstance && target.has(PlantFoodComponent.class)) {
             PlantFoodComponent plantFoodComponent = target.get(PlantFoodComponent.class);
-            if (plantFoodComponent.isActive()) {
-                return;
-            }
+            return plantFoodComponent.isActive();
         }
+        return false;
+    }
 
-        if (target instanceof ZombieInstance) {
-            amount = Math.round(amount * plantDamageMultiplier);
-        }
-
-        // 1. Intercept damage for Octopus
+    private static boolean handleShields(Entity target, int amount) {
         if (target.has(OctoedComponent.class)) {
             OctoedComponent octo = target.get(OctoedComponent.class);
             octo.currentHealth -= amount;
-            if (octo.currentHealth <= 0) {
-                target.removeAll(OctoedComponent.class); // Octopus destroyed, plant freed!
-            }
-            return; // Exit early so the plant's health is completely shielded
+            if (octo.currentHealth <= 0) target.removeAll(OctoedComponent.class);
+            return true;
         }
 
-        // 2. Intercept damage for Frozen Blocks
         PlantFreezeComponent freezeComp = target.get(PlantFreezeComponent.class);
         if (freezeComp != null && freezeComp.frozenHp > 0) {
             freezeComp.frozenHp -= amount;
             if (freezeComp.frozenHp <= 0) {
                 freezeComp.frozenHp = 0;
-                freezeComp.freezeLayers = 0; // Ice block destroyed, plant freed!
+                freezeComp.freezeLayers = 0;
             }
-            return; // Exit early so the plant's health is completely shielded
+            return true;
         }
+        return false;
+    }
 
+    private static int handleArmor(Entity target, int amount) {
         int remaining = amount;
-        int initialRemaining = remaining;
+        List<ArmorComponent> destroyedArmors = new ArrayList<>();
 
-        if (!ignoresArmor) {
-            List<ArmorComponent> destroyedArmors = new ArrayList<>();
-
-            for (ArmorComponent armor : target.getAll(ArmorComponent.class)) {
-                if (remaining <= 0) break;
-                remaining = armor.absorbDamage(remaining);
-
-                // Track armors that have no health left
-                if (armor.currentArmorHealth <= 0) {
-                    destroyedArmors.add(armor);
-                }
-            }
-
-            // Remove the destroyed armors safely after the loop
-            for (ArmorComponent brokenArmor : destroyedArmors) {
-                target.remove(ArmorComponent.class,brokenArmor);
-            }
+        for (ArmorComponent armor : target.getAll(ArmorComponent.class)) {
+            if (remaining <= 0) break;
+            remaining = armor.absorbDamage(remaining);
+            if (armor.currentArmorHealth <= 0) destroyedArmors.add(armor);
         }
 
-        int healthDamage = 0;
+        for (ArmorComponent brokenArmor : destroyedArmors) {
+            target.remove(ArmorComponent.class, brokenArmor);
+        }
+        return remaining;
+    }
+
+    private static int handleHealthDamage(Entity target, int remaining) {
         HealthComponent health = target.get(HealthComponent.class);
+        if (remaining <= 0 || health == null) return 0;
 
-        if (remaining > 0 && health != null) {
-            healthDamage = Math.min(health.currentHealth, remaining);
+        int healthDamage = Math.min(health.currentHealth, remaining);
+        health.adjustHealth(-remaining);
 
-            health.adjustHealth(-remaining);
+        if (health.isDead()) {
+            ZombieStateComponent state = target.get(ZombieStateComponent.class);
+            if (state != null && state.state != ZombieStateComponent.State.DEAD) {
+                state.changeState(ZombieStateComponent.State.DEAD);
+                target.add(new ZombieDeathComponent());
+            } else if (state == null) {
+                target.markForRemoval();
+            }
+        }
+        return healthDamage;
+    }
 
-            if (health.isDead()) {
-                ZombieStateComponent state = target.get(ZombieStateComponent.class);
-                if (state != null) {
-                    if (state.state != ZombieStateComponent.State.DEAD) {
-                        state.changeState(ZombieStateComponent.State.DEAD);
-                        target.add(new ZombieDeathComponent());
-                    }
-                } else {
-                    target.markForRemoval();
-                }
+    private static void applySunInfection(Entity target, Field field, int initialRemaining, int remaining, int healthDamage) {
+        if (field == null || !target.has(SunInfectedComponent.class)) return;
+
+        HealthComponent health = target.get(HealthComponent.class);
+        int totalDamageDealt = (initialRemaining - remaining) + healthDamage;
+
+        if (health != null && health.isDead()) {
+            for (ArmorComponent armor : target.getAll(ArmorComponent.class)) {
+                totalDamageDealt += armor.currentArmorHealth;
             }
         }
 
-        if (field != null && target.has(SunInfectedComponent.class)) {
-            int totalDamageDealt = (initialRemaining - remaining) + healthDamage;
-
-            if (health != null && health.isDead()) {
-                for (ArmorComponent armor : target.getAll(ArmorComponent.class)) {
-                    totalDamageDealt += armor.currentArmorHealth;
-                }
-            }
-
-            if (totalDamageDealt > 0) {
-                for (SunInfectedComponent infection : target.getAll(SunInfectedComponent.class)) {
-                    infection.accumulatedDamage += totalDamageDealt;
-
-                    while (infection.accumulatedDamage >= 25) {
-                        infection.accumulatedDamage -= 25;
-
-                        Vec2d pos = target.get(PositionComponent.class).position;
-                        field.addSun(new SunInstance(SunType.SMALL, (int) pos.getY(), (int) pos.getX(), 0));
-                    }
+        if (totalDamageDealt > 0) {
+            for (SunInfectedComponent infection : target.getAll(SunInfectedComponent.class)) {
+                infection.accumulatedDamage += totalDamageDealt;
+                while (infection.accumulatedDamage >= 25) {
+                    infection.accumulatedDamage -= 25;
+                    Vec2d pos = target.get(PositionComponent.class).position;
+                    field.addSun(new SunInstance(SunType.SMALL, (int) pos.getY(), (int) pos.getX(), 0));
                 }
             }
         }
@@ -141,28 +139,55 @@ public class CombatSystem extends EntitySystem {
 
     @Override
     public void update(float delta) {
+        processPlantProjectiles();
+        processZombieProjectiles();
+    }
+
+    private void processPlantProjectiles() {
+        List<Entity> validTargets = getValidPlantTargets();
+
+        for (AbstractProjectile projectile : List.copyOf(field.getActiveProjectiles())) {
+            if (projectile.isMarkedForRemoval()) continue;
+            Vec2d pos = projectile.get(PositionComponent.class).position;
+
+            if (pos.getX() < 0 || pos.getX() > field.getTotalColumns()) {
+                projectile.markForRemoval();
+                continue;
+            }
+
+            for (Entity target : validTargets) {
+                if (target.isMarkedForRemoval() || target.has(GraveBeingEatenComponent.class)) continue;
+                if (projectile.hit(target, field)) {
+                    projectile.markForRemoval();
+                    break;
+                }
+            }
+        }
+    }
+
+    private List<Entity> getValidPlantTargets() {
         List<Entity> validTargets = new ArrayList<>();
         for (Entity e : field.getEntities()) {
             boolean isLiveZombie = e instanceof ZombieInstance && !e.has(HypnoComponent.class)
                 && e.get(ZombieStateComponent.class).state != ZombieStateComponent.State.DEAD;
-            if (!e.isMarkedForRemoval() && (isLiveZombie || e instanceof Grave)) {
+
+            if (!e.isMarkedForRemoval() && (isLiveZombie || e instanceof Grave || e instanceof PushableObstacle)) {
                 validTargets.add(e);
-            }
-            if (!e.isMarkedForRemoval() && e instanceof PlantInstance) {
+            } else if (!e.isMarkedForRemoval() && e instanceof PlantInstance) {
                 PlantFreezeComponent freezeComp = e.get(PlantFreezeComponent.class);
-                // Safe check preventing NullPointerException if a plant doesn't have the freeze component
                 if (e.has(OctoedComponent.class) || (freezeComp != null && freezeComp.frozenHp > 0)) {
                     validTargets.add(e);
                 }
             }
-            if(e instanceof PushableObstacle){
-                validTargets.add(e);
-            }
         }
+        return validTargets;
+    }
 
-        for (AbstractProjectile projectile : List.copyOf(field.getActiveProjectiles())) {
+    private void processZombieProjectiles() {
+        List<Entity> validTargets = getValidZombieTargets();
+
+        for (AbstractZombieProjectile projectile : List.copyOf(field.getActiveZombieProjectiles())) {
             if (projectile.isMarkedForRemoval()) continue;
-
             Vec2d pos = projectile.get(PositionComponent.class).position;
 
             if (pos.getX() < 0 || pos.getX() > field.getTotalColumns()) {
@@ -172,18 +197,17 @@ public class CombatSystem extends EntitySystem {
 
             for (Entity target : validTargets) {
                 if (target.isMarkedForRemoval()) continue;
-                if (target.has(GraveBeingEatenComponent.class)) continue;
-
-                if (!projectile.hit(target, field)) {
-                    continue;
+                if (projectile.hit(target, field)) {
+                    field.removeZombieProjectile(projectile);
+                    projectile.markForRemoval();
+                    break;
                 }
-
-                projectile.markForRemoval();
-                break;
             }
         }
+    }
 
-        validTargets = new ArrayList<>();
+    private List<Entity> getValidZombieTargets() {
+        List<Entity> validTargets = new ArrayList<>();
         for (Entity e : field.getEntities()) {
             if (!e.isMarkedForRemoval() && (e instanceof PlantInstance)) {
                 PlantFreezeComponent freezeComp = e.get(PlantFreezeComponent.class);
@@ -192,27 +216,6 @@ public class CombatSystem extends EntitySystem {
                 }
             }
         }
-
-        for (AbstractZombieProjectile projectile : List.copyOf(field.getActiveZombieProjectiles())) {
-            if (projectile.isMarkedForRemoval()) continue;
-
-            Vec2d pos = projectile.get(PositionComponent.class).position;
-
-            if (pos.getX() < 0 || pos.getX() > field.getTotalColumns()) {
-                projectile.markForRemoval();
-                continue;
-            }
-
-            for (Entity target : validTargets) {
-                if (target.isMarkedForRemoval()) continue;
-
-                if (!projectile.hit(target, field)) {
-                    continue;
-                }
-                field.removeZombieProjectile(projectile);
-                projectile.markForRemoval();
-                break;
-            }
-        }
+        return validTargets;
     }
 }

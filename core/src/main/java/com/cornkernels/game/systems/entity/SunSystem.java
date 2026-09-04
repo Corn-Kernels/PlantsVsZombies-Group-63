@@ -30,13 +30,11 @@ public class SunSystem extends EntitySystem {
         this.timeUntilNextSpawn = computeNextInterval();
     }
 
-    public static boolean tryHarvest(@NotNull SunInstance sun, @NotNull Field field,
-                                     @NotNull PlantingController plantingController) {
+    public static boolean tryHarvest(@NotNull SunInstance sun, @NotNull Field field, @NotNull PlantingController plantingController) {
         if (sun.isMarkedForRemoval()) return false;
 
         SunComponent comp = sun.get(SunComponent.class);
 
-        // Radioactive suns explode if clicked while still falling
         if (comp.type == SunType.RADIOACTIVE && comp.state == SunComponent.State.FALLING) {
             explode(sun, field);
             sun.markForRemoval();
@@ -53,6 +51,11 @@ public class SunSystem extends EntitySystem {
         int lane = center.lane();
         int column = center.column();
 
+        explodeZombies(field, lane, column);
+        explodePlants(field, lane, column);
+    }
+
+    private static void explodeZombies(Field field, int lane, int column) {
         for (int dl = -RADIOACTIVE_ZOMBIE_RADIUS; dl <= RADIOACTIVE_ZOMBIE_RADIUS; dl++) {
             for (ZombieInstance zombie : field.getZombiesInLane(lane + dl)) {
                 int zombieColumn = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position).column();
@@ -61,7 +64,9 @@ public class SunSystem extends EntitySystem {
                 }
             }
         }
+    }
 
+    private static void explodePlants(Field field, int lane, int column) {
         for (int dl = -RADIOACTIVE_PLANT_RADIUS; dl <= RADIOACTIVE_PLANT_RADIUS; dl++) {
             for (int dc = -RADIOACTIVE_PLANT_RADIUS; dc <= RADIOACTIVE_PLANT_RADIUS; dc++) {
                 PlantInstance plant = field.getPlantAt(lane + dl, column + dc);
@@ -95,8 +100,6 @@ public class SunSystem extends EntitySystem {
     private void spawnSun(@NotNull Field field) {
         int lane = randomGenerator.nextInt(field.getTotalLanes());
         int column = randomGenerator.nextInt(field.getTotalColumns());
-        SunType type = SunType.random(randomGenerator);
-
-        field.addSun(new SunInstance(type, lane, column)); // Uses sky drop constructor
+        field.addSun(new SunInstance(SunType.random(randomGenerator), lane, column));
     }
 }

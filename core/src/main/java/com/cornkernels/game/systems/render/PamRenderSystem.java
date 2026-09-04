@@ -106,158 +106,168 @@ public class PamRenderSystem extends RenderSystem {
         renderableEntities.sort(Comparator.comparingDouble(e -> -e.get(PositionComponent.class).position.getY()));
 
         for (Entity entity : renderableEntities) {
-            PositionComponent positionComponent = entity.get(PositionComponent.class);
-            PamAnimationComponent anim = entity.get(PamAnimationComponent.class);
-
-            if (anim.currentClip == null && entity instanceof SunInstance) {
-                assignSunClip(anim);
-            }
-            if (anim.currentClip == null && entity instanceof LawnMower) {
-                assignLawnMowerClip(anim);
-            }
-            if (anim.currentClip == null && entity instanceof AbstractObstacle obstacle) {
-                assignObstacleClip(anim, obstacle);
-            }
-
-            if (anim.currentClip == null && entity instanceof AbstractProjectile projectile) {
-                if (projectile instanceof TruePeaProjectile pea) {
-                    anim.currentClip = getSafeClip(pea.pamPath, pea.clipName);
-                    anim.isLooping = true;
-                } else {
-                    ProjectileAnimationLocator.assignClip(pamPlayer, anim, projectile);
-                }
-            }
-
-            anim.stateTime += delta;
-            advanceSequence(anim);
-
-            Rectangle bounds = entity instanceof LawnMower mower
-                ? lawnMowerBounds(mower, positionComponent)
-                : continuousWorldPositionOf(positionComponent.position);
-
-            float x = bounds.x + bounds.width / 2f;
-            float y = bounds.y + bounds.height / 2f;
-
-            float alpha = 1f;
-            if (entity instanceof ZombieInstance zombie) {
-                ZombieDeathComponent death = zombie.get(ZombieDeathComponent.class);
-                if (death != null) alpha = death.getAlpha();
-            } else if (entity instanceof ZombieLimbs limbs) {
-                alpha = limbs.alpha;
-            }
-
-            float entityScale = scale;
-            if (entity instanceof SunInstance sun) {
-                entityScale *= sunVisualScale(sun.getSunType());
-            }
-
-            float r = 1f, g = 1f, b = 1f;
-            if (anim.tint != null && (anim.tint.r != 1f || anim.tint.g != 1f || anim.tint.b != 1f)) {
-                r = anim.tint.r;
-                g = anim.tint.g;
-                b = anim.tint.b;
-                if (!(entity instanceof ZombieLimbs)) {
-                    alpha = anim.tint.a;
-                }
-            }
-
-            float currentScaleX = anim.flipX ? -entityScale : entityScale;
-            Matrix4 original = batch.getTransformMatrix().cpy();
-
-            boolean isHiddenByDebuff = false;
-            if (entity instanceof PlantInstance plant) {
-                if (plant.has(SheepedComponent.class) || plant.has(OctoedComponent.class)) {
-                    isHiddenByDebuff = true;
-                }
-            }
-
-            if (entity instanceof ZombieInstance zombie) {
-                ZombieAnimationLocator.updateArmorVisibility(zombie);
-
-                boolean hasButter = zombie.has(ButterComponent.class);
-                anim.visibilityMap.put("butter", hasButter);
-
-                boolean hasPoison = zombie.has(PoisonComponent.class);
-                anim.visibilityMap.put("ink", hasPoison);
-            }
-
-            if (!isHiddenByDebuff) {
-                if (currentScaleX == 1.0f && scale == 1.0f) {
-                    batch.setColor(r, g, b, alpha);
-                    pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
-                    batch.setColor(1f, 1f, 1f, 1f);
-                } else {
-                    Matrix4 scaled = original.cpy()
-                        .translate(x, y, 0)
-                        .scale(currentScaleX, entityScale, 1f)
-                        .translate(-x, -y, 0);
-
-                    batch.setTransformMatrix(scaled);
-                    batch.setColor(r, g, b, alpha);
-                    pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
-                    batch.setColor(1f, 1f, 1f, 1f);
-                    batch.setTransformMatrix(original);
-                }
-            }
-
-            if (entity instanceof PlantInstance plant) {
-                if (plant.has(SheepedComponent.class)) {
-                    ClipRef sheepClip = pamPlayer.getClip(SHEEP_PAM, "idle");
-                    if (sheepClip != null) {
-                        Matrix4 scaled = original.cpy().translate(x, y, 0).scale(entityScale, entityScale, 1f).translate(-x, -y, 0);
-                        batch.setTransformMatrix(scaled);
-                        pamPlayer.draw(batch, sheepClip, anim.stateTime, x, y, true, null);
-                        batch.setTransformMatrix(original);
-                    }
-                }
-                else if (plant.has(OctoedComponent.class)) {
-                    ClipRef octopusClip = pamPlayer.getClip(OCTOPUS_PAM, "animation3");
-                    if (octopusClip != null) {
-                        Matrix4 scaled = original.cpy().translate(x, y, 0).scale(entityScale, entityScale, 1f).translate(-x, -y, 0);
-                        batch.setTransformMatrix(scaled);
-                        pamPlayer.draw(batch, octopusClip, anim.stateTime, x, y, true, null);
-                        batch.setTransformMatrix(original);
-                    }
-                }
-
-                PlantFreezeComponent freeze = plant.get(PlantFreezeComponent.class);
-                if (freeze != null && freeze.freezeLayers > 0) {
-                    ClipRef freezeClip = null;
-                    if (freeze.freezeLayers == 1) {
-                        freezeClip = pamPlayer.getClip(CHILL_PAM, "chill_stage1");
-                    } else if (freeze.freezeLayers >= 2) {
-                        freezeClip = pamPlayer.getClip(FREEZE_PAM, "freeze_idle");
-                    }
-
-                    if (freezeClip != null) {
-                        Matrix4 scaled = original.cpy().translate(x, y, 0).scale(entityScale, entityScale, 1f).translate(-x, -y, 0);
-                        batch.setTransformMatrix(scaled);
-                        pamPlayer.draw(batch, freezeClip, anim.stateTime, x, y, true, null);
-                        batch.setTransformMatrix(original);
-                    }
-                }
-            }
+            processEntityAnimation(entity, delta);
+            renderEntity(entity);
         }
 
-        // Render Zombie Projectiles directly on top without adding PamAnimationComponent
+        renderZombieProjectiles(delta);
+    }
+
+    private void processEntityAnimation(Entity entity, float delta) {
+        PamAnimationComponent anim = entity.get(PamAnimationComponent.class);
+        if (anim.currentClip == null) {
+            assignInitialClip(entity, anim);
+        }
+        anim.stateTime += delta;
+        advanceSequence(anim);
+    }
+
+    private void assignInitialClip(Entity entity, PamAnimationComponent anim) {
+        if (entity instanceof SunInstance) {
+            assignSunClip(anim);
+        } else if (entity instanceof LawnMower) {
+            assignLawnMowerClip(anim);
+        } else if (entity instanceof AbstractObstacle obstacle) {
+            assignObstacleClip(anim, obstacle);
+        } else if (entity instanceof AbstractProjectile projectile) {
+            if (projectile instanceof TruePeaProjectile pea) {
+                anim.currentClip = getSafeClip(pea.pamPath, pea.clipName);
+                anim.isLooping = true;
+            } else {
+                ProjectileAnimationLocator.assignClip(pamPlayer, anim, projectile);
+            }
+        }
+    }
+
+    private void renderEntity(Entity entity) {
+        PositionComponent posComp = entity.get(PositionComponent.class);
+        PamAnimationComponent anim = entity.get(PamAnimationComponent.class);
+
+        Rectangle bounds = getEntityBounds(entity, posComp);
+        float x = bounds.x + bounds.width / 2f;
+        float y = bounds.y + bounds.height / 2f;
+
+        float alpha = calculateAlpha(entity, anim);
+        float entityScale = calculateEntityScale(entity);
+        float currentScaleX = anim.flipX ? -entityScale : entityScale;
+
+        updateZombieVisibility(entity, anim);
+
+        if (!isHiddenByDebuff(entity)) {
+            drawPamClip(anim, x, y, currentScaleX, entityScale, alpha);
+        }
+
+        if (entity instanceof PlantInstance plant) {
+            drawPlantDebuffs(plant, anim, x, y, entityScale);
+        }
+    }
+
+    private Rectangle getEntityBounds(Entity entity, PositionComponent posComp) {
+        return entity instanceof LawnMower mower
+            ? lawnMowerBounds(mower, posComp)
+            : continuousWorldPositionOf(posComp.position);
+    }
+
+    private float calculateAlpha(Entity entity, PamAnimationComponent anim) {
+        float alpha = 1f;
+        if (entity instanceof ZombieInstance zombie) {
+            ZombieDeathComponent death = zombie.get(ZombieDeathComponent.class);
+            if (death != null) alpha = death.getAlpha();
+        } else if (entity instanceof ZombieLimbs limbs) {
+            alpha = limbs.alpha;
+        }
+
+        if (anim.tint != null && (anim.tint.r != 1f || anim.tint.g != 1f || anim.tint.b != 1f)) {
+            if (!(entity instanceof ZombieLimbs)) {
+                alpha = anim.tint.a;
+            }
+        }
+        return alpha;
+    }
+
+    private float calculateEntityScale(Entity entity) {
+        float entityScale = scale;
+        if (entity instanceof SunInstance sun) {
+            entityScale *= sunVisualScale(sun.getSunType());
+        }
+        return entityScale;
+    }
+
+    private boolean isHiddenByDebuff(Entity entity) {
+        if (entity instanceof PlantInstance plant) {
+            return plant.has(SheepedComponent.class) || plant.has(OctoedComponent.class);
+        }
+        return false;
+    }
+
+    private void updateZombieVisibility(Entity entity, PamAnimationComponent anim) {
+        if (entity instanceof ZombieInstance zombie) {
+            ZombieAnimationLocator.updateArmorVisibility(zombie);
+            anim.visibilityMap.put("butter", zombie.has(ButterComponent.class));
+            anim.visibilityMap.put("ink", zombie.has(PoisonComponent.class));
+        }
+    }
+
+    private void drawPamClip(PamAnimationComponent anim, float x, float y, float currentScaleX, float entityScale, float alpha) {
+        float r = 1f, g = 1f, b = 1f;
+        if (anim.tint != null) {
+            r = anim.tint.r;
+            g = anim.tint.g;
+            b = anim.tint.b;
+        }
+
+        Matrix4 original = batch.getTransformMatrix().cpy();
+        if (currentScaleX == 1.0f && scale == 1.0f) {
+            batch.setColor(r, g, b, alpha);
+            pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
+            batch.setColor(1f, 1f, 1f, 1f);
+        } else {
+            Matrix4 scaled = original.cpy().translate(x, y, 0).scale(currentScaleX, entityScale, 1f).translate(-x, -y, 0);
+            batch.setTransformMatrix(scaled);
+            batch.setColor(r, g, b, alpha);
+            pamPlayer.draw(batch, anim.currentClip, anim.stateTime, x, y, anim.isLooping, anim.visibilityMap);
+            batch.setColor(1f, 1f, 1f, 1f);
+            batch.setTransformMatrix(original);
+        }
+    }
+
+    private void drawPlantDebuffs(PlantInstance plant, PamAnimationComponent anim, float x, float y, float entityScale) {
+        Matrix4 original = batch.getTransformMatrix().cpy();
+        Matrix4 scaled = original.cpy().translate(x, y, 0).scale(entityScale, entityScale, 1f).translate(-x, -y, 0);
+
+        if (plant.has(SheepedComponent.class)) {
+            drawSpecificPlantDebuff(SHEEP_PAM, "idle", anim.stateTime, x, y, scaled, original);
+        } else if (plant.has(OctoedComponent.class)) {
+            drawSpecificPlantDebuff(OCTOPUS_PAM, "animation3", anim.stateTime, x, y, scaled, original);
+        }
+
+        PlantFreezeComponent freeze = plant.get(PlantFreezeComponent.class);
+        if (freeze != null && freeze.freezeLayers > 0) {
+            String freezePam = freeze.freezeLayers == 1 ? CHILL_PAM : FREEZE_PAM;
+            String freezeClip = freeze.freezeLayers == 1 ? "chill_stage1" : "freeze_idle";
+            drawSpecificPlantDebuff(freezePam, freezeClip, anim.stateTime, x, y, scaled, original);
+        }
+    }
+
+    private void drawSpecificPlantDebuff(String pamPath, String clipName, float stateTime, float x, float y, Matrix4 scaled, Matrix4 original) {
+        ClipRef clip = pamPlayer.getClip(pamPath, clipName);
+        if (clip != null) {
+            batch.setTransformMatrix(scaled);
+            pamPlayer.draw(batch, clip, stateTime, x, y, true, null);
+            batch.setTransformMatrix(original);
+        }
+    }
+
+    private void renderZombieProjectiles(float delta) {
         for (Entity entity : field.getEntitiesWith(PositionComponent.class)) {
             if (entity instanceof AbstractZombieProjectile zp) {
                 float time = zombieProjectileTimes.compute(zp, (k, v) -> (v == null ? 0f : v) + delta);
-
                 PositionComponent posComp = zp.get(PositionComponent.class);
                 Rectangle bounds = continuousWorldPositionOf(posComp.position);
                 float x = bounds.x + bounds.width / 2f;
                 float y = bounds.y + bounds.height / 2f;
 
-                ClipRef clip = null;
-                if (zp instanceof BoneProjectile) {
-                    clip = pamPlayer.getClip(SUN_BOMB_PAM, "animation");
-                } else if (zp instanceof SnowballProjectile) {
-                    clip = pamPlayer.getClip(ELECTROBALL_PAM, "animation2");
-                } else if (zp instanceof OctopusProjectile) {
-                    clip = pamPlayer.getClip(OCTOPUS_PAM, "animation");
-                }
-
+                ClipRef clip = getZombieProjectileClip(zp);
                 if (clip != null) {
                     Matrix4 original = batch.getTransformMatrix().cpy();
                     Matrix4 scaled = original.cpy().translate(x, y, 0).scale(scale, scale, 1f).translate(-x, -y, 0);
@@ -269,6 +279,13 @@ public class PamRenderSystem extends RenderSystem {
             }
         }
         zombieProjectileTimes.keySet().removeIf(Entity::isMarkedForRemoval);
+    }
+
+    private ClipRef getZombieProjectileClip(AbstractZombieProjectile zp) {
+        if (zp instanceof BoneProjectile) return pamPlayer.getClip(SUN_BOMB_PAM, "animation");
+        if (zp instanceof SnowballProjectile) return pamPlayer.getClip(ELECTROBALL_PAM, "animation2");
+        if (zp instanceof OctopusProjectile) return pamPlayer.getClip(OCTOPUS_PAM, "animation");
+        return null;
     }
 
     private @NonNull Rectangle lawnMowerBounds(@NonNull LawnMower mower, @NonNull PositionComponent positionComponent) {

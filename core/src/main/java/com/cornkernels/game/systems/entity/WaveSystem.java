@@ -42,11 +42,9 @@ public class WaveSystem extends EntitySystem {
     private float currentWaveDamageDealt = 0f;
     private boolean obstaclesSpawned = false;
 
-    private Consumer<ZombieDef> onZombieSpawned = def -> {
-    };
+    private Consumer<ZombieDef> onZombieSpawned = def -> {};
 
-    public WaveSystem(int @NotNull [] waveBudgets, RandomGenerator rng,
-                      List<ZombieDef> eligibleZombies, List<LevelDef.ObstacleSpawn> obstacles, PamPlayer pamPlayer) {
+    public WaveSystem(int @NotNull [] waveBudgets, RandomGenerator rng, List<ZombieDef> eligibleZombies, List<LevelDef.ObstacleSpawn> obstacles, PamPlayer pamPlayer) {
         this.waveBudgets = waveBudgets;
         this.eligibleZombies = eligibleZombies;
         this.obstacles = obstacles != null ? obstacles : List.of();
@@ -64,10 +62,7 @@ public class WaveSystem extends EntitySystem {
             obstaclesSpawned = true;
         }
 
-        if (waveNumber == 0 || (!isFinalWave() && shouldStartNextWave())) {
-            startNextWave();
-        }
-
+        if (waveNumber == 0 || (!isFinalWave() && shouldStartNextWave())) startNextWave();
         if (isWaveSpawningDone()) return;
 
         spawnTimer -= deltaTick;
@@ -119,17 +114,14 @@ public class WaveSystem extends EntitySystem {
             public void OnHealthChanged(int currentHealth, int maxHealth, int delta) {
                 currentWaveDamageDealt -= delta;
             }
-
             @Override
-            public void onMaxHealthChanged(int maxHealth, int delta) {
-            }
+            public void onMaxHealthChanged(int maxHealth, int delta) {}
         });
     }
 
     private ZombieDef pickWeightedByValue(@NotNull List<ZombieDef> candidates) {
         if (candidates.isEmpty()) return null;
 
-        // Give much higher weight to lower cost zombies (up to cost 4)
         int totalWeight = candidates.stream().mapToInt(def -> {
             if (def.cost <= 1) return 10;
             if (def.cost <= 2) return 8;
@@ -160,9 +152,7 @@ public class WaveSystem extends EntitySystem {
     private boolean shouldStartNextWave() {
         if (!isWaveSpawningDone()) return false;
         if (currentWaveMaxHealthTotal <= 0f) return true;
-
         if (currentWaveDamageDealt >= WAVE_ADVANCE_DAMAGE_FRACTION * currentWaveMaxHealthTotal) return true;
-
         return field.getActiveZombies().isEmpty();
     }
 
@@ -174,26 +164,16 @@ public class WaveSystem extends EntitySystem {
         return waveNumber == waveBudgets.length;
     }
 
-    public int getWaveNumber() {
-        return waveNumber;
-    }
-
-    public int getTotalWaves() {
-        return waveBudgets.length;
-    }
-
-    public boolean isGameFinished(Field field) {
-        return isFinalWave() && isWaveSpawningDone() && field.getActiveZombies().isEmpty();
-    }
+    public int getWaveNumber() { return waveNumber; }
+    public int getTotalWaves() { return waveBudgets.length; }
+    public boolean isGameFinished(Field field) { return isFinalWave() && isWaveSpawningDone() && field.getActiveZombies().isEmpty(); }
 
     public float getProgress() {
         int totalBudget = Arrays.stream(waveBudgets).sum();
         if (totalBudget <= 0) return 1f;
 
         int spawnedInPastWaves = 0;
-        for (int i = 0; i < waveNumber - 1; i++) {
-            spawnedInPastWaves += waveBudgets[i];
-        }
+        for (int i = 0; i < waveNumber - 1; i++) spawnedInPastWaves += waveBudgets[i];
         return MathUtils.clamp((spawnedInPastWaves + currentWaveValueSpawned) / (float) totalBudget, 0f, 1f);
     }
 
