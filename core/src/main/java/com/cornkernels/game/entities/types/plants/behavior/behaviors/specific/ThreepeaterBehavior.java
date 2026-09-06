@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 public class ThreepeaterBehavior implements PlantAttackBehavior {
     private final AbstractProjectile projectile;
@@ -37,7 +38,7 @@ public class ThreepeaterBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
         int plantLane = GridPosition.fromContinuous(origin).lane();
 

@@ -10,6 +10,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class RotobagaBehavior implements PlantAttackBehavior {
 
@@ -88,7 +89,7 @@ public class RotobagaBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
         double centerX = origin.getX() + 0.5;
         double centerY = origin.getY();

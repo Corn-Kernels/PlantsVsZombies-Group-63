@@ -52,7 +52,7 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(@NonNull Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         int stage = getStage(self);
         int index = stage - 1;
 

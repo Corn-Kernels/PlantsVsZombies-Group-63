@@ -9,6 +9,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 public class SplitPeaBehavior implements PlantAttackBehavior {
     private final AbstractProjectile projectile;
@@ -54,7 +55,7 @@ public class SplitPeaBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         int lane = GridPosition.fromContinuous(self.get(PositionComponent.class).position).lane();
         return field.getZombiesInLane(lane).stream().anyMatch(z -> !z.isMarkedForRemoval() && !z.has(HypnoComponent.class));
     }

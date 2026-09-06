@@ -7,7 +7,6 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
-import com.cornkernels.game.map.grid.GridPosition;
 
 public class Glacier extends PushableObstacle {
 
@@ -15,20 +14,20 @@ public class Glacier extends PushableObstacle {
     private boolean hasSpawnedZombie = false;
 
     public Glacier(Vec2d position, ZombieDef containedZombie) {
-        super(position, 600);
+        super(position, 6600);
         this.containedZombie = containedZombie;
         add(new PamAnimationComponent());
     }
 
     @Override
     public void update(Field field) {
+        if (isMarkedForRemoval()) return;
         HealthComponent hp = this.get(HealthComponent.class);
 
-        if (!hasSpawnedZombie && (hp.currentHealth <= 600 || this.isMarkedForRemoval())) {
+        if (!hasSpawnedZombie && hp.currentHealth <= 6000f) {
             this.hasSpawnedZombie = true;
 
             Vec2d currentPos = this.get(PositionComponent.class).position;
-            GridPosition gridPos = GridPosition.fromContinuous(currentPos);
 
             field.addZombie(new ZombieInstance(containedZombie, currentPos));
             this.markForRemoval();

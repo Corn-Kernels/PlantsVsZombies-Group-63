@@ -26,6 +26,7 @@ public class GameSimulation {
         this.lawnMowersSystem = new LawnMowersSystem();
         this.waveSystem = new WaveSystem(
             gameAttributes.levelDef.waveBudgets,
+            field,
             random,
             gameAttributes.levelDef.eligibleZombies,
             gameAttributes.levelDef.obstacles,
@@ -35,6 +36,7 @@ public class GameSimulation {
         SunSystem sunSystem = new SunSystem(random);
         sunSystem.setSpawningEnabled(gameAttributes.levelDef.chapter != 4);
 
+        addSystem(new HealthSystem(field));
         addSystem(new CombatSystem());
         addSystem(new PlantAttackSystem(pamPlayer));
         addSystem(new PlantFoodEffectSystem());
@@ -45,7 +47,6 @@ public class GameSimulation {
         addSystem(waveSystem);
         addSystem(new DebuffSystem());
         addSystem(new MovementSystem());
-
     }
 
     public void update(float deltaTick) {
@@ -61,7 +62,7 @@ public class GameSimulation {
     }
 
     public boolean isGameWon() {
-        return waveSystem.isGameFinished(field);
+        return waveSystem.isGameFinished();
     }
 
     public WaveSystem getWaveSystem() {

@@ -30,9 +30,9 @@ public class Field {
     protected List<AbstractProjectile> activeProjectiles;
     protected List<AbstractZombieProjectile> activeZombieProjectiles;
     protected List<LawnMower> activeLawnMowers;
-    protected int totalLawnMowerCount;
     protected List<PlantFoodEffect> activeEffects;
     protected List<Entity> extras;
+    protected int totalLawnMowerCount;
 
     protected int totalLanes;
     protected int totalColumns;
@@ -76,7 +76,7 @@ public class Field {
             }
         }
 
-        for (ZombieInstance zombie : activeZombies) { // TODO: MIGHT HAVE TO ADD PROJECTILES DYNAMICALLY TOO
+        for (ZombieInstance zombie : activeZombies) {
             GridPosition pos = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position);
             if (pos.lane() < 0 || pos.lane() >= totalLanes || pos.column() < 0 || pos.column() >= totalColumns) {
                 continue;

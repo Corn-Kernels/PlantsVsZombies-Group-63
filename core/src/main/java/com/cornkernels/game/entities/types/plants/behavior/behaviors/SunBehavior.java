@@ -8,6 +8,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class SunBehavior implements PlantAttackBehavior {
     private final int sunCount;
@@ -59,7 +60,7 @@ public class SunBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         return true;
     }
 }

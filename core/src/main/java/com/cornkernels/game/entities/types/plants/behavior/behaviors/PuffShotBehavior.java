@@ -33,7 +33,7 @@ public class PuffShotBehavior extends DirectShotBehavior {
     }
 
     @Override
-    public void execute(Entity self, Field field) {
+    public void execute(@NonNull Entity self, Field field) {
         PuffShroomComponent comp = self.get(PuffShroomComponent.class);
         if (comp == null) {
             comp = new PuffShroomComponent(actionInterval);

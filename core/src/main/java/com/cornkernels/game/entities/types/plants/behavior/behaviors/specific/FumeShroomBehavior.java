@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.projectiles.LineOfDamage;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 public class FumeShroomBehavior implements PlantAttackBehavior {
     private final float range;
@@ -28,7 +29,7 @@ public class FumeShroomBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
         double plantX = origin.getX() + 0.5;
         int lane = GridPosition.fromContinuous(origin).lane();

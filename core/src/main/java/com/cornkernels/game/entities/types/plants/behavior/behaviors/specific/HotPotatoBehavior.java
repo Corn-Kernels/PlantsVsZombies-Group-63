@@ -12,6 +12,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 public class HotPotatoBehavior implements PlantAttackBehavior {
     private final float meltRadius;
@@ -82,7 +83,7 @@ public class HotPotatoBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         return true; // Instantly runs upon placement and ticks every frame
     }
 }

@@ -16,6 +16,6 @@ public class PushableObstacle extends AbstractObstacle {
     }
 
     public void update(Field field) {
-        // Empty by default, overridden by subclasses
+        if (isMarkedForRemoval()) return;
     }
 }

@@ -9,6 +9,7 @@ import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjecti
 import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class LobShotBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
         int lane = GridPosition.fromContinuous(origin).lane();
 

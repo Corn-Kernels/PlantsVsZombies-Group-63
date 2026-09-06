@@ -205,28 +205,11 @@ public enum LevelDef {
             new ObstacleSpawn(ObstacleType.REDIRECTOR_DOWN, 3, 7)
         ));
 
-    public enum ObstacleType {
-        GRAVE, GLACIER, ARCADE, REDIRECTOR_UP, REDIRECTOR_DOWN
-    }
-
-    public static class ObstacleSpawn {
-        public final ObstacleType type;
-        public final int lane;
-        public final int column;
-
-        public ObstacleSpawn(ObstacleType type, int lane, int column) {
-            this.type = type;
-            this.lane = lane;
-            this.column = column;
-        }
-    }
-
     public final int chapter;
     public final int levelNumber;
     public final List<ZombieDef> eligibleZombies;
     public final int[] waveBudgets;
     public final List<ObstacleSpawn> obstacles;
-
     LevelDef(int chapter, int levelNumber, List<ZombieDef> eligibleZombies, int[] waveBudgets, List<ObstacleSpawn> obstacles) {
         this.chapter = chapter;
         this.levelNumber = levelNumber;
@@ -248,5 +231,21 @@ public enum LevelDef {
 
     public boolean isLastLevelInChapter() {
         return of(chapter, levelNumber + 1) == null;
+    }
+
+    public enum ObstacleType {
+        GRAVE, GLACIER, ARCADE, REDIRECTOR_UP, REDIRECTOR_DOWN
+    }
+
+    public static class ObstacleSpawn {
+        public final ObstacleType type;
+        public final int lane;
+        public final int column;
+
+        public ObstacleSpawn(ObstacleType type, int lane, int column) {
+            this.type = type;
+            this.lane = lane;
+            this.column = column;
+        }
     }
 }

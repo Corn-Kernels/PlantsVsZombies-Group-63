@@ -19,10 +19,7 @@ public class ArcadeMachine extends PushableObstacle {
 
     @Override
     public void update(Field field) {
-        HealthComponent hp = this.get(HealthComponent.class);
-        if (hp.currentHealth <= 0 || this.isMarkedForRemoval()) {
-            return;
-        }
+        if (isMarkedForRemoval()) return;
 
         tickCounter++;
         if (tickCounter >= spawnIntervalTicks) {

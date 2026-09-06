@@ -9,6 +9,7 @@ import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjecti
 import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.specific.HypnoHomingProjectile;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,7 @@ public class HomingShotBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         // The plant only considers itself as having a target if there's an unclaimed valid target available
         return !getAvailableTargets(field).isEmpty();
     }

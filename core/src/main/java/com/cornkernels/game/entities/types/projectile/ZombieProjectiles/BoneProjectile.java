@@ -26,7 +26,7 @@ public class BoneProjectile extends AbstractZombieProjectile {
         Vec2d currentPos = get(PositionComponent.class).position;
 
         // Since it travels left, it hits when its X is less than or equal to the target X
-        if (currentPos.getX() <= targetX + 1 && currentPos.getX() >= targetX - 1) {
+        if (currentPos.getX() <= targetX + 0.3 && currentPos.getX() >= targetX - 0.3) {
 
             // Ensure the tile is still empty (no plant was placed while the bone was flying)
             if (field.getPlantAt(targetTile.lane(), targetTile.column()) == null) {

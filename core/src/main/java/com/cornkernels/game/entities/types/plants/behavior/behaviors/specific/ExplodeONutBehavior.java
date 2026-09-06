@@ -6,6 +6,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class ExplodeONutBehavior implements PlantAttackBehavior {
     private final int explosionDamage;
@@ -36,7 +37,7 @@ public class ExplodeONutBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         return true; // Continuously evaluate the health threshold
     }
 }
