@@ -24,19 +24,29 @@ public class GameSimulation {
         this.attributes = gameAttributes;
         this.random = new Random();
         this.lawnMowersSystem = new LawnMowersSystem();
-        this.waveSystem = new WaveSystem(gameAttributes.levelDef.zombiesPerWave, random,
-            gameAttributes.levelDef.eligibleZombies, pamPlayer);
+        this.waveSystem = new WaveSystem(
+            gameAttributes.levelDef.waveBudgets,
+            field,
+            random,
+            gameAttributes.levelDef.eligibleZombies,
+            gameAttributes.levelDef.obstacles,
+            pamPlayer
+        );
 
+        SunSystem sunSystem = new SunSystem(random);
+        sunSystem.setSpawningEnabled(gameAttributes.levelDef.chapter != 4);
+
+        addSystem(new HealthSystem(field));
         addSystem(new CombatSystem());
         addSystem(new PlantAttackSystem(pamPlayer));
         addSystem(new PlantFoodEffectSystem());
-        addSystem(new SunSystem(random));
+        addSystem(new ObstacleSystem());
+        addSystem(sunSystem);
         addSystem(new ZombieSystem(pamPlayer));
         addSystem(lawnMowersSystem);
         addSystem(waveSystem);
         addSystem(new DebuffSystem());
         addSystem(new MovementSystem());
-
     }
 
     public void update(float deltaTick) {
@@ -52,7 +62,7 @@ public class GameSimulation {
     }
 
     public boolean isGameWon() {
-        return waveSystem.isGameFinished(field);
+        return waveSystem.isGameFinished();
     }
 
     public WaveSystem getWaveSystem() {

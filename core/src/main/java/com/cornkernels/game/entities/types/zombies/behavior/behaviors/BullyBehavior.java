@@ -5,14 +5,18 @@ import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.GridPositionComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.VelocityComponent;
+import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieStateComponent;
 import com.cornkernels.game.entities.components.zombie_specific.specific_specific.BullyComponent;
 import com.cornkernels.game.entities.types.obstacles.PushableObstacle;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
+import com.cornkernels.game.entities.types.zombies.ZombieDef;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehavior;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +32,7 @@ public class BullyBehavior implements ZombieBehavior {
     }
 
     @Override
-    public void update(ZombieInstance zombie, Field field) {
+    public void update(@NonNull ZombieInstance zombie, Field field) {
         ZombieStateComponent state = zombie.get(ZombieStateComponent.class);
         if (state.state == ZombieStateComponent.State.DEAD) return;
 
@@ -95,6 +99,9 @@ public class BullyBehavior implements ZombieBehavior {
                 comp.initialCols.clear();
                 comp.cooldownTimer = cooldownTicks;
                 state.changeState(ZombieStateComponent.State.WALKING);
+
+                ZombieDef def = zombie.get(ZombieDefComponent.class).def();
+                vel.velocityPerTick = new Vec2d(-def.baseSpeed, 0f);
             }
             return;
         }
@@ -160,7 +167,7 @@ public class BullyBehavior implements ZombieBehavior {
         }
     }
 
-    private PushableObstacle getPushableAt(Field field, int lane, int col) {
+    private @Nullable PushableObstacle getPushableAt(@NonNull Field field, int lane, int col) {
         for (Entity e : field.getEntities()) {
             if (e instanceof PushableObstacle && !e.isMarkedForRemoval()) {
                 GridPosition p = GridPosition.fromContinuous(e.get(PositionComponent.class).position);

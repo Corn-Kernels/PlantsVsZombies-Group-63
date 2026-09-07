@@ -13,11 +13,10 @@ import org.jspecify.annotations.NonNull;
 
 public class LightningCloudProjectile extends AbstractProjectile {
 
+    private final int totalDamage;
     public Entity target;
-
     private int hitsRemaining = 10;
     private int ticker = 10;
-    private final int totalDamage;
 
     public LightningCloudProjectile(int damage, Vec2d startPosition, Entity target) {
         super(damage, new Vec2d(0.4f, 0), startPosition);
@@ -36,7 +35,7 @@ public class LightningCloudProjectile extends AbstractProjectile {
     @Override
     public boolean hit(@NonNull Entity hitTarget, Field field) {
         // Disappear if the target is already dead
-        if (this.target == null || this.target.isMarkedForRemoval() || target.get(HealthComponent.class).currentHealth<=0) {
+        if (this.target == null || this.target.isMarkedForRemoval() || target.get(HealthComponent.class).currentHealth <= 0) {
             return true;
         }
 

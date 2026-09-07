@@ -38,23 +38,21 @@ public class AreaMeleeBehavior implements PlantAttackBehavior {
         double originX = origin.getX() + 0.5;
         double originY = origin.getY();
 
-        for (Entity target : field.getEntities()) {
-            if ((target instanceof ZombieInstance || target instanceof Grave) && !target.isMarkedForRemoval()) {
-                if (target instanceof ZombieInstance && target.has(HypnoComponent.class)) continue;
+        for (Entity target : getAllValidTargets(field)) {
 
-                Vec2d targetPos = target.get(PositionComponent.class).position;
-                double targetX = targetPos.getX() + 0.5;
-                double targetY = targetPos.getY();
+            Vec2d targetPos = target.get(PositionComponent.class).position;
+            double targetX = targetPos.getX() + 0.5;
+            double targetY = targetPos.getY();
 
-                if (Math.abs(targetX - originX) <= currentRange && Math.abs(targetY - originY) <= currentRange) {
-                    CombatSystem.applyDamage(target, currentDamage, false);
-                }
+            if (Math.abs(targetX - originX) <= currentRange && Math.abs(targetY - originY) <= currentRange) {
+                CombatSystem.applyDamage(target, currentDamage, false);
             }
+
         }
     }
 
     @Override
-    public boolean hasTarget(@NonNull Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         int stage = getStage(self);
         int index = stage - 1;
 

@@ -40,14 +40,25 @@ public class PlayerProgress {
         this.highScore = 0;
         this.unlockedChapters = new ArrayList<>();
         this.unlockedChapters.add("Chapter 1");
+        this.unlockedChapters.add("Chapter 2");
+        this.unlockedChapters.add("Chapter 3");
+        this.unlockedChapters.add("Chapter 4");
 
         this.ownedPlants = new ArrayList<>();
-        this.ownedPlants.add(PlantDef.SUNFLOWER1.getPlantName());
-        this.ownedPlants.add(PlantDef.PEASHOOTER1.getPlantName());
-        this.ownedPlants.add(PlantDef.WALL_NUT1.getPlantName());
+        if (true) {
+            for (PlantDef def : PlantDef.values()) {
+                if (def.getId() / 1000 == 1) {
+                    this.ownedPlants.add(def.getPlantName());
+                }
+            }
+        } else {
+            this.ownedPlants.add(PlantDef.SUNFLOWER1.getPlantName());
+            this.ownedPlants.add(PlantDef.PEASHOOTER1.getPlantName());
+            this.ownedPlants.add(PlantDef.WALL_NUT1.getPlantName());
+        }
 
         this.seenZombies = new ArrayList<>();
-        this.completedLevels = 0;
+        this.completedLevels = 16;
         this.gamesPlayed = 0;
 
         this.pots = 0;

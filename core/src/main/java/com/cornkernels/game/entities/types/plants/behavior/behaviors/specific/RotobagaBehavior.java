@@ -10,6 +10,7 @@ import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class RotobagaBehavior implements PlantAttackBehavior {
 
@@ -44,24 +45,21 @@ public class RotobagaBehavior implements PlantAttackBehavior {
         boolean shootTopLeft = false;
         boolean shootBottomLeft = false;
 
-        for (Entity e : field.getEntities()) {
-            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
-                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+        for (Entity e : getAllValidTargets(field)) {
 
-                Vec2d pos = e.get(PositionComponent.class).position;
-                double dx = pos.getX() - centerX;
-                double dy = pos.getY() - centerY;
+            Vec2d pos = e.get(PositionComponent.class).position;
+            double dx = pos.getX() - centerX;
+            double dy = pos.getY() - centerY;
 
-                if (Math.hypot(dx, dy) <= length) {
-                    if (dx >= 0 && dy <= 0 && Math.abs(dx + dy) <= diagThreshold) {
-                        shootTopRight = true;
-                    } else if (dx >= 0 && dy >= 0 && Math.abs(dy - dx) <= diagThreshold) {
-                        shootBottomRight = true;
-                    } else if (dx <= 0 && dy <= 0 && Math.abs(dy - dx) <= diagThreshold) {
-                        shootTopLeft = true;
-                    } else if (dx <= 0 && dy >= 0 && Math.abs(dx + dy) <= diagThreshold) {
-                        shootBottomLeft = true;
-                    }
+            if (Math.hypot(dx, dy) <= length) {
+                if (dx >= 0 && dy <= 0 && Math.abs(dx + dy) <= diagThreshold) {
+                    shootTopRight = true;
+                } else if (dx >= 0 && dy >= 0 && Math.abs(dy - dx) <= diagThreshold) {
+                    shootBottomRight = true;
+                } else if (dx <= 0 && dy <= 0 && Math.abs(dy - dx) <= diagThreshold) {
+                    shootTopLeft = true;
+                } else if (dx <= 0 && dy >= 0 && Math.abs(dx + dy) <= diagThreshold) {
+                    shootBottomLeft = true;
                 }
             }
         }
@@ -91,7 +89,7 @@ public class RotobagaBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
         double centerX = origin.getX() + 0.5;
         double centerY = origin.getY();

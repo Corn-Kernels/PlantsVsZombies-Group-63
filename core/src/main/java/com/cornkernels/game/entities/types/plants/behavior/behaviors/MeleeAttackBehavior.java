@@ -3,14 +3,12 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
-import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
-import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
-import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.systems.entity.CombatSystem;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +42,7 @@ public class MeleeAttackBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         return !findTargets(self, field).isEmpty();
     }
 
@@ -54,17 +52,13 @@ public class MeleeAttackBehavior implements PlantAttackBehavior {
         double plantX = origin.getX() + 0.5;
         int lane = GridPosition.fromContinuous(origin).lane();
 
-        for (Entity e : field.getEntities()) {
-            if ((e instanceof ZombieInstance || e instanceof Grave) && !e.isMarkedForRemoval()) {
-                if (e instanceof ZombieInstance && e.has(HypnoComponent.class)) continue;
+        for (Entity e : getAllValidTargets(field)) {
+            if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
+                double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
 
-                if (GridPosition.fromContinuous(e.get(PositionComponent.class).position).lane() == lane) {
-                    double targetX = e.get(PositionComponent.class).position.getX() + 0.5;
-
-                    if ((targetX >= plantX && targetX - plantX <= frontRange) ||
-                        (targetX < plantX && plantX - targetX <= backRange)) {
-                        validTargets.add(e);
-                    }
+                if ((targetX >= plantX && targetX - plantX <= frontRange) ||
+                    (targetX < plantX && plantX - targetX <= backRange)) {
+                    validTargets.add(e);
                 }
             }
         }

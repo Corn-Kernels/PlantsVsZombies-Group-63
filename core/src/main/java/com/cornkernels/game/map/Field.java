@@ -30,8 +30,9 @@ public class Field {
     protected List<AbstractProjectile> activeProjectiles;
     protected List<AbstractZombieProjectile> activeZombieProjectiles;
     protected List<LawnMower> activeLawnMowers;
-    protected int totalLawnMowerCount;
     protected List<PlantFoodEffect> activeEffects;
+    protected List<Entity> extras;
+    protected int totalLawnMowerCount;
 
     protected int totalLanes;
     protected int totalColumns;
@@ -55,6 +56,7 @@ public class Field {
         this.activeLawnMowers = new ArrayList<>(5);
         this.activeZombieProjectiles = new ArrayList<>();
         this.activeEffects = new ArrayList<>();
+        this.extras = new ArrayList<>();
         initializeLawnMowers(lawnMowerSlots);
     }
 
@@ -70,15 +72,24 @@ public class Field {
         for (int i = 0; i < totalLanes; i++) {
             for (int j = 0; j < totalColumns; j++) {
                 grids[i][j].clearZombies();
+                grids[i][j].removeObstacle();
             }
         }
 
-        for (ZombieInstance zombie : activeZombies) { // TODO: MIGHT HAVE TO ADD PROJECTILES DYNAMICALLY TOO
+        for (ZombieInstance zombie : activeZombies) {
             GridPosition pos = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position);
             if (pos.lane() < 0 || pos.lane() >= totalLanes || pos.column() < 0 || pos.column() >= totalColumns) {
                 continue;
             }
             grids[pos.lane()][pos.column()].addZombie(zombie);
+        }
+
+        for (AbstractObstacle obstacle : activeObstacles) {
+            GridPosition pos = GridPosition.fromContinuous(obstacle.get(PositionComponent.class).position);
+            if (pos.lane() < 0 || pos.lane() >= totalLanes || pos.column() < 0 || pos.column() >= totalColumns) {
+                continue;
+            }
+            grids[pos.lane()][pos.column()].provideObstacle(obstacle);
         }
 
         for (int i = 0; i < totalLanes; i++) {
@@ -118,6 +129,10 @@ public class Field {
     public void addObstacle(AbstractObstacle obstacle, int lane, int column) {
         activeObstacles.add(obstacle);
         grids[lane][column].provideObstacle(obstacle);
+    }
+
+    public void addObstacle(AbstractObstacle obstacle) {
+        activeObstacles.add(obstacle);
     }
 
     public void addProjectile(AbstractProjectile projectile) {
@@ -182,13 +197,14 @@ public class Field {
     public List<Entity> getEntities() {
         List<Entity> entities = new ArrayList<>();
         entities.addAll(activePlants);
+        entities.addAll(activeObstacles);
         entities.addAll(activeZombies);
         entities.addAll(activeProjectiles);
         entities.addAll(activeSuns);
         entities.addAll(activeLawnMowers);
-        entities.addAll(activeObstacles);
         entities.addAll(activeZombieProjectiles);
         entities.addAll(activeEffects);
+        entities.addAll(extras);
         return entities;
     }
 
@@ -254,4 +270,11 @@ public class Field {
         this.totalLawnMowerCount = activeLawnMowers.size();
     }
 
+    public void addEntity(Entity entity) {
+        extras.add(entity);
+    }
+
+    public void removeZombieProjectile(AbstractZombieProjectile projectile) {
+        activeZombieProjectiles.remove(projectile);
+    }
 }

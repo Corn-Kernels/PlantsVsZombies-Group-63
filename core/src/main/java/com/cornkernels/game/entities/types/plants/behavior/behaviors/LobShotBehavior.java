@@ -3,15 +3,13 @@ package com.cornkernels.game.entities.types.plants.behavior.behaviors;
 import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.PositionComponent;
-import com.cornkernels.game.entities.components.zombie_specific.debuffs.HypnoComponent;
-import com.cornkernels.game.entities.types.obstacles.Grave;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.HomingProjectile;
 import com.cornkernels.game.entities.types.projectile.projectiles.LobProjectile;
-import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.map.grid.GridPosition;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,25 +31,16 @@ public class LobShotBehavior implements PlantAttackBehavior {
         int lane = GridPosition.fromContinuous(origin).lane();
         List<Entity> laneTargets = new ArrayList<>();
 
-        for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class)) {
-                Vec2d targetPos = z.get(PositionComponent.class).position;
+        // Use the universal targeting method
+        for (Entity target : getAllValidTargets(field)) {
+            if (!target.has(PositionComponent.class)) continue;
 
-                if (targetPos.getX() >= origin.getX()) {
-                    laneTargets.add(z);
-                }
-            }
-        }
+            Vec2d targetPos = target.get(PositionComponent.class).position;
+            int targetLane = GridPosition.fromContinuous(targetPos).lane();
 
-        if (laneTargets.isEmpty()) {
-            for (Entity e : field.getEntities()) {
-                if (e instanceof Grave && !e.isMarkedForRemoval()) {
-                    Vec2d targetPos = e.get(PositionComponent.class).position;
-
-                    if (targetPos.getY() == origin.getY() && targetPos.getX() >= origin.getX()) {
-                        laneTargets.add(e);
-                    }
-                }
+            // Must be in the same lane and in front of the plant
+            if (targetLane == lane && targetPos.getX() >= origin.getX()) {
+                laneTargets.add(target);
             }
         }
 
@@ -59,6 +48,7 @@ public class LobShotBehavior implements PlantAttackBehavior {
             return;
         }
 
+        // Find closest valid target in the lane
         Entity closestTarget = laneTargets.get(0);
         double minX = closestTarget.get(PositionComponent.class).position.getX();
 
@@ -84,21 +74,18 @@ public class LobShotBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
         int lane = GridPosition.fromContinuous(origin).lane();
 
-        for (ZombieInstance z : field.getZombiesInLane(lane)) {
-            if (!z.isMarkedForRemoval() && !z.has(HypnoComponent.class) && z.get(PositionComponent.class).position.getX() >= origin.getX()) {
+        for (Entity target : getAllValidTargets(field)) {
+            if (!target.has(PositionComponent.class)) continue;
+
+            Vec2d targetPos = target.get(PositionComponent.class).position;
+            int targetLane = GridPosition.fromContinuous(targetPos).lane();
+
+            if (targetLane == lane && targetPos.getX() >= origin.getX()) {
                 return true;
-            }
-        }
-        for (Entity e : field.getEntities()) {
-            if (e instanceof Grave && !e.isMarkedForRemoval()) {
-                Vec2d targetPos = e.get(PositionComponent.class).position;
-                if (targetPos.getY() == origin.getY() && targetPos.getX() >= origin.getX()) {
-                    return true;
-                }
             }
         }
         return false;

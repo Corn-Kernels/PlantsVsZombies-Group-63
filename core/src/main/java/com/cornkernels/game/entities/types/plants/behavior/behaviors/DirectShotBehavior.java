@@ -6,6 +6,7 @@ import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class DirectShotBehavior implements PlantAttackBehavior {
 
@@ -17,17 +18,14 @@ public class DirectShotBehavior implements PlantAttackBehavior {
         this.shotCount = shotCount;
         this.projectile = projectile;
     }
-    /*
-        each behavior should be able to spawn other projectile types we use this to allow it
-     */
+
 
     @Override
-    public void execute(Entity self, Field field) {
+    public void execute(@NonNull Entity self, Field field) {
         Vec2d origin = self.get(PositionComponent.class).position;
         for (int i = 0; i < shotCount; i++) {
             Vec2d spawnPos = new Vec2d((float) (origin.getX() + 0.5 + i * shotSpacing), origin.getY());
             field.addProjectile(projectile.clone(spawnPos));
         }
     }
-
 }

@@ -9,23 +9,24 @@ import com.cornkernels.game.entities.components.sun_specific.SunComponent;
 public class SunInstance extends Entity {
 
     private final SunType sunType;
-    private float FALL_DURATION_SECONDS = 5f;
 
-    public SunInstance(SunType sunType, int lane, int column) {
-        super();
-        this.sunType = sunType;
-        add(new PositionComponent(new Vec2d(column, lane)));
-        add(new SunComponent(sunType, FALL_DURATION_SECONDS));
-        add(new PamAnimationComponent());
+    // Sky sun constructor (Spawns above the screen and falls slowly to the target lane)
+    public SunInstance(SunType sunType, float targetLane, float column) {
+        this(sunType, 8.0f, column, targetLane); // Start high at Y=8.0
+        this.get(SunComponent.class).state = SunComponent.State.FALLING;
     }
 
-    public SunInstance(SunType sunType, int lane, int column, float time) {
+    // Plant sun constructor (Spawns at the plant's position to prepare for the hop)
+    public SunInstance(SunType sunType, float startY, float startX, float endY) {
         super();
         this.sunType = sunType;
-        add(new PositionComponent(new Vec2d(column, lane)));
-        add(new SunComponent(sunType, FALL_DURATION_SECONDS));
+        add(new PositionComponent(new Vec2d(startX, startY)));
+        add(new SunComponent(sunType, endY));
         add(new PamAnimationComponent());
-        FALL_DURATION_SECONDS = time;
+
+        if (this.sunType == SunType.RADIOACTIVE) {
+            this.get(PamAnimationComponent.class).tint.set(0.8f, 0.2f, 0.8f, 1f);
+        }
     }
 
     public SunType getSunType() {

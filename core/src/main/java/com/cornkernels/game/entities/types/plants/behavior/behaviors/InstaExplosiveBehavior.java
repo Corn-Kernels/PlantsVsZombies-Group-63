@@ -7,6 +7,7 @@ import com.cornkernels.game.entities.components.plant_specific.specific_specific
 import com.cornkernels.game.entities.types.plants.behavior.PlantAttackBehavior;
 import com.cornkernels.game.entities.types.projectile.projectiles.AreaOfDamage;
 import com.cornkernels.game.map.Field;
+import org.jspecify.annotations.NonNull;
 
 public class InstaExplosiveBehavior implements PlantAttackBehavior {
     private final float radius;
@@ -46,7 +47,7 @@ public class InstaExplosiveBehavior implements PlantAttackBehavior {
     }
 
     @Override
-    public boolean hasTarget(Entity self, Field field) {
+    public boolean hasTarget(@NonNull Entity self, @NonNull Field field) {
         return true; // Always true so it ticks the timer every game cycle
     }
 }

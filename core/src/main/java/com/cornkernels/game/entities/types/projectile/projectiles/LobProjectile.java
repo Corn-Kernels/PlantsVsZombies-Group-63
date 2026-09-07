@@ -4,11 +4,11 @@ import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.Entity;
 import com.cornkernels.game.entities.components.DamageComponent;
 import com.cornkernels.game.entities.components.PositionComponent;
-import com.cornkernels.game.entities.components.VelocityComponent;
 import com.cornkernels.game.entities.components.zombie_specific.ZombieDefComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.ButterComponent;
 import com.cornkernels.game.entities.components.zombie_specific.debuffs.IceComponent;
 import com.cornkernels.game.entities.types.projectile.AbstractProjectile;
+import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
 import com.cornkernels.game.systems.entity.CombatSystem;
 import org.jspecify.annotations.NonNull;
@@ -44,12 +44,12 @@ public class LobProjectile extends AbstractProjectile {
 
     @Override
     public boolean hit(@NonNull Entity target, Field field) {
-        boolean isHit = this.get(PositionComponent.class).position.getX()>target.get(PositionComponent.class).position.getX()-0.3f;
+        boolean isHit = this.get(PositionComponent.class).position.getX() > target.get(PositionComponent.class).position.getX() - 0.3f;
 
         if (this.target != null && target == this.target && isHit) {
 
             // Umbrella Zombie Deflection Logic[cite: 18]
-            if (target.get(ZombieDefComponent.class).def().id.equals("ZombieLostCityJane")) {
+            if (target instanceof ZombieInstance && target.get(ZombieDefComponent.class).def().id.equals("ZombieLostCityJane")) {
                 Vec2d currentPos = this.get(PositionComponent.class).position;
 
                 // Switch spawn location to the exact location of the hit[cite: 18]

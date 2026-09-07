@@ -67,6 +67,7 @@ public class GameplayScreen implements Screen {
     private SeedChooser seedChooser;
     private MapLoader mapLoader;
     private float accumulator = 0f;
+
     @Contract(pure = true)
     public GameplayScreen(@NonNull GameManager gameManager, GameAttributes gameAttributes) {
         this.gameManager = gameManager;
@@ -191,8 +192,6 @@ public class GameplayScreen implements Screen {
         confirmButton.setVisible(false);
         hudStage.addActor(confirmButton);
 
-        // Added last so it renders above the seed-selection UI (plant menu, boost/confirm
-        // buttons) - pause can be toggled during SEED_SELECTION too, and should always be on top.
         PauseMenu pauseMenu = hudFactory.createPauseMenu(this::restartLevel, this::exitLevel);
         pauseMenu.setPosition((hudWidth - pauseMenu.getWidth()) / 2f, (hudHeight - pauseMenu.getHeight()) / 2f);
         hudStage.addActor(pauseMenu);

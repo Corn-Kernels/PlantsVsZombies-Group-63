@@ -6,6 +6,7 @@ import com.cornkernels.game.entities.components.zombie_specific.specific_specifi
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.entities.types.zombies.behavior.ZombieBehavior;
 import com.cornkernels.game.map.Field;
+import com.cornkernels.game.systems.entity.ZombieSystem;
 
 public class NewspaperBehavior implements ZombieBehavior {
 
@@ -29,6 +30,8 @@ public class NewspaperBehavior implements ZombieBehavior {
 
             // 3. Destroy this behavior component so this update loop ceases to run[cite: 8]
             zombie.removeAll(ZombieBehaviorComponent.class);
+
+            ZombieSystem.applyClip(zombie);
         }
     }
 }

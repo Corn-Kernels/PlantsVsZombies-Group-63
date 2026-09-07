@@ -1,8 +1,5 @@
 package com.cornkernels.game.systems.entity;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.cornkernels.engine.utility.math.Vec2d;
 import com.cornkernels.game.entities.components.PositionComponent;
 import com.cornkernels.game.entities.components.sun_specific.SunComponent;
 import com.cornkernels.game.entities.types.plants.PlantInstance;
@@ -10,7 +7,6 @@ import com.cornkernels.game.entities.types.sun.SunInstance;
 import com.cornkernels.game.entities.types.sun.SunType;
 import com.cornkernels.game.entities.types.zombies.ZombieInstance;
 import com.cornkernels.game.map.Field;
-import com.cornkernels.game.map.data.MapData;
 import com.cornkernels.game.map.grid.GridPosition;
 import com.cornkernels.game.systems.controller.plants.PlantingController;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +29,7 @@ public class SunSystem extends EntitySystem {
         this.timeUntilNextSpawn = computeNextInterval();
     }
 
-    public static boolean tryHarvest(@NotNull SunInstance sun, @NotNull Field field,
-                                     @NotNull PlantingController plantingController) {
+    public static boolean tryHarvest(@NotNull SunInstance sun, @NotNull Field field, @NotNull PlantingController plantingController) {
         if (sun.isMarkedForRemoval()) return false;
 
         SunComponent comp = sun.get(SunComponent.class);
@@ -50,21 +45,16 @@ public class SunSystem extends EntitySystem {
         return true;
     }
 
-    public static float currentDrawY(@NotNull SunInstance sun, float landedY, float cellHeight,
-                                     @NotNull MapData mapData) {
-        SunComponent comp = sun.get(SunComponent.class);
-        if (comp.state != SunComponent.State.FALLING) return landedY;
-
-        Rectangle worldBounds = mapData.getWorldBounds();
-        float skyY = worldBounds.y + worldBounds.height + cellHeight;
-        return MathUtils.lerp(skyY, landedY, comp.fallProgress());
-    }
-
     private static void explode(@NotNull SunInstance sun, Field field) {
         GridPosition center = GridPosition.fromContinuous(sun.get(PositionComponent.class).position);
         int lane = center.lane();
         int column = center.column();
 
+        explodeZombies(field, lane, column);
+        explodePlants(field, lane, column);
+    }
+
+    private static void explodeZombies(Field field, int lane, int column) {
         for (int dl = -RADIOACTIVE_ZOMBIE_RADIUS; dl <= RADIOACTIVE_ZOMBIE_RADIUS; dl++) {
             for (ZombieInstance zombie : field.getZombiesInLane(lane + dl)) {
                 int zombieColumn = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position).column();
@@ -73,7 +63,9 @@ public class SunSystem extends EntitySystem {
                 }
             }
         }
+    }
 
+    private static void explodePlants(Field field, int lane, int column) {
         for (int dl = -RADIOACTIVE_PLANT_RADIUS; dl <= RADIOACTIVE_PLANT_RADIUS; dl++) {
             for (int dc = -RADIOACTIVE_PLANT_RADIUS; dc <= RADIOACTIVE_PLANT_RADIUS; dc++) {
                 PlantInstance plant = field.getPlantAt(lane + dl, column + dc);
@@ -98,27 +90,6 @@ public class SunSystem extends EntitySystem {
             spawnSun(field);
             timeUntilNextSpawn += computeNextInterval();
         }
-
-        updateFallingSun(field, deltaTick);
-    }
-
-    private void updateFallingSun(@NotNull Field field, float deltaTick) {
-        for (SunInstance sun : field.getActiveSuns()) {
-            if (sun.isMarkedForRemoval()) continue;
-
-            SunComponent component = sun.get(SunComponent.class);
-            if (component.state != SunComponent.State.FALLING) continue;
-
-            component.fallElapsed += deltaTick;
-            if (component.fallElapsed >= component.fallDuration) {
-                component.state = SunComponent.State.LANDED;
-
-                if (component.type == SunType.RADIOACTIVE) {
-                    component.type = SunType.NORMAL;
-                }
-                Vec2d position = sun.get(PositionComponent.class).position;
-            }
-        }
     }
 
     private float computeNextInterval() {
@@ -128,8 +99,6 @@ public class SunSystem extends EntitySystem {
     private void spawnSun(@NotNull Field field) {
         int lane = randomGenerator.nextInt(field.getTotalLanes());
         int column = randomGenerator.nextInt(field.getTotalColumns());
-        SunType type = SunType.random(randomGenerator);
-
-        field.addSun(new SunInstance(type, lane, column));
+        field.addSun(new SunInstance(SunType.random(randomGenerator), lane, column));
     }
 }

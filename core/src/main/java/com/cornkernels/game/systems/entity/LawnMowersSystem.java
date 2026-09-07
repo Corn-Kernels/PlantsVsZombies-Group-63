@@ -26,19 +26,19 @@ public class LawnMowersSystem extends EntitySystem {
             if (zombie.isMarkedForRemoval() || isDead(zombie)) continue;
 
             GridPosition pos = GridPosition.fromContinuous(zombie.get(PositionComponent.class).position);
-            if (pos.column() <= -1) {
-                LawnMower lawnMower = field.getLawnMowerAt(pos.lane());
-                if (lawnMower != null) {
-                    if (!lawnMower.isTriggered()) {
-                        lawnMower.trigger();
-                    }
-                } else {
-                    markGameFinished = true;
-                }
-            }
+            if (pos.column() <= -1) triggerLawnMowerOrLose(pos.lane());
         }
 
         advanceMowers(delta);
+    }
+
+    private void triggerLawnMowerOrLose(int lane) {
+        LawnMower lawnMower = field.getLawnMowerAt(lane);
+        if (lawnMower != null) {
+            if (!lawnMower.isTriggered()) lawnMower.trigger();
+        } else {
+            markGameFinished = true;
+        }
     }
 
     private void advanceMowers(float delta) {
@@ -46,20 +46,21 @@ public class LawnMowersSystem extends EntitySystem {
             if (!mower.isTriggered() || mower.isMarkedForRemoval()) continue;
 
             PositionComponent posComp = mower.get(PositionComponent.class);
-            Vec2d pos = posComp.position;
-            posComp.position = new Vec2d(pos.getX() + MOWER_SPEED_COLUMNS_PER_SEC * delta, pos.getY());
+            posComp.position = new Vec2d(posComp.position.getX() + MOWER_SPEED_COLUMNS_PER_SEC * delta, posComp.position.getY());
 
-            int lane = Math.round(pos.getY());
-            for (ZombieInstance zombie : field.getZombiesInLane(lane)) {
-                if (zombie.isMarkedForRemoval() || isDead(zombie)) continue;
-                double zombieX = zombie.get(PositionComponent.class).position.getX();
-                if (zombieX <= posComp.position.getX()) {
-                    CombatSystem.applyDamage(zombie, MOWER_KILL_DAMAGE, true, field);
-                }
-            }
+            applyMowerDamage(Math.round(posComp.position.getY()), posComp.position.getX());
 
             if (posComp.position.getX() > field.getTotalColumns()) {
                 mower.markForRemoval();
+            }
+        }
+    }
+
+    private void applyMowerDamage(int lane, double mowerX) {
+        for (ZombieInstance zombie : field.getZombiesInLane(lane)) {
+            if (zombie.isMarkedForRemoval() || isDead(zombie)) continue;
+            if (zombie.get(PositionComponent.class).position.getX() <= mowerX) {
+                CombatSystem.applyDamage(zombie, MOWER_KILL_DAMAGE, true, field);
             }
         }
     }
