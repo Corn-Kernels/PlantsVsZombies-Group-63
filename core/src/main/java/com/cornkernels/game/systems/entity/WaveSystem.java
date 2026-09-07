@@ -174,5 +174,5 @@ public class WaveSystem extends EntitySystem {
         }
         return result;
     }
-    //;)
+    //;) :o
 }
